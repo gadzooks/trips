@@ -1,17 +1,7 @@
 import { NextResponse } from 'next/server';
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { stringify } from 'querystring';
-
-const client = new DynamoDBClient({
-  region: process.env.NEXT_PUBLIC_AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
-
-const dynamoDB = DynamoDBDocumentClient.from(client);
+import { docClient } from '@/lib/dynamodb';
 
 export async function GET(request, context) {
   try {
@@ -32,7 +22,7 @@ export async function GET(request, context) {
     });
 
     console.log("command:" + stringify(command));
-    const { Items } = await dynamoDB.send(command);
+    const { Items } = await docClient.send(command);
     const Item = Items[0];
     console.log("in api/trips/[tripId]/route.js");
     console.log(Item);

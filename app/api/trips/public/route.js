@@ -1,17 +1,7 @@
 // app/api/trips/public/route.js
 import { NextResponse } from 'next/server';
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
-
-const client = new DynamoDBClient({
-  region: process.env.NEXT_PUBLIC_AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
-
-const dynamoDB = DynamoDBDocumentClient.from(client);
+import { ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { docClient } from '@/lib/dynamodb';
 
 // GET /trips/public
 export async function GET() {
@@ -24,7 +14,7 @@ export async function GET() {
       }
     });
 
-    const { Items } = await dynamoDB.send(command);
+    const { Items } = await docClient.send(command);
     return NextResponse.json(Items);
   } catch (error) {
     console.error('Error fetching public trips:', error);
