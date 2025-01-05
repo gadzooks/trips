@@ -150,7 +150,7 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {trip.rows?.length > 0 ? (
-                      trip.rows.map((row, index) => (
+                      trip.rows?.map((row, index) => (
                         <tr 
                           key={row.id || index}
                           className="hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 transition-colors duration-200"
