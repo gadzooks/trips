@@ -99,6 +99,7 @@ export function TripTable({
               </td>
               <td className="px-6 py-4">
                 <button
+                  type="button"
                   onClick={() => deleteRow(row.id)}
                   className="text-red-600 hover:text-red-900"
                 >
@@ -110,6 +111,7 @@ export function TripTable({
         </tbody>
       </table>
       <button
+        type="button"
         onClick={addRow}
         className="mt-4 flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
       >
