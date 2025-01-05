@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { stringify } from 'querystring';
 
 const client = new DynamoDBClient({
   region: process.env.NEXT_PUBLIC_AWS_REGION,
@@ -16,17 +17,25 @@ export async function GET(request, context) {
   try {
     // Await the context to get params
     const params = await context.params;
-    const { id } = params;
+    const { tripId } = params;
 
-    const command = new GetCommand({
+    console.log("PK:" + `TRIP#${tripId}`);
+    console.log("SK:" + `METADATA#${tripId}`);
+
+    const command = new QueryCommand({
       TableName: "TripPlanner",
-      Key: {
-        PK: `TRIP#${id}`,
-        SK: `METADATA#${id}`
+      KeyConditionExpression: "PK = :pk AND SK = :sk",
+      ExpressionAttributeValues: {
+        ":pk": `TRIP#${tripId}`,
+        ":sk": `METADATA#${tripId}`
       }
     });
 
-    const { Item } = await dynamoDB.send(command);
+    console.log("command:" + stringify(command));
+    const { Items } = await dynamoDB.send(command);
+    const Item = Items[0];
+    console.log("in api/trips/[tripId]/route.js");
+    console.log(Item);
     
     if (!Item) {
       return NextResponse.json(

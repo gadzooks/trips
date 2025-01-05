@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/trips/[id]/route.js", "app/route.js", "app/trips/route.js", "app/api/trips/public/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/trips/[tripId]/route.js", "app/route.js", "app/trips/route.js", "app/api/trips/public/route.js"],
   "exclude": ["node_modules"]
 }
