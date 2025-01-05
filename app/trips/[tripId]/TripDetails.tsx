@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from 'react';
 
 interface TripRow {
-  day: number;
+  date: string;
+  location: string;
+  id: string;
+  notes: string;
   activity: string;
-}
-
-interface TripDetailsProps {
-  tripId: string;
+  driveTime: string;
+  [key: string]: string; // Allow for dynamic properties
 }
 
 interface TripData {
@@ -15,24 +16,64 @@ interface TripData {
   description?: string;
   isPublic?: boolean;
   rows?: TripRow[];
+  tripId?: string;
+  updatedAt?: string;
+  createdAt?: string;
+  SK?: string;
+  GSI1SK?: string;
+  PK?: string;
+}
+
+interface TripDetailsProps {
+  tripId: string;
+}
+
+interface ColumnConfig {
+  key: string;
+  label: string;
+  width?: string;
 }
 
 export default function TripDetails({ tripId }: TripDetailsProps) {
   const [trip, setTrip] = useState<TripData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [columns, setColumns] = useState<ColumnConfig[]>([]);
+
+  // Function to generate column configuration from the first row
+  const generateColumns = (firstRow: TripRow): ColumnConfig[] => {
+    // Define which fields to show and in what order
+    const visibleFields = ['date', 'location', 'activity', 'driveTime', 'notes'];
+    const fieldLabels: { [key: string]: string } = {
+      date: 'Date',
+      location: 'Location',
+      activity: 'Activity',
+      driveTime: 'Drive Time',
+      notes: 'Notes'
+    };
+
+    // Filter out empty columns and create column configs
+    return visibleFields
+      .filter(field => field in firstRow && firstRow[field] !== undefined)
+      .map(field => ({
+        key: field,
+        label: fieldLabels[field] || field.charAt(0).toUpperCase() + field.slice(1),
+        width: field === 'date' ? 'w-24' : undefined
+      }));
+  };
 
   useEffect(() => {
     async function fetchTrip() {
       try {
-        console.log("---------------------");
-        console.log("Fetching trip with ID:", tripId);
-        console.log("---------------------");
-        
         const response = await fetch(`/api/trips/${tripId}`);
         if (!response.ok) throw new Error('Failed to fetch trip');
         const data = await response.json();
         setTrip(data);
+        
+        // Generate columns if there are rows
+        if (data.rows && data.rows.length > 0) {
+          setColumns(generateColumns(data.rows[0]));
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load trip details');
       } finally {
@@ -96,34 +137,40 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead>
                     <tr className="bg-gradient-to-r from-purple-50 to-blue-50">
-                      <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-24">
-                        Day
-                      </th>
-                      <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        Activity
-                      </th>
+                      {columns.map((column) => (
+                        <th
+                          key={column.key}
+                          scope="col"
+                          className={`px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider ${column.width || ''}`}
+                        >
+                          {column.label}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {trip.rows?.length > 0 ? (
                       trip.rows.map((row, index) => (
                         <tr 
-                          key={index}
+                          key={row.id || index}
                           className="hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 transition-colors duration-200"
                         >
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-700">
-                              Day {row.day}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-gray-700">
-                            {row.activity}
-                          </td>
+                          {columns.map((column) => (
+                            <td key={`${row.id}-${column.key}`} className="px-6 py-4 whitespace-nowrap">
+                              {column.key === 'date' ? (
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-700">
+                                  {row[column.key]}
+                                </span>
+                              ) : (
+                                <span className="text-gray-700">{row[column.key]}</span>
+                              )}
+                            </td>
+                          ))}
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={2} className="px-6 py-8 text-center">
+                        <td colSpan={columns.length} className="px-6 py-8 text-center">
                           <div className="text-gray-500">
                             <svg className="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />

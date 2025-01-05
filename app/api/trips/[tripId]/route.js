@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
-import { stringify } from 'querystring';
 import { docClient } from '@/lib/dynamodb';
 
 export async function GET(request, context) {
@@ -8,10 +7,9 @@ export async function GET(request, context) {
     // Await the context to get params
     const params = await context.params;
     const { tripId } = params;
-
-    console.log("PK:" + `TRIP#${tripId}`);
-    console.log("SK:" + `METADATA#${tripId}`);
-
+    console.log("PK:", `TRIP#${tripId}`);
+    console.log("SK:", `METADATA#${tripId}`);
+    
     const command = new QueryCommand({
       TableName: "TripPlanner",
       KeyConditionExpression: "PK = :pk AND SK = :sk",
@@ -20,8 +18,8 @@ export async function GET(request, context) {
         ":sk": `METADATA#${tripId}`
       }
     });
-
-    console.log("command:" + stringify(command));
+    console.log("command:", command);
+    
     const { Items } = await docClient.send(command);
     const Item = Items[0];
     console.log("in api/trips/[tripId]/route.js");
