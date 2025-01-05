@@ -15,7 +15,7 @@ export function PageContainer({ children }: { children: React.ReactNode }) {
   }
   
   // components/trip/trip-details.tsx
-  import { TripRow } from '../../types/trip'
+  import { TripRow } from './types/TripRow'
   
   interface TripDetailsProps {
     name: string
@@ -46,23 +46,27 @@ export function PageContainer({ children }: { children: React.ReactNode }) {
   
         <div>
           <h2 className="text-sm font-medium text-gray-700 mb-2">Itinerary</h2>
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Day</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Activity</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {rows.map((row, index) => (
-                <tr key={index}>
-                  <td className="px-4 py-2 text-sm">{row.day}</td>
-                  <td className="px-4 py-2 text-sm">{row.activity}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {tripActivities(rows)}
         </div>
       </div>
     )
   }
+
+function tripActivities(rows: TripRow[]) {
+    return <table className="min-w-full divide-y divide-gray-200">
+        <thead>
+            <tr>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Day</th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Activity</th>
+            </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200">
+            {rows.map((row, index) => (
+                <tr key={index}>
+                    <td className="px-4 py-2 text-sm">{row.day}</td>
+                    <td className="px-4 py-2 text-sm">{row.activity}</td>
+                </tr>
+            ))}
+        </tbody>
+    </table>
+}

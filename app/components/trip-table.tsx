@@ -2,15 +2,7 @@
 
 import { useState } from 'react'
 import { TrashIcon, PlusIcon } from 'lucide-react'
-
-interface TripRow {
-  id: string
-  date: string
-  activity: string
-  notes: string
-  location: string
-  driveTime: string
-}
+import { TripRow } from './types/TripRow'
 
 export function TripTable({ 
   initialRows = [], 

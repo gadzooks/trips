@@ -1,6 +1,6 @@
 // import { auth } from '@/auth'
 import Link from 'next/link'
-import { PublicTrips } from './components/public-trips'
+import PublicTrips from './components/public-trips'
 
 export default async function Home() {
   // const session = await auth()
