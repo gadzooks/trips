@@ -75,27 +75,27 @@ jobs:
           url=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})
           echo "::set-output name=url::$url"
 
-prod-deploy:
-    needs: [test, qa-deploy]
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: ${{ steps.deploy.outputs.url }}
-    # The deployment will pause here waiting for manual approval
-    # Configure this in your GitHub repository:
-    # Settings -> Environments -> production -> Add protection rule -> Required reviewers
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-      
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      
-      - name: Deploy to Production
-        id: deploy
-        run: |
-          url=$(vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }})
-          echo "::set-output name=url::$url"
+  prod-deploy:
+      needs: [test, qa-deploy]
+      if: github.ref == 'refs/heads/main'
+      runs-on: ubuntu-latest
+      environment:
+        name: production
+        url: ${{ steps.deploy.outputs.url }}
+      # The deployment will pause here waiting for manual approval
+      # Configure this in your GitHub repository:
+      # Settings -> Environments -> production -> Add protection rule -> Required reviewers
+      steps:
+        - uses: actions/checkout@v3
+        
+        - name: Install Vercel CLI
+          run: npm install --global vercel@latest
+        
+        - name: Pull Vercel Environment Information
+          run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        
+        - name: Deploy to Production
+          id: deploy
+          run: |
+            url=$(vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }})
+            echo "::set-output name=url::$url"
