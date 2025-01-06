@@ -72,7 +72,7 @@ jobs:
       - name: Deploy to QA
         id: deploy
         run: |
-          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          url=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})
           echo "::set-output name=url::$url"
 
   prod-deploy:
