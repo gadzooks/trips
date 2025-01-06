@@ -149,7 +149,7 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {trip.rows?.length > 0 ? (
+                    {trip.rows?.length ?? 0 > 0 ? (
                       trip.rows?.map((row, index) => (
                         <tr 
                           key={row.id || index}

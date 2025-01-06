@@ -60,7 +60,7 @@ export function Navbar() {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <User className="h-5 w-5 text-gray-500" />
-                  <span className="text-gray-700">{session.user?.name}</span>
+                  {/* <span className="text-gray-700">{session.user?.name}</span> */}
                 </div>
                 <button
                   onClick={() => signOut()}

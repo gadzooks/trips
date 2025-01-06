@@ -4,10 +4,7 @@ import { useState } from 'react';
 import { TripTable } from '@/app/components/trip-table';
 import { useRouter } from 'next/navigation';
 
-type TripRow = {
-  day: number;
-  activity: string;
-};
+import { TripRow } from '@/app/components/types/TripRow';
 
 export default function NewTrip() {
   const router = useRouter();
