@@ -37,6 +37,22 @@ export function Navbar() {
                 </Link>
               </div>
             )}
+
+<div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                <Link
+                  href="/privacy"
+                  className="inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-700"
+                >
+                  Privacy
+                </Link>
+                <Link
+                  href="/terms"
+                  className="inline-flex items-center px-1 pt-1 text-gray-500 hover:text-gray-700"
+                >
+                  Terms & Conditions
+                </Link>
+              </div>
+
           </div>
 
           <div className="flex items-center">
