@@ -8,7 +8,7 @@ interface TripRow {
   notes: string;
   activity: string;
   driveTime: string;
-  [key: string]: string; // Allow for dynamic properties
+  [key: string]: string;
 }
 
 interface TripData {
@@ -34,15 +34,80 @@ interface ColumnConfig {
   width?: string;
 }
 
+// Editable Text Component for inline editing
+const EditableText = ({ 
+  value, 
+  onSave, 
+  isTextArea = false,
+  className = ""
+}: { 
+  value: string;
+  onSave: (value: string) => void;
+  isTextArea?: boolean;
+  className?: string;
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(value);
+
+  const handleSave = () => {
+    onSave(editValue);
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSave();
+    }
+    if (e.key === 'Escape') {
+      setEditValue(value);
+      setIsEditing(false);
+    }
+  };
+
+  if (isEditing) {
+    if (isTextArea) {
+      return (
+        <textarea
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          onBlur={handleSave}
+          onKeyDown={handleKeyDown}
+          className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${className}`}
+          autoFocus
+        />
+      );
+    }
+    return (
+      <input
+        type="text"
+        value={editValue}
+        onChange={(e) => setEditValue(e.target.value)}
+        onBlur={handleSave}
+        onKeyDown={handleKeyDown}
+        className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${className}`}
+        autoFocus
+      />
+    );
+  }
+
+  return (
+    <div 
+      onClick={() => setIsEditing(true)} 
+      className={`cursor-pointer hover:bg-gray-50 rounded-lg p-2 ${className}`}
+    >
+      {value}
+    </div>
+  );
+};
+
 export default function TripDetails({ tripId }: TripDetailsProps) {
   const [trip, setTrip] = useState<TripData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [columns, setColumns] = useState<ColumnConfig[]>([]);
 
-  // Function to generate column configuration from the first row
   const generateColumns = (firstRow: TripRow): ColumnConfig[] => {
-    // Define which fields to show and in what order
     const visibleFields = ['date', 'location', 'activity', 'driveTime', 'notes'];
     const fieldLabels: { [key: string]: string } = {
       date: 'Date',
@@ -52,7 +117,6 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
       notes: 'Notes'
     };
 
-    // Filter out empty columns and create column configs
     return visibleFields
       .filter(field => field in firstRow && firstRow[field] !== undefined)
       .map(field => ({
@@ -70,7 +134,6 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
         const data = await response.json();
         setTrip(data);
         
-        // Generate columns if there are rows
         if (data.rows && data.rows.length > 0) {
           setColumns(generateColumns(data.rows[0]));
         }
@@ -84,17 +147,55 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
     fetchTrip();
   }, [tripId]);
 
-  if (loading) {
-    return <p>Loading trip details...</p>;
-  }
+  const handleUpdateTrip = async (updates: Partial<TripData>) => {
+    try {
+      const response = await fetch(`/api/trips/${tripId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+      
+      if (!response.ok) throw new Error('Failed to update trip');
+      
+      setTrip(prev => prev ? { ...prev, ...updates } : null);
+    } catch (err) {
+      console.error('Failed to update trip:', err);
+      // You might want to show an error toast here
+    }
+  };
 
-  if (error) {
-    return <p className="text-red-500">{error}</p>;
-  }
+  const handleUpdateRow = async (rowId: string, updates: Partial<TripRow>) => {
+    try {
+      const response = await fetch(`/api/trips/${tripId}/rows/${rowId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+      });
+      
+      if (!response.ok) throw new Error('Failed to update row');
+      
+      setTrip(prev => {
+        if (!prev?.rows) return prev;
+        return {
+          ...prev,
+          rows: prev.rows.map(row => 
+            row.id === rowId ? { ...row, ...updates } : row
+          )
+        };
+      });
+    } catch (err) {
+      console.error('Failed to update row:', err);
+      // You might want to show an error toast here
+    }
+  };
 
-  if (!trip) {
-    return <p>Trip not found</p>;
-  }
+  if (loading) return <p>Loading trip details...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+  if (!trip) return <p>Trip not found</p>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-12">
@@ -104,30 +205,38 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
           <div className="p-8 space-y-8">
             <div>
               <h2 className="text-sm font-semibold text-purple-600 uppercase tracking-wider mb-2">Trip Name</h2>
-              <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
-                {trip.name}
-              </p>
+              <EditableText
+                value={trip.name || ''}
+                onSave={(value) => handleUpdateTrip({ name: value })}
+                className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600"
+              />
             </div>
             
-            {trip.description && (
+            {trip.description !== undefined && (
               <div>
                 <h2 className="text-sm font-semibold text-purple-600 uppercase tracking-wider mb-2">Description</h2>
-                <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg p-4 border border-gray-100">
-                  {trip.description}
-                </p>
+                <EditableText
+                  value={trip.description || ''}
+                  onSave={(value) => handleUpdateTrip({ description: value })}
+                  isTextArea={true}
+                  className="text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg border border-gray-100"
+                />
               </div>
             )}
 
             <div>
               <h2 className="text-sm font-semibold text-purple-600 uppercase tracking-wider mb-2">Visibility</h2>
               <div className="mt-2 flex items-center">
-                <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium shadow-sm transition-colors duration-200 ${
-                  trip.isPublic 
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' 
-                    : 'bg-gradient-to-r from-gray-500 to-gray-600 text-white'
-                }`}>
+                <button
+                  onClick={() => handleUpdateTrip({ isPublic: !trip.isPublic })}
+                  className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium shadow-sm transition-colors duration-200 ${
+                    trip.isPublic 
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' 
+                      : 'bg-gradient-to-r from-gray-500 to-gray-600 text-white'
+                  }`}
+                >
                   {trip.isPublic ? 'Public' : 'Private'}
-                </div>
+                </button>
               </div>
             </div>
 
@@ -158,11 +267,17 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
                           {columns.map((column) => (
                             <td key={`${row.id}-${column.key}`} className="px-6 py-4 whitespace-nowrap">
                               {column.key === 'date' ? (
-                                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-700">
-                                  {row[column.key]}
-                                </span>
+                                <EditableText
+                                  value={row[column.key]}
+                                  onSave={(value) => handleUpdateRow(row.id, { [column.key]: value })}
+                                  className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-700"
+                                />
                               ) : (
-                                <span className="text-gray-700">{row[column.key]}</span>
+                                <EditableText
+                                  value={row[column.key]}
+                                  onSave={(value) => handleUpdateRow(row.id, { [column.key]: value })}
+                                  className="text-gray-700"
+                                />
                               )}
                             </td>
                           ))}
