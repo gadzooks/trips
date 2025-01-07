@@ -30,6 +30,21 @@ export async function GET(
   }
 }
 
+interface ItineraryRow {
+  id: string;
+  day: number;
+  time?: string;
+  activity: string;
+  location?: string;
+  notes?: string;
+}
+
+interface ItineraryUpdate {
+  added?: ItineraryRow[];
+  updated?: ItineraryRow[];
+  deleted?: string[];  // Array of row IDs to delete
+}
+
 // Update trip
 export async function PATCH(
   request: Request,
@@ -40,7 +55,7 @@ export async function PATCH(
   const body = await request.json()
 
   try {
-    // First get the current trip to check if public status changed
+    // First get the current trip to check if public status changed and get current rows
     const currentTrip = await docClient.send(new GetCommand({
       TableName: 'TripPlanner',
       Key: {
@@ -49,6 +64,10 @@ export async function PATCH(
       }
     }))
 
+    if (!currentTrip.Item) {
+      return new Response('Trip not found', { status: 404 })
+    }
+
     // Build update expression and attribute values
     let updateExpression = 'SET updatedAt = :updatedAt'
     const expressionAttributeValues: any = {
@@ -56,7 +75,7 @@ export async function PATCH(
     }
     let expressionAttributeNames: Record<string, string> | undefined
 
-    // Handle each possible field
+    // Handle basic fields
     if (body.name !== undefined) {
       updateExpression += ', #name = :name'
       expressionAttributeValues[':name'] = body.name
@@ -71,7 +90,47 @@ export async function PATCH(
       updateExpression += ', isPublic = :isPublic'
       expressionAttributeValues[':isPublic'] = body.isPublic
     }
-    if (body.rows !== undefined) {
+
+    // Handle itinerary updates
+    if (body.itinerary) {
+      const itineraryUpdate: ItineraryUpdate = body.itinerary;
+      let updatedRows = [...(currentTrip.Item.rows || [])];
+
+      // Handle deletions
+      if (itineraryUpdate.deleted && itineraryUpdate.deleted.length > 0) {
+        updatedRows = updatedRows.filter(row => !itineraryUpdate.deleted?.includes(row.id));
+      }
+
+      // Handle updates
+      if (itineraryUpdate.updated && itineraryUpdate.updated.length > 0) {
+        itineraryUpdate.updated.forEach(updatedRow => {
+          const index = updatedRows.findIndex(row => row.id === updatedRow.id);
+          if (index !== -1) {
+            updatedRows[index] = {
+              ...updatedRows[index],
+              ...updatedRow,
+            };
+          }
+        });
+      }
+
+      // Handle additions
+      if (itineraryUpdate.added && itineraryUpdate.added.length > 0) {
+        updatedRows = [...updatedRows, ...itineraryUpdate.added];
+      }
+
+      // Sort rows by day and time
+      updatedRows.sort((a, b) => {
+        if (a.day !== b.day) return a.day - b.day;
+        if (!a.time) return -1;
+        if (!b.time) return 1;
+        return a.time.localeCompare(b.time);
+      });
+
+      updateExpression += ', rows = :rows'
+      expressionAttributeValues[':rows'] = updatedRows;
+    } else if (body.rows !== undefined) {
+      // Maintain backward compatibility with direct rows update
       updateExpression += ', rows = :rows'
       expressionAttributeValues[':rows'] = body.rows
     }
