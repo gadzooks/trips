@@ -8,7 +8,7 @@ export interface TripRow {
     [key: string]: string;
   }
 
-  export interface Trip {
+export interface Trip {
     tripId: string
     name: string
     description: string
@@ -17,17 +17,17 @@ export interface TripRow {
     permission: 'READ' | 'EDIT'
     createdAt: string
     rows: TripRow[]
-  }
-  
-  export interface TripData {
-  name?: string;
-  description?: string;
-  isPublic?: boolean;
-  rows?: TripRow[];
-  tripId?: string;
-  updatedAt?: string;
-  createdAt?: string;
-  SK?: string;
-  GSI1SK?: string;
-  PK?: string;
+}
+
+export interface TripData {
+    name?: string;
+    description?: string;
+    isPublic?: boolean;
+    rows?: TripRow[];
+    tripId?: string;
+    updatedAt?: string;
+    createdAt?: string;
+    SK?: string;
+    GSI1SK?: string;
+    PK?: string;
 }
