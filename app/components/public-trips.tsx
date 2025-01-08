@@ -2,22 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, MapPin } from 'lucide-react';
-
-interface TripRow {
-  date: string;
-  activity: string;
-  location: string;
-  driveTime: string;
-}
-
-interface Trip {
-  tripId: string;
-  name: string;
-  description: string;
-  userId: string;
-  createdAt: string;
-  rows: TripRow[];
-}
+import { Trip } from '@/types/trip';
 
 export default function PublicTrips() {
   const [trips, setTrips] = useState<Trip[]>([]);

@@ -6,28 +6,11 @@ import { Calendar, Clock, MapPin, Share2, User } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 import React from 'react'
+import { Trip } from '@/types/trip'
 
-interface TripRow {
-  date: string
-  activity: string
-  location: string
-  driveTime: string
-}
-
-interface SharedTrip {
-  tripId: string
-  name: string
-  description: string
-  userId: string // owner's ID
-  ownerName: string // owner's name
-  permission: 'READ' | 'EDIT'
-  createdAt: string
-  rows: TripRow[]
-}
-
-export default function SharedTripsPage() {
+export default function TripsPage() {
   const { data: session, status } = useSession()
-  const [trips, setTrips] = useState<SharedTrip[]>([])
+  const [trips, setTrips] = useState<Trip[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -39,7 +22,7 @@ export default function SharedTripsPage() {
   }, [status])
 
   useEffect(() => {
-    async function fetchSharedTrips() {
+    async function fetchTrips() {
       if (!session?.user?.id) return
 
       try {
@@ -54,7 +37,7 @@ export default function SharedTripsPage() {
       }
     }
 
-    fetchSharedTrips()
+    fetchTrips()
   }, [session?.user?.id])
 
   if (loading) {

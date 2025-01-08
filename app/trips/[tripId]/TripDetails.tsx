@@ -1,28 +1,6 @@
 "use client";
+import { TripData, TripRow } from '@/types/trip';
 import React, { useEffect, useState } from 'react';
-
-interface TripRow {
-  date: string;
-  location: string;
-  id: string;
-  notes: string;
-  activity: string;
-  driveTime: string;
-  [key: string]: string;
-}
-
-interface TripData {
-  name?: string;
-  description?: string;
-  isPublic?: boolean;
-  rows?: TripRow[];
-  tripId?: string;
-  updatedAt?: string;
-  createdAt?: string;
-  SK?: string;
-  GSI1SK?: string;
-  PK?: string;
-}
 
 interface TripDetailsProps {
   tripId: string;
