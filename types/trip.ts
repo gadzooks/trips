@@ -1,33 +1,67 @@
-export interface TripRow {
-    date: string;
-    location: string;
-    id: string;
-    notes: string;
-    activity: string;
-    driveTime: string;
-    [key: string]: string;
+export enum TripListType {
+    PUBLIC = 'public',
+    MY_TRIPS = 'myTrips',
+    BOTH = 'both'
+}
+  
+
+  
+  export interface CreateTripBody {
+    title: string
+    description: string
+    isPublic: boolean
+    tags?: string[]
+    days?: Day[]
+  }
+  
+  export interface ReorderDaysBody {
+    tripId: string
+    moves: Array<{
+      dayId: string
+      newPosition: number
+    }>
+  }
+  
+  export interface InsertDaysBody {
+    tripId: string
+    days: Array<Day & {
+      position: number
+    }>
+  }
+  
+  export interface DeleteDaysBody {
+    tripId: string
+    dayIds: string[]
+  }
+  
+  export interface TripAccessResult {
+    allowed: boolean
+    reason: string
+  }
+  
+  export interface TripRecord {
+    PK: string
+    SK: string
+    tripId: string
+    userId: string
+    title: string
+    description: string
+    isPublic: boolean
+    isDeleted: boolean
+    days: Day[]
+    createdAt: string
+    updatedAt: string
+    'publicStatusPartitionKey'?: string
+    'tripTimestampSortKey'?: string
+    sharedWith?: Record<string, boolean>
   }
 
-export interface Trip {
-    tripId: string
-    name: string
-    description: string
-    userId: string // owner's ID
-    ownerName: string // owner's name
-    permission: 'READ' | 'EDIT'
-    createdAt: string
-    rows: TripRow[]
-}
-
-export interface TripData {
-    name?: string;
-    description?: string;
-    isPublic?: boolean;
-    rows?: TripRow[];
-    tripId?: string;
-    updatedAt?: string;
-    createdAt?: string;
-    SK?: string;
-    GSI1SK?: string;
-    PK?: string;
-}
+  export interface Day {
+    id: string
+    date: string
+    activity: string
+    bookings: string
+    stay: string
+    travelTime: string
+    notes: string
+  }

@@ -2,7 +2,7 @@
 
 import { QueryCommand, TransactWriteCommand } from '@aws-sdk/lib-dynamodb'
 import { docClient } from '@/lib/dynamodb'
-import { TripRecord, TripAccessResult, Day } from '../types/trip'
+import { CreateTripBody, TripAccessResult, TripRecord } from '@/types/trip'
 
 const TABLE_NAME = 'TripPlanner'
 
@@ -56,51 +56,49 @@ export class TripDbService {
     return result.Items ?? []
   }
 
-  async createTrip(tripId: string, userId: string, tripData: TripRecord, days?: Day[], tags?: string[]) {
+  async createTrip(tripData: CreateTripBody, userId: string) {
+    const tripId = crypto.randomUUID()
     const timestamp = new Date().toISOString()
+    const commonAttributes = {
+        tripId,
+        userId,
+        title: tripData.title,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        isDeleted: false,
+        isPublic: tripData.isPublic,
+    }
+    const tripRecord: TripRecord = {
+        PK: `USER#${userId}`,
+        SK: `TRIP#${tripId}`,
+        ...commonAttributes,
+        description: tripData.description,
+        days: tripData.days || [],
+    }
+
     const transactItems = [
       {
         Put: {
           TableName: TABLE_NAME,
-          Item: {
-            ...tripData,
-            createdAt: timestamp,
-            updatedAt: timestamp
-          }
+          Item: tripRecord
         }
       },
-      
-      ...(tags?.map(tag => ({
+      ...(tripData.isPublic ? [{
         Put: {
           TableName: TABLE_NAME,
           Item: {
-            PK: `TAG#${tag}`,
-            SK: `TRIP#${tripId}`,
-            tripId,
-            'GSI1-PK': `TRIP#${tripId}`,
-            'GSI1-SK': `TAG#${tag}`,
-            createdAt: timestamp
+            ...commonAttributes,
+            PK: 'STATUS#PUBLIC',
+            SK: `TRIP#${timestamp}`,
           }
         }
-      })) ?? []),
-
-      ...(days?.map((day, index) => ({
-        Put: {
-          TableName: TABLE_NAME,
-          Item: {
-            PK: `TRIP#${tripId}`,
-            SK: `DAY#${String(index + 1).padStart(6, '0')}`,
-            ordinal: index + 1,
-            ...day,
-            createdAt: timestamp
-          }
-        }
-      })) ?? [])
+      }] : [])
     ]
 
     await docClient.send(new TransactWriteCommand({
       TransactItems: transactItems
     }))
+    return tripId
   }
 
   async executeBatchWrite(transactItems: any[]) {
@@ -143,7 +141,7 @@ export class TripDbService {
         docClient.send(new QueryCommand({
           TableName: TABLE_NAME,
           IndexName: 'GSI1',
-          KeyConditionExpression: 'GSI1-PK = :pk',
+          KeyConditionExpression: 'publicStatusPartitionKey = :pk',
           ExpressionAttributeValues: {
             ':pk': 'STATUS#PUBLIC'
           }

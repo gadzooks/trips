@@ -1,36 +1,18 @@
 // src/services/tripService.ts
 
+import { CreateTripBody, ReorderDaysBody, InsertDaysBody, DeleteDaysBody } from '@/types/trip'
 import { TripDbService } from './tripDbService'
-import { CreateTripBody, ReorderDaysBody, InsertDaysBody, DeleteDaysBody } from '../types/trip'
 
 export class TripService {
   constructor(private dbService: TripDbService) {}
 
   async createTrip(body: CreateTripBody, userId: string) {
-    const tripId = crypto.randomUUID()
-    const timestamp = new Date().toISOString()
-    
-    const tripData = {
-      PK: `TRIP#${tripId}`,
-      SK: `USER#${userId}`,
-      tripId,
-      userId,
-      title: body.title,
-      description: body.description,
-      isPublic: body.isPublic,
-      isDeleted: false,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-      ...(body.isPublic && {
-        'GSI1-PK': 'STATUS#PUBLIC',
-        'GSI1-SK': `TRIP#${timestamp}`
-      })
-    }
-
-    await this.dbService.createTrip(tripId, userId, tripData, body.days, body.tags)
+    const tripId = await this.dbService.createTrip(body, userId)
     return { tripId }
   }
 
+  // FIXME: revist this logic of reordering days
+  // FIXME: a lot of this with PK and SK should go to the dbService
   async reorderDays(body: ReorderDaysBody, userId: string) {
     const { tripId, moves } = body
 
