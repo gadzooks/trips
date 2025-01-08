@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 
-import { TripRow } from '@/app/components/types/TripRow'
 import { useRouter } from 'next/navigation'
 import { TripTable } from '@/app/components/trip-table'
+import { TripRow } from '@/types/trip'
 
 export default function NewTrip() {
   const router = useRouter()

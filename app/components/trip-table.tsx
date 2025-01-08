@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { TrashIcon, PlusIcon } from 'lucide-react'
-import { TripRow } from './types/TripRow'
+import { TripRow } from '@/types/trip'
 
 export function TripTable({ 
   initialRows = [], 
