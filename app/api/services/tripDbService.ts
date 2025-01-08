@@ -2,7 +2,7 @@
 
 import { QueryCommand, TransactWriteCommand } from '@aws-sdk/lib-dynamodb'
 import { docClient } from '@/lib/dynamodb'
-import { TripRecord, TripAccessResult, Day } from '@/types/trip'
+import { TripRecord, TripAccessResult, Day } from '../types/trip'
 
 const TABLE_NAME = 'TripPlanner'
 
@@ -31,7 +31,8 @@ export class TripDbService {
 
       const hasAccess = isOwner || 
         trip.isPublic || 
-        (trip.sharedWith && trip.sharedWith[userId])
+        (trip.sharedWith && trip.sharedWith[userId]) || 
+        false
 
       return {
         allowed: hasAccess,

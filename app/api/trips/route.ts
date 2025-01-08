@@ -1,9 +1,9 @@
 // src/app/api/trips/route.ts
 
 import { NextResponse } from 'next/server'
-import { TripService } from '@/services/tripService'
-import { TripDbService } from '@/services/tripDbService'
-import { CreateTripBody, ReorderDaysBody, InsertDaysBody, DeleteDaysBody } from '@/types/trip'
+import { TripService } from '../services/tripService'
+import { TripDbService } from '../services/tripDbService'
+import { CreateTripBody, ReorderDaysBody, InsertDaysBody, DeleteDaysBody } from '../types/trip'
 
 const tripService = new TripService(new TripDbService())
 

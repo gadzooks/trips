@@ -183,9 +183,9 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
         return {
           ...prev,
           rows: prev.rows.map(row => 
-            row.id === rowId ? { ...row, ...updates } : row
+            row.id === rowId ? { ...row, ...Object.fromEntries(Object.entries(updates).filter(([_, v]) => v !== undefined)) as TripRow } : row
           )
-        };
+        } as TripData;
       });
     } catch (err) {
       console.error('Failed to update row:', err);

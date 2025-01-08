@@ -33,7 +33,7 @@ export async function PATCH(
     })
 
     // Sort rows by day and time
-    updatedRows.sort((a, b) => {
+    updatedRows.sort((a: { day: number; time: string; }, b: { day: number; time: any; }) => {
       if (a.day !== b.day) return a.day - b.day;
       if (!a.time) return -1;
       if (!b.time) return 1;

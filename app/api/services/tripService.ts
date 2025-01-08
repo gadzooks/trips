@@ -1,7 +1,7 @@
 // src/services/tripService.ts
 
 import { TripDbService } from './tripDbService'
-import { CreateTripBody, ReorderDaysBody, InsertDaysBody, DeleteDaysBody } from '@/types/trip'
+import { CreateTripBody, ReorderDaysBody, InsertDaysBody, DeleteDaysBody } from '../types/trip'
 
 export class TripService {
   constructor(private dbService: TripDbService) {}
@@ -19,6 +19,8 @@ export class TripService {
       description: body.description,
       isPublic: body.isPublic,
       isDeleted: false,
+      createdAt: timestamp,
+      updatedAt: timestamp,
       ...(body.isPublic && {
         'GSI1-PK': 'STATUS#PUBLIC',
         'GSI1-SK': `TRIP#${timestamp}`
@@ -163,7 +165,7 @@ export class TripService {
       }).filter(pos => pos !== undefined)
     )
 
-    const transactItems = []
+    const transactItems: any[] = []
 
     // Delete specified days
     dayIds.forEach(dayId => {
