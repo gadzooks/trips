@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { CreateTripBody } from "@/types/trip";
 import { TABLE_NAME, timestampIsoFormat } from "../common";
+import { time } from "console";
 
 export function createTripTransactions(tripData: CreateTripBody, userId: string) {
     const tripId = crypto.randomUUID();
@@ -24,16 +25,11 @@ export function createTripTransactions(tripData: CreateTripBody, userId: string)
     // 3. Records for each tag but only store PK and SK
     // This is because if the title / description etc change we dont want to have to update multiple records.
 
-    const commonKeys = {
+    const baseRecord = {
         //This gives you both timestamp-based sorting on the main table and direct tripId lookup via the GSI.
         PK: `USER#${userId}`,
         SK: `TIMESTAMP#${timestamp}#${tripId}`,
-    }
-
-    const baseRecord = {
-        ...commonKeys,
-        GSI1PK: `USER#${userId}`,
-        GSI1SK: `TRIP#${tripId}`,
+        timestamp,
         ...tripData
     };
  
@@ -41,29 +37,33 @@ export function createTripTransactions(tripData: CreateTripBody, userId: string)
     records.push(baseRecord);
  
     // Shared records
+    // Search for shared users using eq('USER#{userId}') and SK begins_with('SHARED#')
+    // to delete shared users, search for PK eq('USER#{userId}') and SK eq('SHARED#{timestamp}#{tripId}')
     (tripData.sharedWith || []).forEach(sharedUserId => {
         records.push({
-            ...commonKeys,
             // Add these for each shared user
-            GSI2PK: `USER#${sharedUserId}`,
-            GSI2SK: `SHARED#${timestamp}#${tripId}`,
+            PK: `USER#${sharedUserId}`,
+            SK: `SHARED#${timestamp}#${tripId}`,
             tripId,
             userId,
+            timestamp,
         });
     });
  
-    let tags = tripData.tags || [];
+    let allTags = tripData.tags || [];
     if (tripData.isPublic) {
-        tags.push('PUBLIC');
+        allTags.push('PUBLIC');
     }
  
-    (tripData.tags || []).forEach(tag => {
+    // Search for tags using eq('TAG#{tag}') and SK begins_with('TIMESTAMP#')
+    // to delete tags, search for PK eq('TAG#{tag}') and SK eq('TIMESTAMP#{timestamp}#{tripId}')
+    (allTags).forEach(tag => {
         records.push({
-            ...commonKeys,
-            GSI3PK: `USER#${userId}`,
-            GSI3SK: `TAG#${tag}#${timestamp}#${tripId}`,
+            PK: `TAG#${tag}`,
+            SK: `TIMESTAMP#${timestamp}#${tripId}`,
             tripId,
             userId,
+            timestamp,
         });
     });
 

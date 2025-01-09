@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from 'react';
-import { TripTable } from '@/app/components/trip-table';
+import { TripItinerary } from '@/app/components/trip-itinerary';
 import { useRouter } from 'next/navigation';
-import { TripRow } from '@/types/trip';
+import { Day } from '@/types/trip';
 
 export default function NewTrip() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [tags, setTags] = useState('');
   const [isPublic, setIsPublic] = useState(false);
-  const [rows, setRows] = useState<TripRow[]>([]);
+  const [rows, setRows] = useState<Day[]>([]);
+  const sharedWith = ['tom', 'jerry'];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,8 +25,10 @@ export default function NewTrip() {
         body: JSON.stringify({
           name,
           description,
+          tags: tags.split(' '),
+          sharedWith,
           isPublic,
-          rows,
+          days: rows,
         }),
       });
       if (!response.ok) throw new Error('Failed to create trip');
@@ -71,7 +75,23 @@ export default function NewTrip() {
                   placeholder="Describe your trip"
                 />
               </div>
+            </div>
 
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Tags
+                </label>
+                <input
+                  type="text"
+                  value={tags}
+                  onChange={(e) => setTags(e.target.value)}
+                  className="mt-1 block w-full rounded-lg border-gray-200 bg-gray-50 py-3 px-4 text-gray-700 shadow-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-colors duration-200"
+                  required
+                  placeholder="Enter tags separated by spaces"
+                />
+              </div>
+ 
               <div className="flex items-center bg-purple-50 p-4 rounded-lg">
                 <div className="relative">
                   <input
@@ -92,7 +112,7 @@ export default function NewTrip() {
                   Itinerary
                 </label>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <TripTable onChange={setRows} />
+                  <TripItinerary onChange={setRows} />
                 </div>
               </div>
             </div>

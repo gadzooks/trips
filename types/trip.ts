@@ -3,50 +3,44 @@ export enum TripListType {
     MY_TRIPS = 'myTrips',
     BOTH = 'both'
 }
-  
 
-  
-  export interface CreateTripBody {
+export interface CreateTripBody {
     title: string
     description: string
     isPublic: boolean
     sharedWith?: string[]
     tags?: string[]
     days?: Day[]
-  }
-  
-  export interface ReorderDaysBody {
+}
+
+export interface ReorderDaysBody {
     tripId: string
     moves: Array<{
-      dayId: string
-      newPosition: number
+        dayId: string
+        newPosition: number
     }>
-  }
-  
-  export interface InsertDaysBody {
+}
+
+export interface InsertDaysBody {
     tripId: string
     days: Array<Day & {
-      position: number
+        position: number
     }>
-  }
-  
-  export interface DeleteDaysBody {
+}
+
+export interface DeleteDaysBody {
     tripId: string
     dayIds: string[]
-  }
-  
-  export interface TripAccessResult {
+}
+
+export interface TripAccessResult {
     allowed: boolean
     reason: string
-  }
-  
-  export interface TripRecord {
+}
+
+export interface TripRecord {
     PK: string
     SK: string
-    // GSI1PK: string
-    // GSI1SK: string
-    // GSI2PK?: string
-    // GSI2SK?: string
     tripId: string
     userId: string
     title: string
@@ -56,13 +50,11 @@ export enum TripListType {
     days: Day[]
     createdAt: string
     updatedAt: string
-    // 'publicStatusPartitionKey'?: string
-    // 'tripTimestampSortKey'?: string
     tags?: string[]
     sharedWith?: string[]
-  }
+}
 
-  export interface Day {
+export interface Day {
     id: string
     date: string
     activity: string
@@ -70,4 +62,4 @@ export enum TripListType {
     stay: string
     travelTime: string
     notes: string
-  }
+}
