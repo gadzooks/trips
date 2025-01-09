@@ -2,7 +2,7 @@
 
 import { NextResponse } from 'next/server'
 import { TripDbService } from '../services/tripDbService'
-import { CreateTripBody, ReorderDaysBody, InsertDaysBody, DeleteDaysBody } from '@/types/trip'
+import { CreateTripBody } from '@/types/trip'
 import { CreateTripDbService } from '../services/createTripDbService'
 
 const tripService = new CreateTripDbService()
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     const userId = 'test-user' // Replace with session.user.id
     
     const result = await tripService.createTrip(body, userId)
-    return NextResponse.json(result)
+    return NextResponse.json({ tripId: result })
   } catch (error) {
     console.error('Failed to create trip:', error)
     return new Response('Failed to create trip', { status: 500 })
