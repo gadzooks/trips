@@ -10,6 +10,7 @@ export enum TripListType {
     title: string
     description: string
     isPublic: boolean
+    sharedWith?: string[]
     tags?: string[]
     days?: Day[]
   }
@@ -42,6 +43,10 @@ export enum TripListType {
   export interface TripRecord {
     PK: string
     SK: string
+    // GSI1PK: string
+    // GSI1SK: string
+    // GSI2PK?: string
+    // GSI2SK?: string
     tripId: string
     userId: string
     title: string
@@ -51,9 +56,10 @@ export enum TripListType {
     days: Day[]
     createdAt: string
     updatedAt: string
-    'publicStatusPartitionKey'?: string
-    'tripTimestampSortKey'?: string
-    sharedWith?: Record<string, boolean>
+    // 'publicStatusPartitionKey'?: string
+    // 'tripTimestampSortKey'?: string
+    tags?: string[]
+    sharedWith?: string[]
   }
 
   export interface Day {

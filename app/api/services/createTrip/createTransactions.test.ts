@@ -61,6 +61,8 @@ describe('TripService', () => {
       expect(tripId).toBeTruthy()
       expect(transactItems).toHaveLength(testCase.expected.transactionCount)
       
+      //
+      
       transactItems.forEach(item => {
         expect(item).toHaveProperty('Put')
         expect(item.Put).toHaveProperty('Item')
