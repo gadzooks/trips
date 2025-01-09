@@ -31,6 +31,7 @@ export function createTripTransactions(tripData: CreateTripBody, userId: string)
     }
 
     const baseRecord = {
+        ...commonKeys,
         GSI1PK: `USER#${userId}`,
         GSI1SK: `TRIP#${tripId}`,
         ...tripData

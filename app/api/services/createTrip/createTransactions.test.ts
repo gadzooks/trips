@@ -61,27 +61,13 @@ describe('TripService', () => {
       expect(tripId).toBeTruthy()
       expect(transactItems).toHaveLength(testCase.expected.transactionCount)
       
-      // if (testCase.expected.hasPublicStatus) {
-      //   expect(transactItems).toContainEqual(
-      //     expect.objectContaining({
-      //       Put: expect.objectContaining({
-      //         Item: expect.objectContaining({
-      //           PK: dbService.getPublicStatusPartitionKey(mockUUID)
-      //         })
-      //       })
-      //     })
-      //   )
-      // }
-
-      // const tripRecord = 'Put' in transactItems[0] ? transactItems[0].Put.Item : null
-      // expect(tripRecord).toMatchObject({
-      //   PK: dbService.getTripPrimaryKey(testCase.input.userId),
-      //   SK: dbService.getTripSortKey(mockUUID),
-      //   description: testCase.input.tripData.description,
-      //   isPublic: testCase.input.tripData.isPublic,
-      //   createdAt: mockTimestamp,
-      //   updatedAt: mockTimestamp
-      // })
+      transactItems.forEach(item => {
+        expect(item).toHaveProperty('Put')
+        expect(item.Put).toHaveProperty('Item')
+        const itemData = item.Put.Item
+        expect(itemData).toHaveProperty('PK')
+        expect(itemData).toHaveProperty('SK')
       })
+    })
   })
 })

@@ -8,7 +8,23 @@ export class CreateTripDbService {
 
     async createTrip(tripData: CreateTripBody, userId: string) {
         const { tripId, transactItems } = createTripTransactions(tripData, userId);
-        await docClient.send(new TransactWriteCommand({ TransactItems: transactItems }));
+        console.log('transactItems', JSON.stringify(transactItems, null, 2));
+        try {
+            await docClient.send(new TransactWriteCommand({ TransactItems: transactItems }));
+          } catch (error) {
+            const dynamoError = error as { CancellationReasons?: Array<{ Code: string, Message: string, Item: any }> };
+            if (dynamoError?.CancellationReasons) {
+              console.log('Transaction Cancellation Details:');
+              dynamoError.CancellationReasons.forEach((reason, index) => {
+                console.log(`Item ${index}:`, {
+                  Code: reason.Code,
+                  Message: reason.Message,
+                  Item: reason.Item
+                });
+              });
+            }
+            throw error;
+          }
         return tripId;
     }
 
