@@ -1,11 +1,11 @@
 // src/app/api/trips/route.ts
 
 import { NextResponse } from 'next/server'
-import { TripService } from '../services/tripService'
 import { TripDbService } from '../services/tripDbService'
-import { CreateTripBody, ReorderDaysBody, InsertDaysBody, DeleteDaysBody } from '../types/trip'
+import { CreateTripBody, ReorderDaysBody, InsertDaysBody, DeleteDaysBody } from '@/types/trip'
+import { CreateTripDbService } from '../services/createTripDbService'
 
-const tripService = new TripService(new TripDbService())
+const tripService = new CreateTripDbService()
 
 export async function POST(request: Request) {
   try {
@@ -20,37 +20,37 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PATCH(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const action = searchParams.get('action')
-  const userId = 'test-user' // Replace with session.user.id
+// export async function PATCH(request: Request) {
+//   const { searchParams } = new URL(request.url)
+//   const action = searchParams.get('action')
+//   const userId = 'test-user' // Replace with session.user.id
 
-  try {
-    if (action === 'reorder-days') {
-      const body: ReorderDaysBody = await request.json()
-      await tripService.reorderDays(body, userId)
-      return NextResponse.json({ success: true })
-    }
-    else if (action === 'insert-days') {
-      const body: InsertDaysBody = await request.json()
-      await tripService.insertDays(body, userId)
-      return NextResponse.json({ success: true })
-    }
-    else if (action === 'delete-days') {
-      const body: DeleteDaysBody = await request.json()
-      await tripService.deleteDays(body, userId)
-      return NextResponse.json({ success: true })
-    }
+//   try {
+//     if (action === 'reorder-days') {
+//       const body: ReorderDaysBody = await request.json()
+//       await tripService.reorderDays(body, userId)
+//       return NextResponse.json({ success: true })
+//     }
+//     else if (action === 'insert-days') {
+//       const body: InsertDaysBody = await request.json()
+//       await tripService.insertDays(body, userId)
+//       return NextResponse.json({ success: true })
+//     }
+//     else if (action === 'delete-days') {
+//       const body: DeleteDaysBody = await request.json()
+//       await tripService.deleteDays(body, userId)
+//       return NextResponse.json({ success: true })
+//     }
 
-    return new Response('Invalid action', { status: 400 })
-  } catch (error) {
-    console.error(`Failed to ${action} trip:`, error)
-    if (error instanceof Error) {
-      return new Response(error.message, { status: 403 })
-    }
-    return new Response(`Failed to ${action} trip`, { status: 500 })
-  }
-}
+//     return new Response('Invalid action', { status: 400 })
+//   } catch (error) {
+//     console.error(`Failed to ${action} trip:`, error)
+//     if (error instanceof Error) {
+//       return new Response(error.message, { status: 403 })
+//     }
+//     return new Response(`Failed to ${action} trip`, { status: 500 })
+//   }
+// }
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -80,7 +80,7 @@ export async function GET(request: Request) {
     if (tag) {
       // Filter by tag if specified
       const taggedTrips = trips.filter(trip => 
-        trip['GSI1-SK']?.startsWith(`TAG#${tag}`)
+        trip['tripTimestampSortKey']?.startsWith(`TAG#${tag}`)
       )
       return NextResponse.json(taggedTrips)
     }

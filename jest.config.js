@@ -1,11 +1,14 @@
 module.exports = {
-  testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  transform: {
-    '^.+\\.(t|j)sx?$': ['@swc/jest'],
-  },
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/app/$1'
-  },
-  testMatch: ['**/*.test.tsx', '**/*.test.ts']
-};
+    testEnvironment: 'jsdom',
+    moduleDirectories: ['./node_modules', 'src'],
+    setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+    transform: {
+      '^.+\\.(t|j)sx?$': ['@swc/jest'],
+    },
+    moduleNameMapper: {
+      '^@/(.*)$': '<rootDir>/$1',
+      '^@jest/globals$': require.resolve('@jest/globals')
+    },
+    testMatch: ['**/*.test.tsx', '**/*.test.ts'],
+    setupFiles: ['./jest.setup.js']
+  };

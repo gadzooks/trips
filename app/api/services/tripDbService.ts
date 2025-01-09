@@ -1,10 +1,10 @@
 // src/services/tripDbService.ts
 
-import { QueryCommand, TransactWriteCommand } from '@aws-sdk/lib-dynamodb'
+import { QueryCommand } from '@aws-sdk/lib-dynamodb'
 import { docClient } from '@/lib/dynamodb'
-import { CreateTripBody, TripAccessResult, TripRecord } from '@/types/trip'
+import { TripAccessResult, TripRecord } from '@/types/trip'
+import { TABLE_NAME } from './common'
 
-const TABLE_NAME = 'TripPlanner'
 
 export class TripDbService {
   async validateTripAccess(tripId: string, userId: string, requireOwnership: boolean = false): Promise<TripAccessResult> {
@@ -44,69 +44,10 @@ export class TripDbService {
     }
   }
 
-  async getTripDays(tripId: string) {
-    const result = await docClient.send(new QueryCommand({
-      TableName: TABLE_NAME,
-      KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
-      ExpressionAttributeValues: {
-        ':pk': `TRIP#${tripId}`,
-        ':sk': 'DAY#'
-      }
-    }))
-    return result.Items ?? []
-  }
+  PublicTripsIndex = 'PublicTripsIndex';
+  PublicStatusPartitionKey = 'publicStatusPartitionKey';
 
-  async createTrip(tripData: CreateTripBody, userId: string) {
-    const tripId = crypto.randomUUID()
-    const timestamp = new Date().toISOString()
-    const commonAttributes = {
-        tripId,
-        userId,
-        title: tripData.title,
-        createdAt: timestamp,
-        updatedAt: timestamp,
-        isDeleted: false,
-        isPublic: tripData.isPublic,
-    }
-    const tripRecord: TripRecord = {
-        PK: `USER#${userId}`,
-        SK: `TRIP#${tripId}`,
-        ...commonAttributes,
-        description: tripData.description,
-        days: tripData.days || [],
-    }
-
-    const transactItems = [
-      {
-        Put: {
-          TableName: TABLE_NAME,
-          Item: tripRecord
-        }
-      },
-      ...(tripData.isPublic ? [{
-        Put: {
-          TableName: TABLE_NAME,
-          Item: {
-            ...commonAttributes,
-            PK: 'STATUS#PUBLIC',
-            SK: `TRIP#${timestamp}`,
-          }
-        }
-      }] : [])
-    ]
-
-    await docClient.send(new TransactWriteCommand({
-      TransactItems: transactItems
-    }))
-    return tripId
-  }
-
-  async executeBatchWrite(transactItems: any[]) {
-    await docClient.send(new TransactWriteCommand({
-      TransactItems: transactItems
-    }))
-  }
-
+  //FIXME: need to paginate
   async getTripsForUser(userId: string, includePublic: boolean = false, publicOnly: boolean = false) {
     const queries = []
 
@@ -140,11 +81,12 @@ export class TripDbService {
       queries.push(
         docClient.send(new QueryCommand({
           TableName: TABLE_NAME,
-          IndexName: 'GSI1',
-          KeyConditionExpression: 'publicStatusPartitionKey = :pk',
+          IndexName: this.PublicTripsIndex,
+          KeyConditionExpression: `begins_with(${this.PublicStatusPartitionKey}, :pk)`,
           ExpressionAttributeValues: {
-            ':pk': 'STATUS#PUBLIC'
-          }
+            ':pk': this.getPublicStatusPartitionKey('')
+          },
+          Limit: 3
         }))
       )
     }
@@ -152,4 +94,36 @@ export class TripDbService {
     const results = await Promise.all(queries)
     return results.flatMap(result => result.Items ?? [])
   }
+
+  async getTripByTripIdAndUser(tripId: string, userId: string) {
+    console.log("getTripByTripIdAndUser with inputs tripId: ", tripId, " userId: ", userId)
+    const params = {
+      TableName: TABLE_NAME,
+      KeyConditionExpression: 'PK = :pk AND SK = :sk',
+      ExpressionAttributeValues: {
+        ':pk': this.getTripPrimaryKey(userId),
+        ':sk': this.getTripSortKey(tripId)
+      },
+      Limit: 1
+    }
+   
+    const result = await docClient.send(new QueryCommand(params))
+    console.log("getTripByTripIdAndUser result: ", result)
+    const item = result.Items?.[0]
+   
+    if (!item) {
+      return null
+    }
+   
+    // if (userId && 
+    //     item.SK !== `USER#${userId}` && 
+    //     item.SK !== `SHARE#${userId}` && 
+    //     !item.isPublic) {
+    //   return null
+    // }
+   
+    // return item
+   }
+
+
 }
