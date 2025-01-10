@@ -1,6 +1,6 @@
 
 import { docClient } from "@/lib/dynamodb";
-import { CreateTripBody, TripIdentifier } from "@/types/trip";
+import { TripRecordDTO } from "@/types/trip";
 import { QueryCommand, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { createTripTransactions, queryByTripId } from "./createTrip/createTransactions";
 
@@ -9,7 +9,7 @@ export class CreateTripDbService {
       throw new Error('Method not implemented.');
     }
 
-    async createTrip(tripData: CreateTripBody, userId: string): Promise<string> {
+    async createTrip(tripData: TripRecordDTO, userId: string): Promise<string> {
         const { tripId, timestamp, transactItems } = createTripTransactions(tripData, userId);
         console.log('transactItems', JSON.stringify(transactItems, null, 2));
         try {

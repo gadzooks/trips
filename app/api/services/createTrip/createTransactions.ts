@@ -1,4 +1,4 @@
-import { CreateTripBody } from "@/types/trip";
+import { TripRecordDTO } from "@/types/trip";
 import { TABLE_NAME, timestampIsoFormat } from "../common";
 import { ulid } from 'ulid'
 
@@ -13,7 +13,7 @@ export function queryByTripId(tripId: string) {
     }
 }
 
-export function createTripTransactions(tripData: CreateTripBody, userId: string) {
+export function createTripTransactions(tripData: TripRecordDTO, userId: string) {
     // lexically sortable UUID
     const tripId = ulid()
     const timestamp = timestampIsoFormat(new Date()); //.toISOString();

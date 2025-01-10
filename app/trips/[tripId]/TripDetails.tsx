@@ -17,27 +17,6 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
   const [trip, setTrip] = useState<TripRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [columns, setColumns] = useState<ColumnConfig[]>([]);
-
-  // TripRecord is Day and we need multiple calls, the way its set up to get days
-  const generateColumns = (firstRow: Record<string, any>): ColumnConfig[] => {
-    const visibleFields = ['date', 'location', 'activity', 'driveTime', 'notes'];
-    const fieldLabels: { [key: string]: string } = {
-      date: 'Date',
-      location: 'Location',
-      activity: 'Activity',
-      driveTime: 'Drive Time',
-      notes: 'Notes'
-    };
-
-    return visibleFields
-      .filter(field => field in firstRow && firstRow[field] !== undefined)
-      .map(field => ({
-        key: field,
-        label: fieldLabels[field] || field.charAt(0).toUpperCase() + field.slice(1),
-        width: field === 'date' ? 'w-24' : undefined
-      }));
-  };
 
   useEffect(() => {
     async function fetchTrip() {
@@ -45,11 +24,8 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
         const response = await fetch(`/api/trips/${tripId}`);
         if (!response.ok) throw new Error('Failed to fetch trip');
         const data = await response.json();
+        // console.log(JSON.stringify(data, null, 2));
         setTrip(data);
-        
-        if (data.rows && data.rows.length > 0) {
-          setColumns(generateColumns(data.rows[0]));
-        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load trip details');
       } finally {
@@ -77,32 +53,6 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
       console.error('Failed to update trip:', err);
     }
   };
-
-//   const handleUpdateRow = async (rowId: string, updates: Partial<TripRecord>) => {
-//     try {
-//       const response = await fetch(`/api/trips/${tripId}/rows/${rowId}`, {
-//         method: 'PATCH',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(updates),
-//       });
-      
-//       if (!response.ok) throw new Error('Failed to update row');
-      
-//       setTrip(prev => {
-//         if (!prev?.rows) return prev;
-//         return {
-//           ...prev,
-//           rows: prev.rows.map(row => 
-//             row.id === rowId ? { ...row, ...Object.fromEntries(Object.entries(updates).filter(([_, v]) => v !== undefined)) as TripRecord } : row
-//           )
-//         } as TripRecord;
-//       });
-//     } catch (err) {
-//       console.error('Failed to update row:', err);
-//     }
-//   };
 
   if (loading) return <p>Loading trip details...</p>;
   if (error) return <p className="text-red-500">{error}</p>;

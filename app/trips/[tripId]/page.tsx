@@ -7,12 +7,12 @@ interface PageProps {
   }>;
 }
 
-export async function generateMetadata({ params }: PageProps) {
-  const resolvedParams = await params;
-  return {
-    name: `Trip Details - ${resolvedParams.tripId}`,
-  };
-}
+// export async function generateMetadata({ params }: PageProps) {
+//   const resolvedParams = await params;
+//   return {
+//     name: `Trip Details - ${resolvedParams.tripId}`,
+//   };
+// }
 
 export default async function TripPage({ params }: PageProps) {
   const resolvedParams = await params;

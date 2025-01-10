@@ -2,7 +2,6 @@ import { UpdateCommand, GetCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb'
 import { NextResponse } from 'next/server'
 import { docClient } from '@/lib/dynamodb'
 import { CreateTripDbService } from '../../services/createTripDbService';
-import { TripIdentifier } from '@/types/trip';
 
 const tripService = new CreateTripDbService()
 

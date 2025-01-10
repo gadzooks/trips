@@ -2,14 +2,14 @@
 
 import { NextResponse } from 'next/server'
 import { TripDbService } from '../services/tripDbService'
-import { CreateTripBody } from '@/types/trip'
+import { TripRecordDTO } from '@/types/trip'
 import { CreateTripDbService } from '../services/createTripDbService'
 
 const tripService = new CreateTripDbService()
 
 export async function POST(request: Request) {
   try {
-    const body: CreateTripBody = await request.json()
+    const body: TripRecordDTO = await request.json()
     const userId = 'test-user' // Replace with session.user.id
     
     const result = await tripService.createTrip(body, userId)

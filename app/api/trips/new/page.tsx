@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { TripItinerary } from '@/app/components/trip-itinerary'
-import { CreateTripBody, Day } from '@/types/trip'
+import { TripRecordDTO, Day } from '@/types/trip'
 
 export default function NewTrip() {
   const router = useRouter()
@@ -17,7 +17,7 @@ export default function NewTrip() {
     e.preventDefault()
     setError('')
     
-    const tripData: CreateTripBody = {
+    const tripData: TripRecordDTO = {
       name: name,
       description,
       isPublic,
