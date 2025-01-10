@@ -6,9 +6,11 @@ import { Day } from '@/types/trip'
 
 export function TripItinerary({ 
   initialRows = [], 
+  isReadOnly = true,
   onChange 
 }: { 
   initialRows?: Day[]
+  isReadOnly: boolean
   onChange?: (days: Day[]) => void 
 }) {
   const [days, setDays] = useState<Day[]>(initialRows)
@@ -65,6 +67,8 @@ export function TripItinerary({
                   value={day.date}
                   onChange={e => updateDay(day.id, 'date', e.target.value)}
                   className="border rounded px-2 py-1 w-full"
+                  readOnly={isReadOnly}
+                  disabled={isReadOnly}
                 />
               </td>
               <td className="px-6 py-4">
@@ -73,6 +77,8 @@ export function TripItinerary({
                   value={day.activity}
                   onChange={e => updateDay(day.id, 'activity', e.target.value)}
                   className="border rounded px-2 py-1 w-full"
+                  readOnly={isReadOnly}
+                  disabled={isReadOnly}
                 />
               </td>
               <td className="px-6 py-4">
@@ -81,6 +87,8 @@ export function TripItinerary({
                   value={day.bookings}
                   onChange={e => updateDay(day.id, 'bookings', e.target.value)}
                   className="border rounded px-2 py-1 w-full"
+                  readOnly={isReadOnly}
+                  disabled={isReadOnly}
                 />
               </td>
               <td className="px-6 py-4">
@@ -89,6 +97,8 @@ export function TripItinerary({
                   value={day.stay}
                   onChange={e => updateDay(day.id, 'stay', e.target.value)}
                   className="border rounded px-2 py-1 w-full"
+                  readOnly={isReadOnly}
+                  disabled={isReadOnly}
                 />
               </td>
               <td className="px-6 py-4">
@@ -97,6 +107,8 @@ export function TripItinerary({
                   value={day.travelTime}
                   onChange={e => updateDay(day.id, 'travelTime', e.target.value)}
                   className="border rounded px-2 py-1 w-full"
+                  readOnly={isReadOnly}
+                  disabled={isReadOnly}
                 />
               </td>
               <td className="px-6 py-4">
@@ -105,12 +117,16 @@ export function TripItinerary({
                   value={day.notes}
                   onChange={e => updateDay(day.id, 'notes', e.target.value)}
                   className="border rounded px-2 py-1 w-full"
+                  readOnly={isReadOnly}
+                  disabled={isReadOnly}
                 />
               </td>
               <td className="px-6 py-4">
                 <button
                   type="button"
                   onClick={() => deleteDay(day.id)}
+                  // readOnly={isReadOnly}
+                  disabled={isReadOnly}
                   className="text-red-600 hover:text-red-900"
                 >
                   <TrashIcon className="h-5 w-5" />
