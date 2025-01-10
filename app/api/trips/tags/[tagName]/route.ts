@@ -1,13 +1,18 @@
 // app/api/trips/public/route.js
 import { NextResponse } from 'next/server';
-import { CreateTripDbService } from '../../services/createTripDbService'
+import { CreateTripDbService } from '../../../services/createTripDbService'
 
 const tripService = new CreateTripDbService()
 
-export async function GET(request) {
+export async function GET(
+  request: Request,
+  context: { params: { tagName: string } }
+) {
   try {
 
-    const trips = await tripService.getByTag('PUBLIC', true)
+    const params = await context.params;
+    const { tagName } = params;
+    const trips = await tripService.getByTag(tagName, true)
 
     return NextResponse.json(trips)
   } catch (error) {
