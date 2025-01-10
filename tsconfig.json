@@ -13,6 +13,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "forceConsistentCasingInFileNames": true,
     "plugins": [
       {
         "name": "next"
@@ -20,7 +21,10 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*", "./src/*"]
+      "@/*": ["./*", "./src/*"],
+      "@/hooks/*": ["./lib/hooks/*"],
+      "@/components/*": ["./app/components/*"],
+      "@/lib/*": ["./lib/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/trips/[tripId]/route.js", "app/route.js", "app/trips/route.js", "app/api/trips/public/route.js"],
