@@ -13,6 +13,17 @@ export function queryByTripId(tripId: string) {
     }
 }
 
+export function queryByTag(tag: string, isPublic: boolean, limit: number = 10) {
+    return {
+        TableName: TABLE_NAME,
+        KeyConditionExpression: 'PK = :pk',
+        ExpressionAttributeValues: {
+            ':pk': getTagDbPK(tag, isPublic)
+        },
+        Limit: limit
+    }
+}
+
 export function createTripTransactions(tripData: TripRecordDTO, userId: string) {
     // lexically sortable UUID
     const tripId = ulid()
@@ -43,7 +54,7 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string) 
  
     const partialTripDetails = {
         name: tripData.name,
-        description: tripData.description,
+        // description: tripData.description, // will be too huge to store in shared records
         isPublic: tripData.isPublic,
         timestamp
     };
@@ -76,7 +87,7 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string) 
     // to delete tags, search for PK eq('TAG#{tag}') and SK eq('TIMESTAMP#{timestamp}#{tripId}')
     (allTags).forEach(tag => {
         records.push({
-            PK: getTagDbPK(tag),
+            PK: getTagDbPK(tag, tripData.isPublic),
             SK: tripId,
             ...partialTripDetails,
         });
@@ -100,8 +111,11 @@ function getSharedWithDbPK(sharedUserId: string) {
     return `SHAREDWITH#${sharedUserId}`;
 }
 
-function getTagDbPK(tag: string) {
-    return `TAG#${tag}`;
+function getTagDbPK(tag: string, isPublic: boolean) {
+    if (tag === 'PUBLIC') {
+        return `TAG#PUBLIC`;
+    }
+    return isPublic ? `TAG#PUBLIC#${tag}` : `TAG#PRIVATE#${tag}`;
 }
 
 function getOwnerWithDbPK(userId: string) {

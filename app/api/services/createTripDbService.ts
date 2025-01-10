@@ -2,7 +2,7 @@
 import { docClient } from "@/lib/dynamodb";
 import { TripRecordDTO } from "@/types/trip";
 import { QueryCommand, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
-import { createTripTransactions, queryByTripId } from "./createTrip/createTransactions";
+import { createTripTransactions, queryByTag, queryByTripId } from "./createTrip/createTransactions";
 
 export class CreateTripDbService {
     async createTrip(tripData: TripRecordDTO, userId: string): Promise<string> {
@@ -27,16 +27,25 @@ export class CreateTripDbService {
         return tripId;
     }
 
-    async getTripById(tripId: string) {
-        const params = queryByTripId(tripId)
-       
-        const result = await docClient.send(new QueryCommand(params))
-        const item = result.Items?.[0]
-       
-        if (!item) {
-          return null
-        }
+  async getByTag(tag: string, isPublic: boolean, limit: number = 10) {
+    const params = queryByTag(tag, isPublic, limit)
 
-        return item;
+    console.log('params', JSON.stringify(params, null, 2));
+    const response = await docClient.send(new QueryCommand(params))
+    const items = response.Items
+    return items || []
+  }
+
+  async getTripById(tripId: string) {
+    const params = queryByTripId(tripId)
+
+    const result = await docClient.send(new QueryCommand(params))
+    const item = result.Items?.[0]
+
+    if (!item) {
+      return null
     }
+
+    return item;
+  }
 }

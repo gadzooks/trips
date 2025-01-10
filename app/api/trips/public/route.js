@@ -1,26 +1,17 @@
 // app/api/trips/public/route.js
 import { NextResponse } from 'next/server';
-import { ScanCommand } from "@aws-sdk/lib-dynamodb";
-import { docClient } from '@/lib/dynamodb';
+import { CreateTripDbService } from '../../services/createTripDbService'
 
-// GET /trips/public
-export async function GET() {
+const tripService = new CreateTripDbService()
+
+export async function GET(request) {
   try {
-    const command = new ScanCommand({
-      TableName: "TripPlanner",
-      FilterExpression: "isPublic = :isPublic",
-      ExpressionAttributeValues: {
-        ":isPublic": true
-      }
-    });
 
-    const { Items } = await docClient.send(command);
-    return NextResponse.json(Items);
+    const trips = await tripService.getByTag('PUBLIC', true)
+
+    return NextResponse.json(trips)
   } catch (error) {
-    console.error('Error fetching public trips:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch public trips' },
-      { status: 500 }
-    );
+    console.error('Failed to fetch trips:', error)
+    return new Response('Failed to fetch trips', { status: 500 })
   }
 }
