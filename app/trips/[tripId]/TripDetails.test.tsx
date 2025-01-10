@@ -23,7 +23,7 @@ global.fetch = jest.fn();
 
 const mockTrip = {
   id: '123',
-  title: 'Summer Vacation',
+  name: 'Summer Vacation',
   description: 'A wonderful trip',
   isPublic: false,
   rows: [{

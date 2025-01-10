@@ -2,14 +2,14 @@
 import { docClient } from "@/lib/dynamodb";
 import { CreateTripBody, TripIdentifier } from "@/types/trip";
 import { QueryCommand, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
-import { createTripTransactions, createQueryExpressionByTripIdentifier } from "./createTrip/createTransactions";
+import { createTripTransactions, queryByTripId } from "./createTrip/createTransactions";
 
 export class CreateTripDbService {
     async getTripByTripIdAndUser(tripId: string) {
       throw new Error('Method not implemented.');
     }
 
-    async createTrip(tripData: CreateTripBody, userId: string): Promise<TripIdentifier> {
+    async createTrip(tripData: CreateTripBody, userId: string): Promise<string> {
         const { tripId, timestamp, transactItems } = createTripTransactions(tripData, userId);
         console.log('transactItems', JSON.stringify(transactItems, null, 2));
         try {
@@ -28,16 +28,12 @@ export class CreateTripDbService {
             }
             throw error;
           }
-        return {
-            userId,
-            tripId,
-            timestamp,
-        };
+        return tripId;
     }
 
-    async getTripByOwnerTripIdTimestamp(triIdentifier: TripIdentifier) {
-        console.log("getTripByOwnerTripIdTimestamp with inputs tripId: ", JSON.stringify(triIdentifier))    
-        const params = createQueryExpressionByTripIdentifier(triIdentifier)
+    async getTripById(tripId: string) {
+        console.log("getTripByOwnerTripIdTimestamp with inputs tripId: ", tripId)
+        const params = queryByTripId(tripId)
        
         const result = await docClient.send(new QueryCommand(params))
         console.log("getTripByTripIdAndUser result: ", result)

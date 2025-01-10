@@ -5,7 +5,7 @@ export enum TripListType {
 }
 
 export interface CreateTripBody {
-    title: string
+    name: string
     description: string
     isPublic: boolean
     sharedWith?: string[]
@@ -49,7 +49,7 @@ export interface TripRecord {
     SK: string
     tripId: string
     userId: string
-    title: string
+    name: string
     description: string
     isPublic: boolean
     isDeleted: boolean

@@ -6,20 +6,22 @@ import { CreateTripBody, Day } from '@/types/trip'
 
 export default function NewTrip() {
   const router = useRouter()
-  const [title, setName] = useState('')
+  const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [isPublic, setIsPublic] = useState(false)
   const [days, setDays] = useState<Day[]>([])
   const [error, setError] = useState('')
+  const sharedWith = ['tom', 'jerry']
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     
     const tripData: CreateTripBody = {
-      title,
+      name: name,
       description,
       isPublic,
+      sharedWith,
       days: days.map(day => ({
         id: day.id,
         date: day.date,
@@ -70,7 +72,7 @@ export default function NewTrip() {
           </label>
           <input
             type="text"
-            value={title}
+            value={name}
             onChange={(e) => setName(e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             required

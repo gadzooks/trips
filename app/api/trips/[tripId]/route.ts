@@ -18,13 +18,13 @@ const tripService = new CreateTripDbService()
 // GET single trip
 export async function GET(
   request: Request,
-  context: { params: { tripId: TripIdentifier } }
+  context: { params: { tripId: string } }
 ) {
   const params = await context.params;
   const { tripId } = params;
 
   try {
-    const result = await tripService.getTripByOwnerTripIdTimestamp(tripId)
+    const result = await tripService.getTripById(tripId)
     if (!result) {
       return new Response('Trip not found', { status: 404 })
     }

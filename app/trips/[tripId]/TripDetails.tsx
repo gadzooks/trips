@@ -117,8 +117,8 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
             <div>
               <h2 className="text-sm font-semibold text-purple-600 uppercase tracking-wider mb-2">Trip Name</h2>
               <EditableText
-                value={trip.title || ''}
-                onSave={(value) => handleUpdateTrip({ title: value })}
+                value={trip.name || ''}
+                onSave={(value) => handleUpdateTrip({ name: value })}
                 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600"
               />
             </div>

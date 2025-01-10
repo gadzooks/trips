@@ -1,71 +1,69 @@
-import crypto from "crypto";
-import { CreateTripBody, TripIdentifier } from "@/types/trip";
+import { CreateTripBody } from "@/types/trip";
 import { TABLE_NAME, timestampIsoFormat } from "../common";
+import { ulid } from 'ulid'
 
-export function getDbPkByUserId(userId: string) {
-    return `USER#${userId}`;
-}
-
-export function getDbSkByTimeAndByTripId(timestamp: string, tripId: string) {
-    return `TIMESTAMP#${timestamp}#TRIP#${tripId}`;
-}
-
-export function getDbSkForSharedUser(timestamp: string, tripId: string) {
-    return `SHARED#${timestamp}#TRIP#${tripId}`;
-}
-
-export function getDbSkForTag(tag: string) {
-    return `TAG#${tag}`;
-}
-
-export function createQueryExpressionByTripIdentifier(tripId: TripIdentifier) {
+export function queryByTripId(tripId: string) {
     return {
         TableName: TABLE_NAME,
-        KeyConditionExpression: 'PK = :pk AND SK = :sk',
+        KeyConditionExpression: 'PK = :pk',
         ExpressionAttributeValues: {
-            ':pk': getDbPkByUserId(tripId.userId),
-            //NOTE: since Im not looking for SHARED# I know its created by the user
-            //FIMXE: move this to a method 
-            ':sk': getDbSkByTimeAndByTripId(tripId.timestamp, tripId.tripId)
+            ':pk': getTripIdPk(tripId)
         },
         Limit: 1
     }
 }
 
 export function createTripTransactions(tripData: CreateTripBody, userId: string) {
-    const tripId = crypto.randomUUID();
+    // lexically sortable UUID
+    const tripId = ulid()
     const timestamp = timestampIsoFormat(new Date()); //.toISOString();
 
     const records = [];
 
     // We want to store : 
-    // 1. The main record for the trip
-    // 2. Records for each shared user but only store PK and SK
-    // 3. Records for each tag but only store PK and SK
-    // This is because if the title / description etc change we dont want to have to update multiple records.
+    // 1. The main record : PK = TRIP#{tripId} - store all attributes here
+    // 2. Trip for owner : PK = CREATEDBY#{userId} SK = TRIP#{tripId} -- store PK, SK, name, maybe desc
+    // 3. For each tag : PK = TAG#{tag} SK = TRIP#{tripId} -- store PK, SK, name, maybe desc
+    // 4. For each shared user : PK = SHAREDWITH#{userId} SK = TRIP#{tripId} -- store PK, SK, name, maybe desc
+    // 5. For public trips : PK = PUBLIC#TRIP#{tripId} -- store PK, SK, name, maybe desc
+
+    // When showing trips for each user or each tag or public trips or shared with a user,
+    // we will only show titile, maybe desc. User will need to click to pull the full trip details by tripId
 
     const baseRecord = {
-        //This gives you both timestamp-based sorting on the main table and direct tripId lookup via the GSI.
-        PK: getDbPkByUserId(userId),
-        SK: getDbSkByTimeAndByTripId(timestamp, tripId),
-        timestamp,
+        //PK is ulid so its unique and lexically sortable
+        PK: getTripIdPk(tripId),
+        //SK is timestamp and can be used in range queries
+        SK: timestamp,
         ...tripData
     };
  
     // Main record
     records.push(baseRecord);
  
+    const partialTripDetails = {
+        name: tripData.name,
+        description: tripData.description,
+        isPublic: tripData.isPublic,
+        timestamp
+    };
+ 
+    // Owner record
+    records.push({
+        PK: getOwnerWithDbPK(userId),
+        SK: tripId,
+        ...partialTripDetails
+    });
+ 
     // Shared records
-    // Search for shared users using eq('USER#{userId}') and SK begins_with('SHARED#')
-    // to delete shared users, search for PK eq('USER#{userId}') and SK eq('SHARED#{timestamp}#{tripId}')
+    // Search for shared users using eq('SHAREDWITH#{userId}') 
+    // to delete shared users, search for PK eq('USER#{userId}') and SK eq(tripId)
     (tripData.sharedWith || []).forEach(sharedUserId => {
         records.push({
             // Add these for each shared user
-            PK: getDbPkByUserId(sharedUserId),
-            SK: getDbSkForSharedUser(timestamp, tripId),
-            tripId,
-            userId,
-            timestamp,
+            PK: getSharedWithDbPK(sharedUserId),
+            SK: tripId,
+            ...partialTripDetails
         });
     });
  
@@ -78,11 +76,9 @@ export function createTripTransactions(tripData: CreateTripBody, userId: string)
     // to delete tags, search for PK eq('TAG#{tag}') and SK eq('TIMESTAMP#{timestamp}#{tripId}')
     (allTags).forEach(tag => {
         records.push({
-            PK: getDbSkForTag(tag),
-            SK: getDbSkByTimeAndByTripId(timestamp, tripId),
-            tripId,
-            userId,
-            timestamp,
+            PK: getTagDbPK(tag),
+            SK: tripId,
+            ...partialTripDetails,
         });
     });
 
@@ -94,4 +90,20 @@ export function createTripTransactions(tripData: CreateTripBody, userId: string)
     }));
 
     return { tripId, userId, timestamp, transactItems };
+}
+
+function getTripIdPk(tripId: string) {
+    return `TRIP#${tripId}`;
+}
+
+function getSharedWithDbPK(sharedUserId: string) {
+    return `SHAREDWITH#${sharedUserId}`;
+}
+
+function getTagDbPK(tag: string) {
+    return `TAG#${tag}`;
+}
+
+function getOwnerWithDbPK(userId: string) {
+    return `CREATEDBY#${userId}`;
 }

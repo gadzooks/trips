@@ -10,7 +10,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps) {
   const resolvedParams = await params;
   return {
-    title: `Trip Details - ${resolvedParams.tripId}`,
+    name: `Trip Details - ${resolvedParams.tripId}`,
   };
 }
 
