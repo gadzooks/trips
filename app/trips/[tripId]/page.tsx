@@ -3,6 +3,7 @@ import TripDetails from './TripDetails';
 interface PageProps {
   params: Promise<{
     tripId: string;
+    userId: string;
   }>;
 }
 

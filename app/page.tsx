@@ -1,6 +1,7 @@
 // import { auth } from '@/auth'
 import Link from 'next/link'
-import PublicTrips from './components/public-trips'
+import TripList from './trips/components/TripList'
+import { TripListType } from '@/types/trip'
 
 export default async function Home() {
   // const session = await auth()
@@ -26,7 +27,7 @@ export default async function Home() {
           <p className="mb-4">Sign in to create and share your trip plans.</p>
         </div>
       ) : (
-        <PublicTrips />
+        <TripList type={TripListType.PUBLIC} />
       )}
     </div>
   )

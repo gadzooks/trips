@@ -1,68 +1,108 @@
-import React from 'react';
-import { render, screen, act } from '@testing-library/react';
+import React from 'react'
 import '@testing-library/jest-dom';
-import { waitFor } from '@testing-library/dom';
+import { jest, describe, test, expect, beforeEach, afterEach } from '@jest/globals';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import TripDetails from './TripDetails';
 
-const mockFetch = jest.fn();
-global.fetch = mockFetch;
+window.matchMedia = window.matchMedia || function() {
+  return {
+    matches: false,
+    addListener: function() {},
+    removeListener: function() {}
+  };
+};
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+}));
+
+global.fetch = jest.fn();
+
+const mockTrip = {
+  id: '123',
+  title: 'Summer Vacation',
+  description: 'A wonderful trip',
+  isPublic: false,
+  rows: [{
+    id: 'row1',
+    date: '2024-07-01',
+    location: 'Paris',
+    activity: 'Eiffel Tower',
+    driveTime: '2 hours',
+    notes: 'Remember camera'
+  }]
+};
 
 describe('TripDetails', () => {
   beforeEach(() => {
-    // Reset mock before each test
-    mockFetch.mockReset();
-  });
-
-  it('renders trip details', async () => {
-    // Setup mock for this specific test
-    mockFetch.mockImplementation(() =>
+    (fetch as jest.Mock).mockImplementation(() => 
       Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({
-          name: 'Test Trip',
-          description: 'Test Description',
-          isPublic: true,
-          rows: [{ day: 1, activity: 'Test Activity' }],
-        }),
+        json: () => Promise.resolve(mockTrip)
+      })
+    );
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('loads and displays trip data', async () => {
+    render(<TripDetails tripId="123" />);
+    
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    
+    await waitFor(() => {
+      expect(screen.getByText('Summer Vacation')).toBeInTheDocument();
+      expect(screen.getByText('Paris')).toBeInTheDocument();
+      expect(screen.getByText('Private')).toBeInTheDocument();
+    });
+  });
+
+  test('handles API error', async () => {
+    (fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.resolve({ ok: false })
+    );
+
+    render(<TripDetails tripId="123" />);
+    
+    await waitFor(() => {
+      expect(screen.getByText(/failed to fetch/i)).toBeInTheDocument();
+    });
+  });
+
+  test('updates trip visibility', async () => {
+    const user = userEvent.setup();
+    render(<TripDetails tripId="123" />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Private')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText('Private'));
+
+    expect(fetch).toHaveBeenCalledWith('/api/trips/123', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isPublic: true }),
+    });
+  });
+
+  test('handles empty itinerary', async () => {
+    (fetch as jest.Mock).mockImplementationOnce(() => 
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ ...mockTrip, rows: [] })
       })
     );
 
-    await act(async () => {
-      render(<TripDetails tripId={''} />);
-    });
-
+    render(<TripDetails tripId="123" />);
+    
     await waitFor(() => {
-      expect(screen.getByText('Test Trip')).toBeInTheDocument();
-    });
-    
-    expect(screen.getByText('Test Description')).toBeInTheDocument();
-    expect(screen.getByText('Public')).toBeInTheDocument();
-    expect(screen.getByText('Test Activity')).toBeInTheDocument();
-  });
-
-  it('shows loading state initially', async () => {
-    // Setup mock that never resolves for loading state
-    mockFetch.mockImplementation(() => new Promise(() => {}));
-    
-    await act(async () => {
-      render(<TripDetails tripId={''} />);
-    });
-    
-    expect(screen.getByText('Loading trip details...')).toBeInTheDocument();
-  });
-
-  it('shows error message on fetch failure', async () => {
-    // Setup mock for error case
-    mockFetch.mockImplementation(() =>
-      Promise.reject(new Error('Failed to fetch trip'))
-    );
-
-    await act(async () => {
-      render(<TripDetails tripId={''} />);
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('Failed to fetch trip')).toBeInTheDocument();
+      expect(screen.getByText(/no itinerary items/i)).toBeInTheDocument();
     });
   });
 });

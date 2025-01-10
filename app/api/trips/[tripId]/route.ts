@@ -1,29 +1,35 @@
-import { PutCommand, QueryCommand, UpdateCommand, GetCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb'
+import { UpdateCommand, GetCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb'
 import { NextResponse } from 'next/server'
 import { docClient } from '@/lib/dynamodb'
+import { CreateTripDbService } from '../../services/createTripDbService';
+import { TripIdentifier } from '@/types/trip';
+
+const tripService = new CreateTripDbService()
+
+// get trip by tripId
+// get trip by userId
+// get trips shared with user
+// get public trips - GSI on isPublic, 
+// get trips by tag
+// search trips by description
+// search public trips by description
+
 
 // GET single trip
 export async function GET(
   request: Request,
-  context: { params: { tripId: string } }
+  context: { params: { tripId: TripIdentifier } }
 ) {
   const params = await context.params;
   const { tripId } = params;
 
   try {
-    const result = await docClient.send(new GetCommand({
-      TableName: 'TripPlanner',
-      Key: {
-        PK: `TRIP#${tripId}`,
-        SK: `METADATA#${tripId}`
-      }
-    }))
-
-    if (!result.Item) {
+    const result = await tripService.getTripByOwnerTripIdTimestamp(tripId)
+    if (!result) {
       return new Response('Trip not found', { status: 404 })
     }
 
-    return NextResponse.json(result.Item)
+    return NextResponse.json({ trip: result })
   } catch (error) {
     console.error('Failed to fetch trip:', error)
     return new Response('Failed to fetch trip', { status: 500 })

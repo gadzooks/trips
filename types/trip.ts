@@ -38,6 +38,12 @@ export interface TripAccessResult {
     reason: string
 }
 
+export interface TripIdentifier {
+    tripId: string;
+    userId: string;
+    timestamp: string;
+}
+
 export interface TripRecord {
     PK: string
     SK: string

@@ -1,6 +1,7 @@
 "use client";
-import { TripData, TripRow } from '@/types/trip';
 import React, { useEffect, useState } from 'react';
+import { TripRecord } from '@/types/trip';
+import { EditableText } from '@/app/components/input/EditableText';
 
 interface TripDetailsProps {
   tripId: string;
@@ -12,80 +13,14 @@ interface ColumnConfig {
   width?: string;
 }
 
-// Editable Text Component for inline editing
-const EditableText = ({ 
-  value, 
-  onSave, 
-  isTextArea = false,
-  className = ""
-}: { 
-  value: string;
-  onSave: (value: string) => void;
-  isTextArea?: boolean;
-  className?: string;
-}) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(value);
-
-  const handleSave = () => {
-    onSave(editValue);
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSave();
-    }
-    if (e.key === 'Escape') {
-      setEditValue(value);
-      setIsEditing(false);
-    }
-  };
-
-  if (isEditing) {
-    if (isTextArea) {
-      return (
-        <textarea
-          value={editValue}
-          onChange={(e) => setEditValue(e.target.value)}
-          onBlur={handleSave}
-          onKeyDown={handleKeyDown}
-          className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${className}`}
-          autoFocus
-        />
-      );
-    }
-    return (
-      <input
-        type="text"
-        value={editValue}
-        onChange={(e) => setEditValue(e.target.value)}
-        onBlur={handleSave}
-        onKeyDown={handleKeyDown}
-        className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${className}`}
-        autoFocus
-      />
-    );
-  }
-
-  return (
-    <div 
-      onClick={() => setIsEditing(true)} 
-      className={`cursor-pointer hover:bg-gray-50 rounded-lg p-2 ${className}`}
-    >
-      {value}
-    </div>
-  );
-};
-
 export default function TripDetails({ tripId }: TripDetailsProps) {
-  const [trip, setTrip] = useState<TripData | null>(null);
+  const [trip, setTrip] = useState<TripRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [columns, setColumns] = useState<ColumnConfig[]>([]);
 
-  const generateColumns = (firstRow: TripRow): ColumnConfig[] => {
+  // TripRecord is Day and we need multiple calls, the way its set up to get days
+  const generateColumns = (firstRow: Record<string, any>): ColumnConfig[] => {
     const visibleFields = ['date', 'location', 'activity', 'driveTime', 'notes'];
     const fieldLabels: { [key: string]: string } = {
       date: 'Date',
@@ -125,7 +60,7 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
     fetchTrip();
   }, [tripId]);
 
-  const handleUpdateTrip = async (updates: Partial<TripData>) => {
+  const handleUpdateTrip = async (updates: Partial<TripRecord>) => {
     try {
       const response = await fetch(`/api/trips/${tripId}`, {
         method: 'PATCH',
@@ -140,36 +75,34 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
       setTrip(prev => prev ? { ...prev, ...updates } : null);
     } catch (err) {
       console.error('Failed to update trip:', err);
-      // You might want to show an error toast here
     }
   };
 
-  const handleUpdateRow = async (rowId: string, updates: Partial<TripRow>) => {
-    try {
-      const response = await fetch(`/api/trips/${tripId}/rows/${rowId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updates),
-      });
+//   const handleUpdateRow = async (rowId: string, updates: Partial<TripRecord>) => {
+//     try {
+//       const response = await fetch(`/api/trips/${tripId}/rows/${rowId}`, {
+//         method: 'PATCH',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(updates),
+//       });
       
-      if (!response.ok) throw new Error('Failed to update row');
+//       if (!response.ok) throw new Error('Failed to update row');
       
-      setTrip(prev => {
-        if (!prev?.rows) return prev;
-        return {
-          ...prev,
-          rows: prev.rows.map(row => 
-            row.id === rowId ? { ...row, ...Object.fromEntries(Object.entries(updates).filter(([_, v]) => v !== undefined)) as TripRow } : row
-          )
-        } as TripData;
-      });
-    } catch (err) {
-      console.error('Failed to update row:', err);
-      // You might want to show an error toast here
-    }
-  };
+//       setTrip(prev => {
+//         if (!prev?.rows) return prev;
+//         return {
+//           ...prev,
+//           rows: prev.rows.map(row => 
+//             row.id === rowId ? { ...row, ...Object.fromEntries(Object.entries(updates).filter(([_, v]) => v !== undefined)) as TripRecord } : row
+//           )
+//         } as TripRecord;
+//       });
+//     } catch (err) {
+//       console.error('Failed to update row:', err);
+//     }
+//   };
 
   if (loading) return <p>Loading trip details...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -184,8 +117,8 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
             <div>
               <h2 className="text-sm font-semibold text-purple-600 uppercase tracking-wider mb-2">Trip Name</h2>
               <EditableText
-                value={trip.name || ''}
-                onSave={(value) => handleUpdateTrip({ name: value })}
+                value={trip.title || ''}
+                onSave={(value) => handleUpdateTrip({ title: value })}
                 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600"
               />
             </div>
@@ -247,13 +180,15 @@ export default function TripDetails({ tripId }: TripDetailsProps) {
                               {column.key === 'date' ? (
                                 <EditableText
                                   value={row[column.key]}
-                                  onSave={(value) => handleUpdateRow(row.id, { [column.key]: value })}
+                                  onSave={(value) => { console.log(value); }}
+                                //   onSave={(value) => handleUpdateRow(row.id, { [column.key]: value })}
                                   className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-700"
                                 />
                               ) : (
                                 <EditableText
                                   value={row[column.key]}
-                                  onSave={(value) => handleUpdateRow(row.id, { [column.key]: value })}
+                                  onSave={(value) => { console.log(value); }}
+                                //   onSave={(value) => handleUpdateRow(row.id, { [column.key]: value })}
                                   className="text-gray-700"
                                 />
                               )}

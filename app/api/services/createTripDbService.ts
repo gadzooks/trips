@@ -1,13 +1,16 @@
 
 import { docClient } from "@/lib/dynamodb";
-import { CreateTripBody } from "@/types/trip";
-import { TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
-import { createTripTransactions } from "./createTrip/createTransactions";
+import { CreateTripBody, TripIdentifier } from "@/types/trip";
+import { QueryCommand, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
+import { createTripTransactions, createQueryExpressionByTripIdentifier } from "./createTrip/createTransactions";
 
 export class CreateTripDbService {
+    async getTripByTripIdAndUser(tripId: string) {
+      throw new Error('Method not implemented.');
+    }
 
-    async createTrip(tripData: CreateTripBody, userId: string) {
-        const { tripId, transactItems } = createTripTransactions(tripData, userId);
+    async createTrip(tripData: CreateTripBody, userId: string): Promise<TripIdentifier> {
+        const { tripId, timestamp, transactItems } = createTripTransactions(tripData, userId);
         console.log('transactItems', JSON.stringify(transactItems, null, 2));
         try {
             await docClient.send(new TransactWriteCommand({ TransactItems: transactItems }));
@@ -25,7 +28,26 @@ export class CreateTripDbService {
             }
             throw error;
           }
-        return tripId;
+        return {
+            userId,
+            tripId,
+            timestamp,
+        };
+    }
+
+    async getTripByOwnerTripIdTimestamp(triIdentifier: TripIdentifier) {
+        console.log("getTripByOwnerTripIdTimestamp with inputs tripId: ", JSON.stringify(triIdentifier))    
+        const params = createQueryExpressionByTripIdentifier(triIdentifier)
+       
+        const result = await docClient.send(new QueryCommand(params))
+        console.log("getTripByTripIdAndUser result: ", result)
+        const item = result.Items?.[0]
+       
+        if (!item) {
+          return null
+        }
+
+        return item;
     }
 
     // async unShareWithUser(tripId: string, userId: string) {

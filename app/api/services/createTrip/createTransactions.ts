@@ -1,21 +1,40 @@
 import crypto from "crypto";
-import { CreateTripBody } from "@/types/trip";
+import { CreateTripBody, TripIdentifier } from "@/types/trip";
 import { TABLE_NAME, timestampIsoFormat } from "../common";
-import { time } from "console";
+
+export function getDbPkByUserId(userId: string) {
+    return `USER#${userId}`;
+}
+
+export function getDbSkByTimeAndByTripId(timestamp: string, tripId: string) {
+    return `TIMESTAMP#${timestamp}#TRIP#${tripId}`;
+}
+
+export function getDbSkForSharedUser(timestamp: string, tripId: string) {
+    return `SHARED#${timestamp}#TRIP#${tripId}`;
+}
+
+export function getDbSkForTag(tag: string) {
+    return `TAG#${tag}`;
+}
+
+export function createQueryExpressionByTripIdentifier(tripId: TripIdentifier) {
+    return {
+        TableName: TABLE_NAME,
+        KeyConditionExpression: 'PK = :pk AND SK = :sk',
+        ExpressionAttributeValues: {
+            ':pk': getDbPkByUserId(tripId.userId),
+            //NOTE: since Im not looking for SHARED# I know its created by the user
+            //FIMXE: move this to a method 
+            ':sk': getDbSkByTimeAndByTripId(tripId.timestamp, tripId.tripId)
+        },
+        Limit: 1
+    }
+}
 
 export function createTripTransactions(tripData: CreateTripBody, userId: string) {
     const tripId = crypto.randomUUID();
     const timestamp = timestampIsoFormat(new Date()); //.toISOString();
-
-    const commonAttributes = {
-        title: tripData.title,
-        tripId,
-        userId,
-        createdAt: timestamp,
-        updatedAt: timestamp,
-        isDeleted: false,
-        isPublic: tripData.isPublic,
-    };
 
     const records = [];
 
@@ -27,8 +46,8 @@ export function createTripTransactions(tripData: CreateTripBody, userId: string)
 
     const baseRecord = {
         //This gives you both timestamp-based sorting on the main table and direct tripId lookup via the GSI.
-        PK: `USER#${userId}`,
-        SK: `TIMESTAMP#${timestamp}#${tripId}`,
+        PK: getDbPkByUserId(userId),
+        SK: getDbSkByTimeAndByTripId(timestamp, tripId),
         timestamp,
         ...tripData
     };
@@ -42,8 +61,8 @@ export function createTripTransactions(tripData: CreateTripBody, userId: string)
     (tripData.sharedWith || []).forEach(sharedUserId => {
         records.push({
             // Add these for each shared user
-            PK: `USER#${sharedUserId}`,
-            SK: `SHARED#${timestamp}#${tripId}`,
+            PK: getDbPkByUserId(sharedUserId),
+            SK: getDbSkForSharedUser(timestamp, tripId),
             tripId,
             userId,
             timestamp,
@@ -59,8 +78,8 @@ export function createTripTransactions(tripData: CreateTripBody, userId: string)
     // to delete tags, search for PK eq('TAG#{tag}') and SK eq('TIMESTAMP#{timestamp}#{tripId}')
     (allTags).forEach(tag => {
         records.push({
-            PK: `TAG#${tag}`,
-            SK: `TIMESTAMP#${timestamp}#${tripId}`,
+            PK: getDbSkForTag(tag),
+            SK: getDbSkByTimeAndByTripId(timestamp, tripId),
             tripId,
             userId,
             timestamp,
@@ -74,5 +93,5 @@ export function createTripTransactions(tripData: CreateTripBody, userId: string)
         }
     }));
 
-    return { tripId, transactItems };
+    return { tripId, userId, timestamp, transactItems };
 }

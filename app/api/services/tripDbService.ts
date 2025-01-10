@@ -44,8 +44,7 @@ export class TripDbService {
     }
   }
 
-  PublicTripsIndex = 'PublicTripsIndex';
-  PublicStatusPartitionKey = 'publicStatusPartitionKey';
+
 
   //FIXME: need to paginate
   async getTripsForUser(userId: string, includePublic: boolean = false, publicOnly: boolean = false) {
@@ -95,35 +94,7 @@ export class TripDbService {
     return results.flatMap(result => result.Items ?? [])
   }
 
-  async getTripByTripIdAndUser(tripId: string, userId: string) {
-    console.log("getTripByTripIdAndUser with inputs tripId: ", tripId, " userId: ", userId)
-    const params = {
-      TableName: TABLE_NAME,
-      KeyConditionExpression: 'PK = :pk AND SK = :sk',
-      ExpressionAttributeValues: {
-        ':pk': this.getTripPrimaryKey(userId),
-        ':sk': this.getTripSortKey(tripId)
-      },
-      Limit: 1
-    }
-   
-    const result = await docClient.send(new QueryCommand(params))
-    console.log("getTripByTripIdAndUser result: ", result)
-    const item = result.Items?.[0]
-   
-    if (!item) {
-      return null
-    }
-   
-    // if (userId && 
-    //     item.SK !== `USER#${userId}` && 
-    //     item.SK !== `SHARE#${userId}` && 
-    //     !item.isPublic) {
-    //   return null
-    // }
-   
-    // return item
-   }
+
 
 
 }
