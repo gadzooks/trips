@@ -1,6 +1,6 @@
 
 import { docClient } from "@/lib/dynamodb";
-import { TripRecordDTO } from "@/types/trip";
+import { MinimumTripRecord, TripRecordDTO } from "@/types/trip";
 import { QueryCommand, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { createTripTransactions, queryByTag, queryByTripId } from "./createTrip/createTransactions";
 
@@ -27,15 +27,15 @@ export class CreateTripDbService {
         return tripId;
     }
 
-  async getByTag(tag: string, isPublic: boolean, limit: number = 10) {
+  async getByTag(tag: string, isPublic: boolean, limit: number = 10): Promise<MinimumTripRecord[]> {
     const params = queryByTag(tag, isPublic, limit)
 
-    console.log('params', JSON.stringify(params, null, 2));
+    // console.log('params', JSON.stringify(params, null, 2));
     const response = await docClient.send(new QueryCommand(params))
-    const items = response.Items
-    return items || []
+    return (response.Items || []).map(this.mapToTripRecordDTO);
   }
 
+  //FIXME add return type
   async getTripById(tripId: string) {
     const params = queryByTripId(tripId)
 
@@ -48,4 +48,14 @@ export class CreateTripDbService {
 
     return item;
   }
+
+  mapToTripRecordDTO(item: Record<string, any>): MinimumTripRecord {
+    return {
+      name: item.name,
+      isPublic: item.isPublic,
+      tripId: item.tripId,
+      createdAt: item.createdAt,
+    };
+   };
 }
+

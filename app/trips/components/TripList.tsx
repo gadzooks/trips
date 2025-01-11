@@ -2,15 +2,15 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, MapPin } from 'lucide-react';
-import { Trip, TripListType } from '@/types/trip';
+import { Clock } from 'lucide-react';
+import { MinimumTripRecord, TripListType, TripRecordDTO } from '@/types/trip';
 
 interface TripListProps {
   type: TripListType;
 }
 
 export default function TripList({ type }: TripListProps) {
-  const [trips, setTrips] = useState<Trip[]>([]);
+  const [trips, setTrips] = useState<MinimumTripRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const session = true; // Mock session for demo
@@ -27,6 +27,7 @@ export default function TripList({ type }: TripListProps) {
         const response = await fetch(endpoint);
         if (!response.ok) throw new Error('Failed to fetch trips');
         const data = await response.json();
+        // console.log('data -------------->>>>>>>', JSON.stringify(data, null, 2));
         setTrips(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load trips');
@@ -105,25 +106,7 @@ export default function TripList({ type }: TripListProps) {
                 <h3 className="text-xl font-semibold mb-2 text-gray-800 group-hover:text-purple-600 transition-colors duration-200">
                   {trip.name}
                 </h3>
-                {trip.description && (
-                  <p className="text-gray-600 mb-4 line-clamp-2">{trip.description}</p>
-                )}
-                
                 <div className="space-y-3 text-sm">
-                  {trip.rows?.[0] && (
-                    <div className="flex items-center gap-2 text-purple-600">
-                      <Calendar className="h-4 w-4" />
-                      <span>Starts: {trip.rows[0].date}</span>
-                    </div>
-                  )}
-                  
-                  {trip.rows?.[0]?.location && (
-                    <div className="flex items-center gap-2 text-blue-600">
-                      <MapPin className="h-4 w-4" />
-                      <span>{trip.rows[0].location}</span>
-                    </div>
-                  )}
-                  
                   <div className="flex items-center gap-2 text-gray-500">
                     <Clock className="h-4 w-4" />
                     <span>

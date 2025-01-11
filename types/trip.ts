@@ -6,6 +6,13 @@ export enum TripListType {
 
 
 // ============== TYPES defining a trip ==============
+export interface MinimumTripRecord {
+    tripId: string
+    name: string
+    isPublic: boolean
+    createdAt: string
+}
+
 export interface TripRecordDTO {
     name: string
     description: string

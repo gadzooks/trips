@@ -10,7 +10,6 @@ export default async function Home() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Trip Planner</h1>
         {session && (
           <Link 
             href="/trips/new" 

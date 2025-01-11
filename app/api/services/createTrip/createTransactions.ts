@@ -1,4 +1,4 @@
-import { TripRecordDTO } from "@/types/trip";
+import { MinimumTripRecord, TripRecordDTO } from "@/types/trip";
 import { TABLE_NAME, timestampIsoFormat } from "../common";
 import { ulid } from 'ulid'
 
@@ -46,17 +46,19 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string) 
         PK: getTripIdPk(tripId),
         //SK is timestamp and can be used in range queries
         SK: timestamp,
+        createdAt: timestamp,
         ...tripData
     };
  
     // Main record
     records.push(baseRecord);
  
-    const partialTripDetails = {
+    const partialTripDetails: MinimumTripRecord = {
+        tripId,
         name: tripData.name,
         // description: tripData.description, // will be too huge to store in shared records
         isPublic: tripData.isPublic,
-        timestamp
+        createdAt: timestamp
     };
  
     // Owner record
