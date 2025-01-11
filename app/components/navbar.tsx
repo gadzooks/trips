@@ -4,6 +4,21 @@ import { signIn, signOut } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { LogOut, User } from 'lucide-react'
+import { useTheme } from './ThemeProvider'
+
+function ThemeToggle() {
+  const { isDark, toggle } = useTheme()
+  return (
+    <div>
+      {/* <label className="flex items-center gap-2 cursor-pointer">
+        {isDark ? 'Light Mode' : 'Dark Mode'}
+      </label> */}
+      <button onClick={toggle}>
+        {isDark ? '🌙' : '☀️'}
+      </button>
+    </div>
+  )
+}
 
 export function Navbar() {
 //   const { data: session } = useSession()
@@ -56,6 +71,9 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center">
+            <div className="px-4 p">
+              <ThemeToggle />
+            </div>
             {session ? (
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
