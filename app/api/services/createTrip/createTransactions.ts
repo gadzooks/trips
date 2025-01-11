@@ -20,6 +20,10 @@ export function queryByTag(tag: string, isPublic: boolean, limit: number = 10) {
         ExpressionAttributeValues: {
             ':pk': getTagDbPK(tag, isPublic)
         },
+        ProjectionExpression: 'tripId, #name, isPublic, createdAt',
+        ExpressionAttributeNames: {
+            '#name': 'name'  // 'name' is a reserved word in DynamoDB
+        },
         Limit: limit
     }
 }
