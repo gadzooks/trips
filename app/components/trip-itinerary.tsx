@@ -13,6 +13,22 @@ export function TripItinerary({
   isReadOnly: boolean
   onChange?: (days: Day[]) => void 
 }) {
+  
+  if (!initialRows || initialRows.length === 0) {
+    initialRows = [
+      {
+        id: crypto.randomUUID(),
+        date: '',
+        activity: '',
+        bookings: '',
+        stay: '',
+        travelTime: '',
+        notes: ''
+      }
+
+    ]
+  }
+  // console.log('initialRows', initialRows)
   const [days, setDays] = useState<Day[]>(initialRows)
 
   const addDay = () => {

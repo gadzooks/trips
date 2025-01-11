@@ -108,7 +108,7 @@ export default function NewTrip() {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Itinerary
           </label>
-          <TripItinerary onChange={setDays} />
+          <TripItinerary onChange={setDays} isReadOnly={false} />
         </div>
 
         <div className="flex justify-end">
