@@ -1,6 +1,6 @@
 // import { auth } from '@/auth'
 import Link from 'next/link'
-import TripList from './trips/components/TripList'
+import TripList from './components/trips/TripList'
 import { TripListType } from '@/types/trip'
 
 export default async function Home() {

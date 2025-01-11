@@ -1,5 +1,5 @@
 // components/TripForm.tsx
-import { TripItinerary } from '@/app/components/trip-itinerary';
+import { TripDay } from '@/app/components/trips/TripDay';
 import { Day } from '@/types/trip';
 
 export interface TripFormData {
@@ -111,10 +111,10 @@ export function TripForm({
                   Itinerary
                 </label>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <TripItinerary 
+                  <TripDay 
                     onChange={(days) => onFieldChange('days', days)}
                     initialRows={formData.days}
-                    isReadOnly={isReadOnly}
+                    readOnly={isReadOnly}
                   />
                 </div>
               </div>

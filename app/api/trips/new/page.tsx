@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { TripItinerary } from '@/app/components/trip-itinerary'
+import { TripDay } from '@/app/components/trips/TripDay'
 import { TripRecordDTO, Day } from '@/types/trip'
 
 export default function NewTrip() {
@@ -108,7 +108,7 @@ export default function NewTrip() {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Itinerary
           </label>
-          <TripItinerary onChange={setDays} isReadOnly={false} />
+          <TripDay onChange={setDays} isReadOnly={false} />
         </div>
 
         <div className="flex justify-end">

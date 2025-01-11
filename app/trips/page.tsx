@@ -1,5 +1,5 @@
 // src/app/(dashboard)/trips/page.tsx
-import TripList from './components/TripList';
+import TripList from '../components/trips/TripList';
 import { TripListType } from '@/types/trip';
 
 export default function TripsPage() {
