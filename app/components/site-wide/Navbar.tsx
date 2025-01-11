@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { LogOut, User } from 'lucide-react'
 import { useTheme } from './ThemeProvider'
+import Image from 'next/image';
 
 function ThemeToggle() {
   const { isDark, toggle } = useTheme()
@@ -28,11 +29,21 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex">
+
+          <Image
+            src="/images/logo.png"
+            alt="MyTripPlanner Logo"
+            width={70}
+            height={150}
+            className="rounded-md p-2"
+            priority
+        />
+
             <Link 
               href="/" 
               className="flex items-center px-2 py-2 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
             >
-              <span className="text-xl font-bold">TripPlanner</span>
+              <span className="text-xl font-bold">MyTripPlanner</span>
             </Link>
             
             {session && (
