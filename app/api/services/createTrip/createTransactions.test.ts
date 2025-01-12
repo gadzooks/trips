@@ -53,12 +53,14 @@ describe('TripService', () => {
         }
       }]
     ])('%s', (_, testCase) => {
-      const { tripId, transactItems } = createTripTransactions(
+      const { tripId, userId, timestamp, transactItems } = createTripTransactions(
         testCase.input.tripData,
         testCase.input.userId
       )
 
       expect(tripId).toBeTruthy()
+      expect(userId).toBeTruthy()
+      expect(timestamp).toBeTruthy()
       expect(transactItems).toHaveLength(testCase.expected.transactionCount)
       
       transactItems.forEach(item => {
@@ -67,6 +69,10 @@ describe('TripService', () => {
         const itemData = item.Put.Item
         expect(itemData).toHaveProperty('PK')
         expect(itemData).toHaveProperty('SK')
+        expect(itemData).toHaveProperty('name', testCase.input.tripData.name)
+        // expect(itemData).toHaveProperty('tripId', tripId)
+        expect(itemData).toHaveProperty('isPublic', testCase.expected.hasPublicStatus)
+        expect(itemData).toHaveProperty('createdAt', timestamp)
 
         const pk = itemData.PK
         const sk = itemData.SK
@@ -75,21 +81,18 @@ describe('TripService', () => {
           expect(pk).toEqual(`CREATEDBY#${testCase.input.userId}`)
           expect(sk).toEqual(tripId)
           expect(itemData).toHaveProperty('name', testCase.input.tripData.name)
-          expect(itemData).toHaveProperty('description', testCase.input.tripData.description)
           expect(itemData).toHaveProperty('isPublic', testCase.expected.hasPublicStatus)
-          expect(itemData).toHaveProperty('timestamp')
+          expect(itemData).toHaveProperty('createdAt', timestamp)
         } else if (pk.startsWith('SHAREDWITH#')) {
           expect(sk).toEqual(tripId)
           expect(itemData).toHaveProperty('name', testCase.input.tripData.name)
-          expect(itemData).toHaveProperty('description', testCase.input.tripData.description)
           expect(itemData).toHaveProperty('isPublic', testCase.expected.hasPublicStatus)
-          expect(itemData).toHaveProperty('timestamp')
+          expect(itemData).toHaveProperty('createdAt', timestamp)
         } else if (pk.startsWith('TAG#')) {
           expect(sk).toEqual(tripId)
           expect(itemData).toHaveProperty('name', testCase.input.tripData.name)
-          expect(itemData).toHaveProperty('description', testCase.input.tripData.description)
           expect(itemData).toHaveProperty('isPublic', testCase.expected.hasPublicStatus)
-          expect(itemData).toHaveProperty('timestamp')
+          expect(itemData).toHaveProperty('createdAt', timestamp)
         }
       })
     })

@@ -28,7 +28,7 @@ export function queryByTag(tag: string, isPublic: boolean, limit: number = 10) {
     }
 }
 
-export function createTripTransactions(tripData: TripRecordDTO, userId: string) {
+export function createTripTransactions(tripData: TripRecordDTO, userId: string): CreateTripTransactionsResult {
     // lexically sortable UUID
     const tripId = ulid()
     const timestamp = timestampIsoFormat(new Date()); //.toISOString();
@@ -107,6 +107,14 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string) 
     }));
 
     return { tripId, userId, timestamp, transactItems };
+}
+
+
+export interface CreateTripTransactionsResult {
+    tripId: string;
+    userId: string;
+    timestamp: string;
+    transactItems: any[]; //FIXME add type
 }
 
 function getTripIdPk(tripId: string) {
