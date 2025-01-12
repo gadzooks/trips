@@ -2,8 +2,8 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { Clock } from 'lucide-react';
 import { MinimumTripRecord, TripListType, TripRecordDTO } from '@/types/trip';
+import { TripSummaryCard } from './TripSummaryCard';
 
 interface TripListProps {
   type: TripListType;
@@ -95,34 +95,10 @@ export default function TripList({ type }: TripListProps) {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {trips.map((trip) => (
-          <div
-            key={trip.tripId}
-            onClick={() => window.location.href = `/trips/${trip.tripId}`}
-            className="group cursor-pointer"
-          >
-            <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
-              <div className="h-2 bg-gradient-to-r from-purple-500 to-blue-500"></div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2 text-gray-800 group-hover:text-purple-600 transition-colors duration-200">
-                  {trip.name}
-                </h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <Clock className="h-4 w-4" />
-                    <span>
-                      {new Date(trip.createdAt).toLocaleDateString(undefined, {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          TripSummaryCard(trip)
         ))}
       </div>
     </div>
   );
 }
+

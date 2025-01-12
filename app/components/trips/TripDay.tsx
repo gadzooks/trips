@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { TrashIcon, PlusIcon, Calendar as CalendarIcon, Clock, Hotel, Ticket, MapPin, StickyNote } from 'lucide-react';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import "react-day-picker/style.css";
-import { DayPicker } from "react-day-picker";
 import { Button } from '@/components/ui/button';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
 import { Day } from '@/types/trip';
 
 export function TripDay({
