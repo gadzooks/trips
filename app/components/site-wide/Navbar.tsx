@@ -1,11 +1,11 @@
+//app/components/site-wide/navbar.tsx
 'use client'
 
-import { signIn, signOut } from 'next-auth/react'
-import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { LogOut, User } from 'lucide-react'
 import { useTheme } from './ThemeProvider'
 import Image from 'next/image';
+import { signIn, signOut, useSession } from 'next-auth/react'
 
 function ThemeToggle() {
   const { isDark, toggle } = useTheme()
@@ -22,8 +22,8 @@ function ThemeToggle() {
 }
 
 export function Navbar() {
-  const session = true;
-  
+  const { data: session, status } = useSession();
+
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-lg">
       <div className="max-w-7xl mx-auto px-4">
