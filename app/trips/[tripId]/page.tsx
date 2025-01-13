@@ -1,3 +1,4 @@
+// app/trips/[tripId]/page.tsx
 'use client';
 
 import { useRouter } from 'next/navigation';

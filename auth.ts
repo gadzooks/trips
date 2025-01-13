@@ -3,5 +3,12 @@ import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
  
 export const { auth, handlers, signIn, signOut } = NextAuth({
+  // debug: true,
   providers: [Google],
+  callbacks: {
+    authorized: async ({ auth }) => {
+      // Logged in users are authenticated, otherwise redirect to login page
+      return !!auth
+    },
+  },
 })

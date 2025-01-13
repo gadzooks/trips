@@ -1,3 +1,4 @@
+// app/api/trips/[tripId]/route.ts
 import { DeleteCommand } from '@aws-sdk/lib-dynamodb'
 import { NextResponse } from 'next/server'
 import { docClient } from '@/lib/dynamodb'

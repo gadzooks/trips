@@ -1,3 +1,4 @@
+// app/components/auth/sign-in.tsx
 import { signInWithGoogle } from "@/actions/auth";
 
 export default function SignIn() {

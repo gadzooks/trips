@@ -1,4 +1,4 @@
-// src/app/(dashboard)/trips/page.tsx
+// app/trips/page.tsx
 import TripList from '../components/trips/TripList';
 import { TripListType } from '@/types/trip';
 

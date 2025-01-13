@@ -1,3 +1,4 @@
+// app/privacy/page.tsx
 import Image from 'next/image';
 
 export default function PrivacyPolicy() {  // or Terms() for terms page
