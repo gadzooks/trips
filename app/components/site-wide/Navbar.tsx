@@ -1,4 +1,4 @@
-//app/components/site-wide/navbar.tsx
+// app/components/site-wide/navbar.tsx
 'use client'
 
 import Link from 'next/link'
@@ -6,6 +6,7 @@ import { LogOut, User } from 'lucide-react'
 import { useTheme } from './ThemeProvider'
 import Image from 'next/image';
 import { signIn, signOut, useSession } from 'next-auth/react'
+import SignIn from '../auth/sign-in';
 
 function ThemeToggle() {
   const { isDark, toggle } = useTheme()
@@ -95,12 +96,13 @@ export function Navbar() {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => signIn('google')}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600"
-              >
-                Sign in
-              </button>
+              <SignIn/>
+              // <button
+              //   onClick={() => signIn('google')}
+              //   className="px-4 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600"
+              // >
+              //   Sign in
+              // </button>
             )}
           </div>
         </div>

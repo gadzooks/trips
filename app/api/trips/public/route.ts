@@ -1,4 +1,4 @@
-// app/api/trips/public/route.js
+// app/api/trips/public/route.ts
 import { NextResponse } from 'next/server';
 import { CreateTripDbService } from '../../services/createTripDbService'
 import { MinimumTripRecord} from '@/types/trip';

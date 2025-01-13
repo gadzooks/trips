@@ -1,22 +1,26 @@
-// import { auth } from '@/auth'
+// app/page.tsx
+import { auth } from '@/auth'
 import Link from 'next/link'
 import TripList from './components/trips/TripList'
 import { TripListType } from '@/types/trip'
 
 export default async function Home() {
-  // const session = await auth()
-  const session = true
+  const session = await auth()
+  console.log("session" + JSON.stringify(session))
   
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         {session && (
+          <div>
+          <p>Welcome {session?.user?.name}!</p>
           <Link 
             href="/trips/new" 
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             Create Trip
           </Link>
+          </div>
         )}
       </div>
       

@@ -14,6 +14,28 @@
     "jsx": "preserve",
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
+
+    // // Additional recommended compiler options
+    // "noImplicitAny": true,
+    // "strictNullChecks": true,
+    // "strictFunctionTypes": true,
+    // "strictBindCallApply": true,
+    // "strictPropertyInitialization": true,
+    // "noImplicitThis": true,
+    // "alwaysStrict": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noImplicitReturns": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "allowUnreachableCode": false,
+    // "useUnknownInCatchVariables": true,
+    
+    // // For better import handling
+    // "allowSyntheticDefaultImports": true,
+    
+    // // For better type checking
+    // "exactOptionalPropertyTypes": true,
+
     "plugins": [
       {
         "name": "next"
@@ -22,6 +44,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*", "./src/*"],
+      "@/actions/*": ["./src/actions/*", "./app/actions/*"],
       "@/hooks/*": ["./lib/hooks/*"],
       "@/components/*": ["./app/components/*"],
       "@/lib/*": ["./lib/*"]

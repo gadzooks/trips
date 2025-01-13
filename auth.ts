@@ -1,11 +1,7 @@
-// auth.ts (for TypeScript support)
-import { DefaultSession } from 'next-auth';
-
-declare module 'next-auth' {
-  interface Session extends DefaultSession {
-    accessToken?: string;
-    user: {
-      id?: string;
-    } & DefaultSession['user'];
-  }
-}
+import NextAuth from "next-auth"
+// import GitHub from "next-auth/providers/github"
+import Google from "next-auth/providers/google"
+ 
+export const { auth, handlers, signIn, signOut } = NextAuth({
+  providers: [Google],
+})

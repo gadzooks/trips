@@ -47,13 +47,14 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - https://support.google.com/cloud/answer/6158849?hl=en#public-and-internal&zippy=%2Cauthorized-domains%2Cpublic-and-internal-applications%2Cstep-create-a-new-client-secret
 - https://claude.ai/chat/9667dd7c-633a-4a80-a1cd-87a5d4247264
 
-```
+```bash
+# https://authjs.dev/getting-started/installation
 # These are the environment values that are needed to be set for Google Auth
-GOOGLE_CLIENT_ID=<google client id>
-GOOGLE_CLIENT_SECRET=<google client secret>
-NEXTAUTH_SECRET=<generate. see https://claude.ai/chat/a72892ac-0f69-45d4-9261-991755a748b1>
-NEXTAUTH_URL=http://localhost:3000
+AUTH_GOOGLE_ID=<google client id>
+AUTH_GOOGLE_SECRET=<google client secret>
+AUTH_SECRET=<generate. see https://claude.ai/chat/a72892ac-0f69-45d4-9261-991755a748b1>
+AUTH_URL=http://localhost:3000
 AWS_ACCESS_KEY_ID=<aws access key with dynamodb permissions>
 AWS_SECRET_ACCESS_KEY=<aws access key with dynamodb permissoin>
 AWS_REGION=us-west-2
-```sh
+```
