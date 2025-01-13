@@ -59,6 +59,18 @@ AWS_SECRET_ACCESS_KEY=<aws access key with dynamodb permissoin>
 AWS_REGION=us-west-2
 ```
 
+```json
+{
+  "user": {
+    "name": "Amit",
+    "email": "foobar@gmail.com",
+    "image": "https://path/to/url"
+  },
+  "expires": "2025-02-12T06:56:09.152Z",
+}
+
+```
+
 ### DB schema
 | Description | PK | SK | Attribute |
 |------------|----|----|-----------|

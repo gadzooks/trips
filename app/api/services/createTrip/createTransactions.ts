@@ -1,3 +1,4 @@
+// app/api/services/createTrip/createTransactions.ts
 import { MinimumTripRecord, TripRecordDTO } from "@/types/trip";
 import { TABLE_NAME, timestampIsoFormat } from "../common";
 import { ulid } from 'ulid'
@@ -20,7 +21,7 @@ export function queryByTag(tag: string, isPublic: boolean, limit: number = 10) {
         ExpressionAttributeValues: {
             ':pk': getTagDbPK(tag, isPublic)
         },
-        ProjectionExpression: 'tripId, #name, isPublic, createdAt',
+        ProjectionExpression: 'tripId, #name, isPublic, createdAt, createdBy',
         ExpressionAttributeNames: {
             '#name': 'name'  // 'name' is a reserved word in DynamoDB
         },
@@ -45,24 +46,26 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string):
     // When showing trips for each user or each tag or public trips or shared with a user,
     // we will only show titile, maybe desc. User will need to click to pull the full trip details by tripId
 
-    const baseRecord = {
-        //PK is ulid so its unique and lexically sortable
-        PK: getTripIdPk(tripId),
-        //SK is timestamp and can be used in range queries
-        SK: timestamp,
-        createdAt: timestamp,
-        ...tripData
-    };
- 
-    // Main record
-    records.push(baseRecord);
+    // Main record with all the details
+    records.push(
+        {
+            //PK is ulid so its unique and lexically sortable
+            PK: getTripIdPk(tripId),
+            //SK is timestamp and can be used in range queries
+            SK: timestamp,
+            createdAt: timestamp,
+            createdBy: userId,
+            ...tripData
+        }
+    );
  
     const partialTripDetails: MinimumTripRecord = {
         tripId,
         name: tripData.name,
         // description: tripData.description, // will be too huge to store in shared records
         isPublic: tripData.isPublic,
-        createdAt: timestamp
+        createdAt: timestamp,
+        createdBy: userId,
     };
  
     // Owner record
