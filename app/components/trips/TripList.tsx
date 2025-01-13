@@ -1,4 +1,4 @@
-// src/app/(dashboard)/trips/components/TripList.tsx
+// app/components/trips/TripList.tsx
 "use client"
 
 import React, { useState, useEffect } from 'react';
@@ -82,17 +82,6 @@ export default function TripList({ type }: TripListProps) {
 
   return (
     <div className="space-y-8">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
-          {type === TripListType.MY_TRIPS ? 'My Trips' : 'Public Trips'}
-        </h2>
-        <p className="mt-2 text-gray-600">
-          {type === TripListType.MY_TRIPS 
-            ? 'View and manage your personal trips' 
-            : 'Discover amazing journey plans shared by our community'}
-        </p>
-      </div>
-
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {trips.map((trip) => (
           TripSummaryCard(trip)

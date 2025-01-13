@@ -1,3 +1,4 @@
+// types/trip.ts
 export enum TripListType {
     PUBLIC = 'public',
     MY_TRIPS = 'myTrips',
