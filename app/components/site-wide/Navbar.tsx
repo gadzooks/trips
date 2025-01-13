@@ -27,7 +27,7 @@ export function Navbar() {
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-8xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex">
 
@@ -78,10 +78,7 @@ export function Navbar() {
                 </Link>
             </div>
           </div>
-          <div className="flex items-center">
-            <div className="px-4">
-              <ThemeToggle />
-            </div>
+          <div className="flex items-center px-2">
             {session ? (
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
@@ -96,14 +93,10 @@ export function Navbar() {
                 </button>
               </div>
             ) : (
-              <SignIn/>
-              // <button
-              //   onClick={() => signIn('google')}
-              //   className="px-4 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600"
-              // >
-              //   Sign in
-              // </button>
-            )}
+              <SignIn/>)}
+            <div className="px-4">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </div>
