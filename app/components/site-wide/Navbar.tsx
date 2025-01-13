@@ -82,7 +82,16 @@ export function Navbar() {
             {session ? (
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                  {session?.user?.image ? (
+                    <img
+                      src={session.user.image}
+                      alt="Profile"
+                      title={session.user.name || ""}
+                      className="h-8 w-8 rounded-full"
+                    />
+                  ) : (
+                    <User className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                  )}
                 </div>
                 <button
                   onClick={() => signOut()}
@@ -93,7 +102,8 @@ export function Navbar() {
                 </button>
               </div>
             ) : (
-              <SignIn/>)}
+              <SignIn />
+            )}
             <div className="px-4">
               <ThemeToggle />
             </div>
