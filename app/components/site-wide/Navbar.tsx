@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import SignIn from '../auth/sign-in'
+import ThemeToggle from './ThemeToggle'
 
 export function Navbar() {
   const { isDark, toggle } = useTheme()
@@ -42,18 +43,6 @@ export function Navbar() {
         </div>
         <div className="flex items-center gap-4">
           <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={toggle}
-            className="h-9 w-9 rounded-md"
-          >
-            {isDark ? (
-              <Sun className="h-4 w-4" />
-            ) : (
-              <Moon className="h-4 w-4" />
-            )}
-          </Button>
-          <Button 
             variant="default"
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
@@ -76,6 +65,7 @@ export function Navbar() {
           >
             <Menu className="h-4 w-4" />
           </Button>
+          <ThemeToggle isDark={isDark} toggle={toggle} />
         </div>
       </div>
     </header>
