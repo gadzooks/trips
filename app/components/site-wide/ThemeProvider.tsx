@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 const ThemeContext = createContext({ isDark: false, toggle: () => {} })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [isDark, setIsDark] = useState(false)
+  const [isDark, setIsDark] = useState(true)
 
   useEffect(() => {
     // Check local storage first

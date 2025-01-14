@@ -84,7 +84,7 @@ export default function TripList({ type }: TripListProps) {
     <div className="space-y-8">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {trips.map((trip) => (
-          TripSummaryCard(trip)
+          <TripSummaryCard key={trip.tripId} {...trip} />
         ))}
       </div>
     </div>
