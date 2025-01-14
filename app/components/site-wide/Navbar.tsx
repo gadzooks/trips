@@ -1,115 +1,88 @@
-// app/components/site-wide/navbar.tsx
 'use client'
 
-import Link from 'next/link'
-import { LogOut, User } from 'lucide-react'
 import { useTheme } from './ThemeProvider'
-import Image from 'next/image';
-import { signIn, signOut, useSession } from 'next-auth/react'
-import SignIn from '../auth/sign-in';
-
-function ThemeToggle() {
-  const { isDark, toggle } = useTheme()
-  return (
-    <div>
-      {/* <label className="flex items-center gap-2 cursor-pointer">
-        {isDark ? 'Light Mode' : 'Dark Mode'}
-      </label> */}
-      <button onClick={toggle}>
-        {isDark ? '🌙' : '☀️'}
-      </button>
-    </div>
-  )
-}
+import { Moon, Sun, Menu } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { useSession, signOut } from 'next-auth/react'
 
 export function Navbar() {
-  const { data: session, status } = useSession();
-
+  const { isDark, toggle } = useTheme()
+  const { data: session } = useSession()
+  
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-lg">
-      <div className="max-w-8xl mx-auto px-4">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-
-          <Image
-            src="/images/logo.png"
-            alt="MyTripPlanner Logo"
-            width={70}
-            height={150}
-            className="rounded-md p-2"
-            priority
-        />
-
+    <header className="fixed top-0 left-0 right-0 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 z-50">
+      <div className="h-16 px-4 flex items-center justify-between">
+        <div className="flex items-center gap-6">
+          <Link href="/" className="flex items-center gap-2">
+            <span className="font-semibold text-xl">MyTripPlanner</span>
+          </Link>
+          <nav className="hidden md:flex items-center gap-6">
             <Link 
-              href="/" 
-              className="flex items-center px-2 py-2 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+              href="/my-trips" 
+              className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
             >
-              <span className="text-xl font-bold">MyTripPlanner</span>
+              My Trips
             </Link>
-            
-            {session && (
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link
-                  href="/trips"
-                  className="inline-flex items-center px-1 pt-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                >
-                  My Trips
-                </Link>
-                <Link
-                  href="/trips/shared"
-                  className="inline-flex items-center px-1 pt-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                >
-                  Shared with Me
-                </Link>
-              </div>
-            )}
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link
-                  href="/privacy"
-                  className="inline-flex items-center px-1 pt-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                >
-                  Privacy
-                </Link>
-                <Link
-                  href="/terms"
-                  className="inline-flex items-center px-1 pt-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                >
-                  Terms & Conditions
-                </Link>
-            </div>
-          </div>
-          <div className="flex items-center px-2">
-            {session ? (
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  {session?.user?.image ? (
-                    <img
-                      src={session.user.image}
-                      alt="Profile"
-                      title={session.user.name || ""}
-                      className="h-8 w-8 rounded-full"
-                    />
-                  ) : (
-                    <User className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                  )}
-                </div>
-                <button
-                  onClick={() => signOut()}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                >
-                  <LogOut className="h-5 w-5" />
-                  <span>Sign out</span>
-                </button>
-              </div>
+            <Link 
+              href="/shared" 
+              className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+            >
+              Shared with Me
+            </Link>
+            <Link 
+              href="/explore" 
+              className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+            >
+              Explore
+            </Link>
+          </nav>
+        </div>
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggle}
+            className="h-9 w-9 rounded-md"
+          >
+            {isDark ? (
+              <Sun className="h-4 w-4" />
             ) : (
-              <SignIn />
+              <Moon className="h-4 w-4" />
             )}
-            <div className="px-4">
-              <ThemeToggle />
-            </div>
-          </div>
+          </Button>
+          <Button 
+            variant="default"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            Create Trip
+          </Button>
+          {session ? (
+            <Button
+              variant="ghost"
+              onClick={() => signOut()}
+              className="text-gray-700 dark:text-gray-200"
+            >
+              Sign Out
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              className="text-gray-700 dark:text-gray-200"
+            >
+              Sign In
+            </Button>
+          )}
+          
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="md:hidden h-9 w-9"
+          >
+            <Menu className="h-4 w-4" />
+          </Button>
         </div>
       </div>
-    </nav>
-  );
+    </header>
+  )
 }
