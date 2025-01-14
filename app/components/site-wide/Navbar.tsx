@@ -1,3 +1,4 @@
+// app/components/site-wide/navbar.tsx
 'use client'
 
 import { useTheme } from './ThemeProvider'
@@ -5,6 +6,7 @@ import { Moon, Sun, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
+import SignIn from '../auth/sign-in'
 
 export function Navbar() {
   const { isDark, toggle } = useTheme()
@@ -65,14 +67,7 @@ export function Navbar() {
             >
               Sign Out
             </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              className="text-gray-700 dark:text-gray-200"
-            >
-              Sign In
-            </Button>
-          )}
+          ) : <SignIn />}
           
           <Button 
             variant="ghost" 
