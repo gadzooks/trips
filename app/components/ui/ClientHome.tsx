@@ -26,19 +26,18 @@ export default function ClientHome(session: any) {
           <TripList type={TripListType.PUBLIC} />
         </div>
       ) : (
-        <div className="space-y-12 text-center">
-          <div className="space-y-4">
+        <div className="space-y-12 text-center px-8 max-w-6xl mx-auto">
+        <div className="space-y-4">
             <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">Share your Travel Adventure</h2>
             <p className="mt-2 text-gray-600">Sign in to create and share your trip plans.</p>
-          </div>
-          
-          {/* <div className="py-4">
-            <TripList type={TripListType.PUBLIC} />
-          </div> */}
-          <div className="py-14">
-            <AutoplayCarousel />
-          </div>
         </div>
+        
+        <div className="flex justify-center items-center">
+            <div className="w-120 h-96">
+                <AutoplayCarousel type={TripListType.PUBLIC} />
+            </div>
+        </div>
+    </div>
       )}
     </main>
   )
