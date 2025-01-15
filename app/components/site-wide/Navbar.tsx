@@ -3,7 +3,7 @@
 
 import { useTheme } from './ThemeProvider'
 import { Moon, Sun, Menu } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/components/ui/shadcn/button'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import SignIn from '../auth/sign-in'

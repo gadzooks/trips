@@ -1,7 +1,7 @@
-import { AuthOptions } from 'next-auth';
+// app/api/auth/[...nextauth]/auth-options.ts
 import GoogleProvider from 'next-auth/providers/google';
 
-export const authOptions: AuthOptions = {
+export const authOptions: any = {
   debug: process.env.NODE_ENV === 'development',
   providers: [
     GoogleProvider({

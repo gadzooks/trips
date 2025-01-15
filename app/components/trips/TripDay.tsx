@@ -1,7 +1,8 @@
+// app/components/trips/TripDay.tsx
 import React, { useState } from 'react';
 import { TrashIcon, PlusIcon, Calendar as CalendarIcon, Clock, Hotel, Ticket, MapPin, StickyNote } from 'lucide-react';
 import "react-day-picker/style.css";
-import { Button } from '@/components/ui/button';
+import { Button } from '@/app/components/ui/shadcn/button';
 import { Day } from '@/types/trip';
 
 export function TripDay({

@@ -1,4 +1,4 @@
-// components/TripForm.tsx
+// app/components/trips/TripForm.tsx
 import { TripDay } from '@/app/components/trips/TripDay';
 import { Day } from '@/types/trip';
 
@@ -26,15 +26,15 @@ export function TripForm({
   submitLabel = 'Save Trip'
 }: TripFormProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 ">
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
           <h1 className="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
             {isReadOnly ? 'View Trip' : submitLabel}
           </h1>
           
-          <form onSubmit={onSubmit} className="space-y-8">
-            <div className="space-y-6">
+          <form onSubmit={onSubmit} className="space-y-2">
+            <div className="space-y-2">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                   Trip Name
@@ -67,7 +67,7 @@ export function TripForm({
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-2">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                   Tags
