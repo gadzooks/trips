@@ -10,15 +10,15 @@ const tripService = new CreateTripDbService()
 
 export async function POST(request: Request) {
   try {
-    const session = await auth()
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { message: 'Failed to create trip for ' },
-        { status: 403 }
-      )
-    }
+    // const session = await auth()
+    // if (!session?.user?.email) {
+    //   return NextResponse.json(
+    //     { message: 'Failed to create trip for ' },
+    //     { status: 403 }
+    //   )
+    // }
     const body: TripRecordDTO = await request.json()
-    const userId = session.user.email
+    const userId = body.userId || session.user.email
     
     const result = await tripService.createTrip(body, userId)
     return NextResponse.json({ tripId: result })

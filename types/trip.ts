@@ -16,17 +16,14 @@ export interface MinimumTripRecord {
 }
 
 export interface TripRecordDTO {
+    userId?: string
+    fakeData?: boolean
     name: string
     description: string
     isPublic: boolean
     sharedWith?: string[]
     tags?: string[]
     days?: Day[]
-}
-
-export interface TripRecord extends TripRecordDTO{
-    PK: string
-    SK: string
 }
 
 export interface Day {
@@ -39,6 +36,10 @@ export interface Day {
     notes: string
 }
 
+export interface TripRecord extends TripRecordDTO{
+    PK: string
+    SK: string
+}
 // ============== TYPES defining a trip ==============
 
 export interface TripAccessResult {
