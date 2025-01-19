@@ -36,6 +36,7 @@ export default function NewTrip() {
       formData={formData}
       onFieldChange={updateField}
       onSubmit={handleSubmit}
+      isReadOnly={false}
       submitLabel="Create Trip"
     />
   );

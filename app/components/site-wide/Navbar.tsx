@@ -42,12 +42,12 @@ export function Navbar() {
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          <Button 
-            variant="default"
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            Create Trip
-          </Button>
+          <Link 
+              href="/trips/new" 
+              className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-500 transition-colors"
+            >
+              Create Trip
+          </Link>
           {session ? (
             <Button
               variant="ghost"

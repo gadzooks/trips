@@ -14,7 +14,7 @@ interface TripFormProps {
   formData: TripFormData;
   onFieldChange: (field: keyof TripFormData, value: any) => void;
   onSubmit: (e: React.FormEvent) => Promise<void>;
-  isReadOnly?: boolean;
+  isReadOnly: boolean;
   submitLabel?: string;
 }
 
@@ -22,7 +22,7 @@ export function TripForm({
   formData,
   onFieldChange,
   onSubmit,
-  isReadOnly = false,
+  isReadOnly,
   submitLabel = 'Save Trip'
 }: TripFormProps) {
   return (
@@ -114,7 +114,7 @@ export function TripForm({
                   <TripDay 
                     onChange={(days) => onFieldChange('days', days)}
                     initialRows={formData.days}
-                    readOnly={isReadOnly}
+                    isReadOnly={isReadOnly}
                   />
                 </div>
               </div>

@@ -5,11 +5,17 @@ import "react-day-picker/style.css";
 import { Button } from '@/app/components/ui/shadcn/button';
 import { Day } from '@/types/trip';
 
+interface TripDayProps {
+  initialRows : any[],
+  isReadOnly : boolean,
+  onChange : any
+}
+
 export function TripDay({
   initialRows = [],
-  isReadOnly = true,
+  isReadOnly,
   onChange
-}) {
+}: TripDayProps) {
   let rows: Day[] = initialRows;
   if (!rows?.length) {
     rows = [{
