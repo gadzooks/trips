@@ -1,4 +1,4 @@
-// hooks/useTripForm.ts
+// lib/hooks/useTripForm.ts
 import { useState } from 'react';
 import { Day } from '@/types/trip';
 

@@ -1,4 +1,4 @@
-// app/api/trips/public/route.js
+// app/api/trips/tags/[tagName]/route.ts
 import { NextResponse } from 'next/server';
 import { CreateTripDbService } from '../../../services/createTripDbService'
 

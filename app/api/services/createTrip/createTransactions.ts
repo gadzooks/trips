@@ -25,7 +25,41 @@ export function queryByTag(tag: string, isPublic: boolean, limit: number = 10) {
         ExpressionAttributeNames: {
             '#name': 'name'  // 'name' is a reserved word in DynamoDB
         },
-        Limit: limit
+        Limit: limit,
+        ScanIndexForward: false  // Set to false for descending order
+    }
+}
+
+export function queryByCreatedBy(createdBy: string, limit: number = 10) {
+    return {
+        TableName: TABLE_NAME,
+        KeyConditionExpression: 'PK = :pk',
+        ExpressionAttributeValues: {
+            ':pk': getOwnerWithDbPK(createdBy)
+        },
+        ProjectionExpression: 'tripId, #name, isPublic, createdAt, createdBy',
+        ExpressionAttributeNames: {
+            '#name': 'name'  // 'name' is a reserved word in DynamoDB
+        },
+        Limit: limit,
+        ScanIndexForward: false  // Set to false for descending order
+    }
+}
+
+export function queryByTagPaginated(tag: string, isPublic: boolean, limit: number = 10, exclusiveStartKey?: Record<string, any>) {
+    return {
+        TableName: TABLE_NAME,
+        KeyConditionExpression: 'PK = :pk',
+        ExpressionAttributeValues: {
+            ':pk': getTagDbPK(tag, isPublic)
+        },
+        ProjectionExpression: 'tripId, #name, isPublic, createdAt, createdBy',
+        ExpressionAttributeNames: {
+            '#name': 'name'  // 'name' is a reserved word in DynamoDB
+        },
+        Limit: limit,
+        ScanIndexForward: false,
+        ExclusiveStartKey: exclusiveStartKey
     }
 }
 
