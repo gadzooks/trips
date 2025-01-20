@@ -2,7 +2,7 @@
 'use client'
 
 import { useTheme } from './ThemeProvider'
-import { Moon, Sun, Menu } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { Button } from '@/app/components/ui/shadcn/button'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
@@ -12,6 +12,7 @@ import ThemeToggle from './ThemeToggle'
 export function Navbar() {
   const { isDark, toggle } = useTheme()
   const { data: session } = useSession()
+  console.log('navbar session is : ', JSON.stringify(session))
   
   return (
     <header className="fixed top-0 left-0 right-0 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 z-50">
@@ -20,20 +21,28 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-2">
             <span className="font-semibold text-xl">MyTripPlanner</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link 
-              href="/my-trips" 
-              className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
-            >
-              My Trips
-            </Link>
-            <Link 
-              href="/shared" 
-              className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
-            >
-              Shared with Me
-            </Link>
-            <Link 
+          {session && (
+              <nav className="hidden md:flex items-center gap-6">
+                <Link
+                  href="/my-trips"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+                >
+                  My Trips
+                </Link>
+              </nav>
+          )}
+          {session && (
+              <nav className="hidden md:flex items-center gap-6">
+                <Link
+                  href="/shared"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+                >
+                  Shared with Me
+                </Link>
+              </nav>
+          )}
+          <nav>
+            <Link
               href="/explore" 
               className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
             >
@@ -41,13 +50,24 @@ export function Navbar() {
             </Link>
           </nav>
         </div>
+        {session ? (
+          <div>
+            Welcome {session?.user?.name}
+          </div>
+        ) : (
+          <div>
+            Sign in to create and share your trips
+          </div>
+        )}
         <div className="flex items-center gap-4">
+          { session && ( 
           <Link 
               href="/trips/new" 
               className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-500 transition-colors"
             >
               Create Trip
           </Link>
+          )}
           {session ? (
             <Button
               variant="ghost"

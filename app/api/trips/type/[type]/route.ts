@@ -1,7 +1,7 @@
 // app/api/trips/type/[type]/route.ts
 import { NextResponse } from 'next/server';
 import { CreateTripDbService } from '../../../services/createTripDbService';
-import { MinimumTripRecord } from '@/types/trip';
+import { MinimumTripRecord, TripListType } from '@/types/trip';
 // import { getServerSession } from "next-auth/next";
 import { auth } from '@/auth'
 
@@ -20,15 +20,20 @@ export async function GET(
     
     let response: MinimumTripRecord[];
     
-    if (type === 'public') {
+    if (type === TripListType.PUBLIC) {
       response = await tripService.getByTag('PUBLIC', true, limit);
-    } else if (type === 'myTrips') {
+    } else if (type === TripListType.MY_TRIPS) {
       if (!session?.user?.email) {
         return new Response('Unauthorized', { status: 401 });
       }
       response = await tripService.getByUser(session.user.email, { limit });
+    } else if (type === TripListType.BOTH) {
+      if (!session?.user?.email) {
+        return new Response('Unauthorized', { status: 401 });
+      }
+      response = await tripService.getByUserAndPublic(session.user.email, { limit });
     } else {
-      throw new Error('Invalid trip type');
+      throw new Error('Invalid trip type : ' + type);
     }
 
     return NextResponse.json(response);

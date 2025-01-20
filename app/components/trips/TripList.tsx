@@ -18,13 +18,8 @@ export default function TripList({ type }: TripListProps) {
   useEffect(() => {
     async function fetchTrips() {
       try {
-        const endpoint = {
-          [TripListType.PUBLIC]: '/api/trips/public',
-          [TripListType.MY_TRIPS]: '/api/trips/mine',
-          [TripListType.BOTH]: '/api/trips/publicAndMine'
-        }[type];
-
-        const response = await fetch(endpoint);
+        setLoading(true);
+        const response = await fetch(`/api/trips/type/${type}`);
         if (!response.ok) throw new Error('Failed to fetch trips');
         const data = await response.json();
         // console.log('data -------------->>>>>>>', JSON.stringify(data, null, 2));

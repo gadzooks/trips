@@ -44,7 +44,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
             <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Itinerary</th>
             <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Reservations</th>
             <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Lodging</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Drive times</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Travel times</th>
             {!isReadOnly && <th className="w-16"></th>}
           </tr>
         </thead>
