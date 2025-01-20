@@ -2,17 +2,20 @@
 "use client";
 import { useTrips } from '@/hooks/useTrips';
 import { TripCard } from './TripCard';
+import { TripListType } from '@/types/trip';
+import { Session } from 'next-auth';
 
 interface SidebarProps {
   tripsPerSection?: number;
+  session: Session | null;
 }
 
-export function Sidebar({ tripsPerSection = 2 }: SidebarProps) {
+export function Sidebar({ tripsPerSection = 2, session }: SidebarProps) {
   const { 
     trips: publicTrips, 
     loading: publicLoading 
   } = useTrips({ 
-    type: 'public', 
+    type: TripListType.PUBLIC, 
     limit: tripsPerSection,
     skipPagination: true 
   });
@@ -21,7 +24,7 @@ export function Sidebar({ tripsPerSection = 2 }: SidebarProps) {
     trips: myTrips, 
     loading: myTripsLoading 
   } = useTrips({ 
-    type: 'myTrips', 
+    type: TripListType.MY_TRIPS, 
     limit: tripsPerSection,
     skipPagination: true 
   });
@@ -29,29 +32,31 @@ export function Sidebar({ tripsPerSection = 2 }: SidebarProps) {
   return (
     <aside className="fixed left-0 top-16 w-64 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
       <div className="p-4">
-        <div className="mb-8">
-        <h2 className="text-lg font-semibold mb-4 text-center">My Recent Trips</h2>
-          <div className="space-y-4">
-            {myTripsLoading ? (
-              <div className="animate-pulse space-y-4">
-                {[...Array(tripsPerSection)].map((_, i) => (
-                  <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded" />
-                ))}
-              </div>
-            ) : (
-              myTrips.map((trip) => (
-                <TripCard
-                  key={trip.tripId}
-                  title={trip.name}
-                  date={new Date(trip.createdAt).toLocaleDateString()}
-                />
-              ))
-            )}
+        {session && session.user ? (
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold mb-4 text-center">My Recent Trips</h2>
+            <div className="space-y-4">
+              {myTripsLoading ? (
+                <div className="animate-pulse space-y-4">
+                  {[...Array(tripsPerSection)].map((_, i) => (
+                    <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded" />
+                  ))}
+                </div>
+              ) : (
+                myTrips.map((trip) => (
+                  <TripCard
+                    key={trip.tripId}
+                    title={trip.name}
+                    date={new Date(trip.createdAt).toLocaleDateString()}
+                  />
+                ))
+              )}
+            </div>
           </div>
-        </div>
+        ) : null}
         
         <div>
-        <h2 className="text-lg font-semibold mb-4 text-center">Latest Public Trips</h2>
+          <h2 className="text-lg font-semibold mb-4 text-center">Latest Public Trips</h2>
           <div className="space-y-4">
             {publicLoading ? (
               <div className="animate-pulse space-y-4">
@@ -69,8 +74,6 @@ export function Sidebar({ tripsPerSection = 2 }: SidebarProps) {
               ))
             )}
           </div>
-
-
         </div>
       </div>
     </aside>

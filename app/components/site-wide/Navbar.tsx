@@ -18,24 +18,15 @@ export function Navbar() {
     <header className="fixed top-0 left-0 right-0 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 z-50">
       <div className="h-16 px-4 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href={session ? "/my-trips" : "/"} className="flex items-center gap-2" title={session ? "My Trips" : "Home"}>
             <span className="font-semibold text-xl">MyTripPlanner</span>
           </Link>
           {session && (
               <nav className="hidden md:flex items-center gap-6">
                 <Link
-                  href="/my-trips"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
-                >
-                  My Trips
-                </Link>
-              </nav>
-          )}
-          {session && (
-              <nav className="hidden md:flex items-center gap-6">
-                <Link
                   href="/shared"
                   className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+                  title='Trips shared with me by others'
                 >
                   Shared with Me
                 </Link>
@@ -45,6 +36,7 @@ export function Navbar() {
             <Link
               href="/explore" 
               className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+              title='Explore public trips for inspiration'
             >
               Explore
             </Link>
