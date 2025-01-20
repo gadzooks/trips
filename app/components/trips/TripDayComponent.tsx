@@ -1,6 +1,6 @@
 // app/components/trips/TripDayComponent.tsx
 import React, { useState } from 'react';
-import { Clock, Trash2, Plus } from 'lucide-react';
+import { Clock, Trash2, Plus, Calendar } from 'lucide-react';
 import type { TripDay, TripDayProps } from './trip-types';
 
 const TripDayComponent: React.FC<TripDayProps> = ({ 
@@ -40,7 +40,9 @@ const TripDayComponent: React.FC<TripDayProps> = ({
       <table className="w-full border-collapse bg-white dark:bg-gray-800 shadow-sm">
         <thead className="bg-gray-50 dark:bg-gray-700">
           <tr>
-            <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Date</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">
+                  <Calendar className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+                Date</th>
             <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Itinerary</th>
             <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Reservations</th>
             <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Lodging</th>

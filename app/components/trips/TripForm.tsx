@@ -4,6 +4,7 @@ import { Card } from '../ui/shadcn/card';
 import TripDay from './TripDay';
 import { Switch } from '../ui/shadcn/switch';
 import type { TripFormProps } from './trip-types';
+import TripDayComponent from './TripDayComponent';
 
 export const TripForm: React.FC<TripFormProps> = ({
   formData,
@@ -86,7 +87,7 @@ export const TripForm: React.FC<TripFormProps> = ({
               </div>
 
               <div className="rounded-lg overflow-hidden">
-                <TripDay
+                <TripDayComponent
                   onChange={(days) => onFieldChange('days', days)}
                   initialRows={formData.days}
                   isReadOnly={isReadOnly}
