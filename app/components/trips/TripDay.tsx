@@ -1,174 +1,130 @@
-// app/components/trips/TripDay.tsx
 import React, { useState } from 'react';
-import { TrashIcon, PlusIcon, Calendar as CalendarIcon, Clock, Hotel, Ticket, MapPin, StickyNote } from 'lucide-react';
-import "react-day-picker/style.css";
-import { Button } from '@/app/components/ui/shadcn/button';
-import { Day } from '@/types/trip';
+import { Clock, Trash2 } from 'lucide-react';
 
-interface TripDayProps {
-  initialRows : any[],
-  isReadOnly : boolean,
-  onChange : any
-}
+const TripDay = ({ onChange, initialRows = [], isReadOnly }) => {
+  const [days, setDays] = useState(initialRows);
 
-export function TripDay({
-  initialRows = [],
-  isReadOnly,
-  onChange
-}: TripDayProps) {
-  let rows: Day[] = initialRows;
-  if (!rows?.length) {
-    rows = [{
-      id: crypto.randomUUID(),
-      date: '',
-      activity: '',
-      bookings: '',
-      stay: '',
-      travelTime: '',
-      notes: ''
-    }];
-  }
-
-  const [days, setDays] = useState<Day[]>(rows);
+  const updateDay = (index, field, value) => {
+    const newDays = [...days];
+    newDays[index] = { ...newDays[index], [field]: value };
+    setDays(newDays);
+    onChange(newDays);
+  };
 
   const addDay = () => {
-    const newDay = {
-      id: crypto.randomUUID(),
-      date: '',
-      activity: '',
-      bookings: '',
-      stay: '',
-      travelTime: '',
-      notes: ''
-    };
-    const newDays = [...days, newDay];
-    setDays(newDays);
-    onChange?.(newDays);
+    setDays([...days, { 
+      date: '', 
+      itinerary: '', 
+      reservations: '',
+      lodging: '',
+      driveTimes: ''
+    }]);
   };
 
-  const updateDay = (id: string, field: string, value: string) => {
-    const newDays = days.map(day =>
-      day.id === id ? { ...day, [field]: value } : day
-    );
+  const removeDay = (index) => {
+    const newDays = days.filter((_, i) => i !== index);
     setDays(newDays);
-    onChange?.(newDays);
-  };
-
-  const deleteDay = (id: string) => {
-    const newDays = days.filter(day => day.id !== id);
-    setDays(newDays);
-    onChange?.(newDays);
+    onChange(newDays);
   };
 
   return (
-    <div className="space-y-6 p-4">
-      {days.map((day, index) => (
-        <div key={day.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 space-y-4">
-          <div className="flex items-center justify-between mb-6">
-            <span className="text-2xl font-bold text-gray-400 dark:text-gray-500">Day {index + 1}</span>
-
-            <div className="flex-1">
-              <div className="flex items-center pl-4">
-                <Clock className="h-4 w-4 mr-2 text-gray-600 dark:text-gray-400" />
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse bg-white dark:bg-gray-800">
+        <thead>
+          <tr className="border-b border-gray-200 dark:border-gray-700">
+            <th className="p-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Date</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Itinerary</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Reservations</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Lodging</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Drive times</th>
+            {!isReadOnly && <th className="w-16"></th>}
+          </tr>
+        </thead>
+        <tbody>
+          {days.map((day, index) => (
+            <tr key={index} className="border-b border-gray-200 dark:border-gray-700">
+              <td className="p-3">
                 <input
                   type="text"
-                  value={day.travelTime}
-                  onChange={e => updateDay(day.id, 'travelTime', e.target.value)}
-                  className="w-full p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
-                  placeholder="Travel duration"
+                  value={day.date || ''}
+                  onChange={(e) => updateDay(index, 'date', e.target.value)}
+                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100"
+                  placeholder="Date"
                   readOnly={isReadOnly}
-                  disabled={isReadOnly}
                 />
-                {!isReadOnly && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    onClick={() => deleteDay(day.id)}
+              </td>
+              <td className="p-3">
+                <textarea
+                  value={day.itinerary || ''}
+                  onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
+                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 resize-none"
+                  rows={3}
+                  placeholder="Add itinerary details..."
+                  readOnly={isReadOnly}
+                />
+              </td>
+              <td className="p-3">
+                <textarea
+                  value={day.reservations || ''}
+                  onChange={(e) => updateDay(index, 'reservations', e.target.value)}
+                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 resize-none"
+                  rows={3}
+                  placeholder="Add reservation details..."
+                  readOnly={isReadOnly}
+                />
+              </td>
+              <td className="p-3">
+                <textarea
+                  value={day.lodging || ''}
+                  onChange={(e) => updateDay(index, 'lodging', e.target.value)}
+                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 resize-none"
+                  rows={3}
+                  placeholder="Add lodging details..."
+                  readOnly={isReadOnly}
+                />
+              </td>
+              <td className="p-3">
+                <div className="flex items-center space-x-2">
+                  <Clock className="w-4 h-4 text-gray-500" />
+                  <input
+                    type="text"
+                    value={day.driveTimes || ''}
+                    onChange={(e) => updateDay(index, 'driveTimes', e.target.value)}
+                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100"
+                    placeholder="Drive time"
+                    readOnly={isReadOnly}
+                  />
+                </div>
+              </td>
+              {!isReadOnly && (
+                <td className="p-3">
+                  <button
+                    type="button"
+                    onClick={() => removeDay(index)}
+                    className="text-gray-500 hover:text-red-500"
                   >
-                    <TrashIcon className="h-5 w-5" />
-                  </Button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center text-gray-600 dark:text-gray-300">
-              <Hotel className="h-4 w-4 mr-2" />
-              <span className="font-medium">Accommodation</span>
-            </div>
-
-            <input
-              value={day.stay}
-              onChange={e => updateDay(day.id, 'stay', e.target.value)}
-              className="w-full p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
-              placeholder="Where are you staying?"
-              readOnly={isReadOnly}
-              disabled={isReadOnly}
-            />
-          </div>
-
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <div className="flex items-center text-gray-600 dark:text-gray-300">
-                <MapPin className="h-4 w-4 mr-2" />
-                <span className="font-medium">Activities</span>
-              </div>
-              <textarea
-                value={day.activity}
-                onChange={e => updateDay(day.id, 'activity', e.target.value)}
-                className="w-full min-h-32 p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
-                placeholder="Plan your activities..."
-                readOnly={isReadOnly}
-                disabled={isReadOnly}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center text-gray-600 dark:text-gray-300">
-                <Ticket className="h-4 w-4 mr-2" />
-                <span className="font-medium">Bookings</span>
-              </div>
-              <textarea
-                value={day.bookings}
-                onChange={e => updateDay(day.id, 'bookings', e.target.value)}
-                className="w-full min-h-32 p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
-                placeholder="Add booking details..."
-                readOnly={isReadOnly}
-                disabled={isReadOnly}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center text-gray-600 dark:text-gray-300">
-                <StickyNote className="h-4 w-4 mr-2" />
-                <span className="font-medium">Notes</span>
-              </div>
-              <textarea
-                value={day.notes}
-                onChange={e => updateDay(day.id, 'notes', e.target.value)}
-                className="w-full min-h-32 p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent"
-                placeholder="Additional notes..."
-                readOnly={isReadOnly}
-                disabled={isReadOnly}
-              />
-            </div>
-          </div>
-        </div>
-      ))}
-
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      
       {!isReadOnly && (
-        <Button
-          onClick={addDay}
-          className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white py-4 rounded-lg shadow-md transition-colors"
-        >
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Add Another Day
-        </Button>
+        <div className="mt-4 flex justify-center">
+          <button
+            type="button"
+            onClick={addDay}
+            className="px-4 py-2 text-sm font-medium text-purple-600 hover:text-purple-700 focus:outline-none"
+          >
+            + Add Day
+          </button>
+        </div>
       )}
     </div>
   );
-}
+};
 
 export default TripDay;
