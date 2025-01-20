@@ -1,3 +1,4 @@
+// app/components/ui/input/EditableText.tsx
 "use client";
 import React, { useState } from 'react';
 

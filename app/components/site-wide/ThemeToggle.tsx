@@ -1,3 +1,4 @@
+// app/components/site-wide/ThemeToggle.tsx
 import React, { useState, useEffect } from 'react';
 import { Moon, Sun } from 'lucide-react';
 
