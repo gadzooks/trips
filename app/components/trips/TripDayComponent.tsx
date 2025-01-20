@@ -40,9 +40,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
       <table className="w-full border-collapse bg-white dark:bg-gray-800 shadow-sm">
         <thead className="bg-gray-50 dark:bg-gray-700">
           <tr>
-            <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">
-                  <Calendar className="w-4 h-4 text-blue-500 dark:text-blue-400" />
-                Date</th>
+            <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Date</th>
             <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Itinerary</th>
             <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Reservations</th>
             <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Lodging</th>
@@ -61,26 +59,26 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   type="text"
                   value={day.date}
                   onChange={(e) => updateDay(index, 'date', e.target.value)}
-                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none"
+                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:placeholder:text-transparent"
                   placeholder="Date"
                   readOnly={isReadOnly}
                 />
               </td>
               <td className="p-3">
                 <textarea
-                  value={day.itinerary}
-                  onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
-                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none"
-                  rows={3}
-                  placeholder="Add itinerary details..."
-                  readOnly={isReadOnly}
+                    value={day.itinerary}
+                    onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
+                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none text-left focus:text-left placeholder:text-left focus:placeholder:text-transparent"
+                    rows={3}
+                    placeholder="Add itinerary details..."
+                    readOnly={isReadOnly}
                 />
               </td>
               <td className="p-3">
                 <textarea
                   value={day.reservations}
                   onChange={(e) => updateDay(index, 'reservations', e.target.value)}
-                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none"
+                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none text-left focus:text-left placeholder:text-left focus:placeholder:text-transparent"
                   rows={3}
                   placeholder="Add reservation details..."
                   readOnly={isReadOnly}
@@ -90,7 +88,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                 <textarea
                   value={day.lodging}
                   onChange={(e) => updateDay(index, 'lodging', e.target.value)}
-                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none"
+                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none text-left focus:text-left placeholder:text-left focus:placeholder:text-transparent"
                   rows={3}
                   placeholder="Add lodging details..."
                   readOnly={isReadOnly}
@@ -103,7 +101,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     type="text"
                     value={day.driveTimes}
                     onChange={(e) => updateDay(index, 'driveTimes', e.target.value)}
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none"
+                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:placeholder:text-transparent"
                     placeholder="Drive time"
                     readOnly={isReadOnly}
                   />

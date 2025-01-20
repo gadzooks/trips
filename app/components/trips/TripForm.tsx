@@ -1,7 +1,6 @@
 // app/components/trips/TripForm.tsx
 import React from 'react';
 import { Card } from '../ui/shadcn/card';
-import TripDay from './TripDay';
 import { Switch } from '../ui/shadcn/switch';
 import type { TripFormProps } from './trip-types';
 import TripDayComponent from './TripDayComponent';
