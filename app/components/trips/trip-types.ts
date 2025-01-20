@@ -1,11 +1,5 @@
 // app/components/trips/trip-types.ts
-export interface TripDay {
-    date: string;
-    itinerary: string;
-    reservations: string;
-    lodging: string;
-    driveTimes: string;
-  }
+
   
   export interface TripFormData {
     name: string;

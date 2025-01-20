@@ -1,13 +1,13 @@
 // lib/hooks/useTripForm.ts
 import { useState } from 'react';
-import { Day } from '@/types/trip';
+import { TripDay } from '@/types/trip';
 
 export interface TripFormData {
   name: string;
   description: string;
   tags: string;
   isPublic: boolean;
-  days: Day[];
+  days: TripDay[];
 }
 
 export function useTripForm(initialData?: Partial<TripFormData>) {

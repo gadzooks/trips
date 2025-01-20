@@ -12,7 +12,7 @@ import ThemeToggle from './ThemeToggle'
 export function Navbar() {
   const { isDark, toggle } = useTheme()
   const { data: session } = useSession()
-  console.log('navbar session is : ', JSON.stringify(session))
+  // console.log('navbar session is : ', JSON.stringify(session))
   
   return (
     <header className="fixed top-0 left-0 right-0 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 z-50">

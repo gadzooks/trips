@@ -6,15 +6,6 @@ import { CreateTripDbService } from '../../services/createTripDbService';
 
 const tripService = new CreateTripDbService()
 
-// get trip by tripId
-// get trip by userId
-// get trips shared with user
-// get public trips - GSI on isPublic, 
-// get trips by tag
-// search trips by description
-// search public trips by description
-
-
 // GET single trip
 export async function GET(
   request: Request,
@@ -57,10 +48,9 @@ export async function PATCH(
   context: { params: { tripId: string } }
 ) {
   const params = await context.params;
-  const { tripId } = params;
   const body = await request.json()
 
-    // await docClient.send(new UpdateCommand(updateCommand))
+    await docClient.send(new UpdateCommand(updateCommand))
 
     return NextResponse.json({ success: true })
   // } catch (error) {

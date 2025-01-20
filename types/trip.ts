@@ -5,7 +5,6 @@ export enum TripListType {
     BOTH = 'both'
 }
 
-
 // ============== TYPES defining a trip ==============
 export interface MinimumTripRecord {
     createdBy: string
@@ -23,17 +22,16 @@ export interface TripRecordDTO {
     isPublic: boolean
     sharedWith?: string[]
     tags?: string[]
-    days?: Day[]
+    days?: TripDay[]
 }
 
-export interface Day {
-    id: string
-    date: string
-    activity: string
-    bookings: string
-    stay: string
-    travelTime: string
-    notes: string
+export interface TripDay {
+    date: string;
+    itinerary: string;
+    reservations: string;
+    lodging: string;
+    driveTimes: string;
+    notes: string;
 }
 
 export interface TripRecord extends TripRecordDTO{
@@ -41,8 +39,3 @@ export interface TripRecord extends TripRecordDTO{
     SK: string
 }
 // ============== TYPES defining a trip ==============
-
-export interface TripAccessResult {
-    allowed: boolean
-    reason: string
-}

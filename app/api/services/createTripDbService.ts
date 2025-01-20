@@ -4,7 +4,7 @@ import { docClient } from "@/lib/dynamodb";
 import { MinimumTripRecord, TripRecordDTO } from "@/types/trip";
 import { QueryCommand, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { createTripTransactions, queryByTag, queryByTripId, queryByTagPaginated, queryByCreatedBy } from "./createTrip/createTransactions";
-import { PaginatedResult, PaginatedResponse, PaginationParams } from "@/types/pagination";
+import { PaginationParams } from "@/types/pagination";
 
 export class CreateTripDbService {
     async createTrip(tripData: TripRecordDTO, userId: string): Promise<string> {
