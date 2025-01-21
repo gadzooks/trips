@@ -5,6 +5,7 @@ import { Switch } from '../ui/shadcn/switch';
 import type { TripFormProps } from './trip-types';
 import TripDayComponent from './TripDayComponent';
 import { EditableText } from '../ui/input/EditableText';
+import { updateTripAttribute } from '../ui/utils/updateTrip';
 
 export const TripForm: React.FC<TripFormProps> = ({
   formData,
@@ -12,25 +13,6 @@ export const TripForm: React.FC<TripFormProps> = ({
   isReadOnly = false,
   submitLabel = 'Save Trip'
 }) => {
-  const handleFieldUpdate = async (field: string, value: string | boolean) => {
-    onFieldChange(field, value);
-    
-    try {
-      const response = await fetch(`/api/trips/${formData.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          [field]: field === 'tags' ? value.split(' ') : value 
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to update field');
-      }
-    } catch (error) {
-      console.error(`Failed to update ${field}:`, error);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -46,7 +28,7 @@ export const TripForm: React.FC<TripFormProps> = ({
                   <div className="flex items-center space-x-2">
                     <Switch
                       checked={formData.isPublic}
-                      onCheckedChange={(checked) => handleFieldUpdate('isPublic', checked)}
+                      onCheckedChange={(checked) => updateTripAttribute(formData.tripId || '', 'isPublic', checked)}
                       className="bg-red-400 data-[state=checked]:bg-green-600"
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -65,8 +47,12 @@ export const TripForm: React.FC<TripFormProps> = ({
                   Trip Name
                 </label>
                 <EditableText
-                  value={formData.name}
-                  onSave={(value) => handleFieldUpdate('name', value)}
+                  tripId={formData.tripId}
+                  SK={formData.SK}
+                  attributeValue={formData.name}
+                  attributeKey='name'
+                  isReadyOnly={isReadOnly}
+                  // onSave={(value) => updateTripAttribute(formData.tripId || '','name', value)}
                   className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
                 />
               </div>
@@ -76,8 +62,12 @@ export const TripForm: React.FC<TripFormProps> = ({
                   Tags
                 </label>
                 <EditableText
-                  value={formData.tags}
-                  onSave={(value) => handleFieldUpdate('tags', value)}
+                  tripId={formData.tripId}
+                  SK={formData.SK}
+                  attributeValue={(formData.tags || []).join(' ')}
+                  attributeKey='tags'
+                  isReadyOnly={isReadOnly}
+                  // onSave={(value) => updateTripAttribute(formData.tripId || '', 'tags', value)}
                   className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
                 />
               </div>
@@ -88,20 +78,24 @@ export const TripForm: React.FC<TripFormProps> = ({
                 Description
               </label>
               <EditableText
-                value={formData.description}
-                onSave={(value) => handleFieldUpdate('description', value)}
+                tripId={formData.tripId}
+                SK={formData.SK}
+                attributeKey='description'
+                attributeValue={formData.description}
+                isReadyOnly={isReadOnly}
+                // onSave={(value) => handleFieldUpdate('description', value)}
                 isTextArea={true}
                 className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
               />
             </div>
-
+{/* 
             <div className="rounded-lg overflow-hidden">
               <TripDayComponent
                 onChange={(days) => handleFieldUpdate('days', days)}
                 initialRows={formData.days}
                 isReadOnly={isReadOnly}
               />
-            </div>
+            </div> */}
           </div>
         </Card>
       </div>

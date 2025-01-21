@@ -1,3 +1,4 @@
+// app/components/trips/TripDayComponent.tsx
 import React, { useState, useEffect } from 'react';
 import { Clock, Trash2, Plus } from 'lucide-react';
 import type { TripDayProps } from './trip-types';

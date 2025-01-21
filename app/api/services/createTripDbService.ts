@@ -3,7 +3,7 @@
 import { docClient } from "@/lib/dynamodb";
 import { MinimumTripRecord, TripDayDTO, TripRecordDTO } from "@/types/trip";
 import { QueryCommand, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
-import { createTripTransactions, queryByTag, queryByTripId, queryByTagPaginated, queryByCreatedBy } from "./createTrip/createTransactions";
+import { createTripTransactions, queryByTag, queryByTripId, queryByTagPaginated, queryByCreatedBy, getTripIdPrefix } from "./createTrip/createTransactions";
 import { PaginationParams } from "@/types/pagination";
 
 export class CreateTripDbService {
@@ -85,8 +85,8 @@ export class CreateTripDbService {
     });
 
     return {
-      tripId: item.PK,
-      timestamp: item.SK,
+      tripId: this.toTripId(item.PK.toString()),
+      SK: item.SK,
       name: item.name,
       description: item.description,
       tags: item.tags,
@@ -97,6 +97,11 @@ export class CreateTripDbService {
       createdAt: item.createdAt,
       createdBy: item.createdBy
     };
+  }
+
+  toTripId(pk: string): string {
+    // remove the prefix along with # separator from PK
+    return (pk || '').slice(getTripIdPrefix().length);
   }
 
   toTripDayDTO(item: Record<string, any>): TripDayDTO {

@@ -4,6 +4,7 @@ import { QueryCommand } from '@aws-sdk/lib-dynamodb'
 import { docClient } from '@/lib/dynamodb'
 import { TripRecord } from '@/types/trip'
 import { TABLE_NAME } from './common'
+import { getTripIdPk } from './createTrip/createTransactions'
 
 export interface TripAccessResult {
   allowed: boolean
@@ -17,7 +18,7 @@ export class TripDbService {
         TableName: TABLE_NAME,
         KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
         ExpressionAttributeValues: {
-          ':pk': `TRIP#${tripId}`,
+          ':pk': `${getTripIdPk(tripId)}`,
           ':sk': 'USER#'
         }
       }))

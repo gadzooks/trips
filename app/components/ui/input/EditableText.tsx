@@ -1,22 +1,35 @@
 // app/components/ui/input/EditableText.tsx
 "use client";
 import React, { useState } from 'react';
+import { updateTripAttribute } from '../utils/updateTrip';
 
 // Editable Text Component for inline editing
 export const EditableText = ({
-    value, onSave, isTextArea = false, className = ""
+    tripId, SK, createdAt, attributeKey, attributeValue, isReadyOnly, isTextArea = false, className = ""
 }: {
-    value: string;
-    onSave: (value: string) => void;
+    tripId?: string;
+    SK?: string;
+    createdAt?: string;
+    attributeKey: string;
+    attributeValue: string;
+    isReadyOnly: boolean;
     isTextArea?: boolean;
     className?: string;
 }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [editValue, setEditValue] = useState(value);
+    const [editValue, setEditValue] = useState(attributeValue);
 
-    const handleSave = () => {
-        onSave(editValue);
+    const handleSave = async () => {
         setIsEditing(false);
+        console.log('handlesave : tripId is : ', tripId)
+        if (!isReadyOnly && tripId && SK && editValue !== attributeValue ) {
+            const result = await updateTripAttribute(
+                { tripId, SK, attributeKey, attributeValue: editValue }
+            );
+            if (!result.success) {
+                console.error(`Failed to update ${attributeKey}:`, result.error);
+            }
+        }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -25,7 +38,7 @@ export const EditableText = ({
             handleSave();
         }
         if (e.key === 'Escape') {
-            setEditValue(value);
+            setEditValue(attributeValue);
             setIsEditing(false);
         }
     };
@@ -59,7 +72,7 @@ export const EditableText = ({
             onClick={() => setIsEditing(true)}
             className={`cursor-pointer hover:bg-gray-50 rounded-lg p-2 ${className}`}
         >
-            {value}
+            {attributeValue}
         </div>
     );
 };

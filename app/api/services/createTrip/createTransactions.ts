@@ -154,8 +154,12 @@ export interface CreateTripTransactionsResult {
     transactItems: any[]; //FIXME add type
 }
 
-function getTripIdPk(tripId: string) {
-    return `TRIP#${tripId}`;
+export function getTripIdPrefix() {
+    return 'TRIP#';
+}
+
+export function getTripIdPk(tripId: string) {
+    return `${getTripIdPrefix()}${tripId}`;
 }
 
 function getSharedWithDbPK(sharedUserId: string) {

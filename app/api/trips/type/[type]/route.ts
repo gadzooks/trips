@@ -27,11 +27,6 @@ export async function GET(
         return new Response('Unauthorized', { status: 401 });
       }
       response = await tripService.getByUser(session.user.email, { limit });
-    } else if (type === TripListType.BOTH) {
-      if (!session?.user?.email) {
-        return new Response('Unauthorized', { status: 401 });
-      }
-      response = await tripService.getByUserAndPublic(session.user.email, { limit });
     } else {
       throw new Error('Invalid trip type : ' + type);
     }

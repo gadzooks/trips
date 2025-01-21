@@ -16,6 +16,7 @@ export interface MinimumTripRecord {
 
 export interface TripRecordDTO {
     tripId?: string
+    SK?: string
     timestamp?: string
     userId?: string
     fakeData?: boolean

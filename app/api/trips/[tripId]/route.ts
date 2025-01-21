@@ -3,19 +3,22 @@ import { UpdateCommand } from '@aws-sdk/lib-dynamodb'
 import { NextResponse } from 'next/server'
 import { docClient } from '@/lib/dynamodb'
 import { CreateTripDbService } from '../../services/createTripDbService';
+import { UpdateTripDbService } from '../../services/updateTripDbService';
+import { getTripIdPk } from '../../services/createTrip/createTransactions';
+import { TABLE_NAME } from '../../services/common';
 
-const tripService = new CreateTripDbService()
+const createTripDbService = new CreateTripDbService()
+const updateTripDbService = new UpdateTripDbService()
 
 // GET single trip
 export async function GET(
   request: Request,
-  context: { params: { tripId: string } }
+  { params }: { params: { tripId: string } }
 ) {
-  const params = await context.params;
-  const { tripId } = params;
+  const { tripId } = await params;
 
   try {
-    const result = await tripService.getTripById(tripId)
+    const result = await createTripDbService.getTripById(tripId)
     if (!result) {
       return new Response('Trip not found', { status: 404 })
     }
@@ -23,7 +26,7 @@ export async function GET(
     return NextResponse.json({ ...result })
   } catch (error) {
     console.error('Failed to fetch trip:', error)
-    return new Response('Failed to fetch trip', { status: 500 })
+    return new NextResponse('Failed to fetch trip', { status: 500 })
   }
 }
 
@@ -39,7 +42,7 @@ export async function PATCH(
     console.log(`Updating trip ${tripId} with:`, body);
     
     // Validate request body
-    if (!body.attributeKey || body.attributeValue === undefined) {
+    if (!body.attributeKey || body.attributeValue === undefined || body.attributeKey === null) {
       return NextResponse.json(
         { error: "Missing attributeKey or attributeValue" },
         { status: 400 }
@@ -48,19 +51,22 @@ export async function PATCH(
 
     // Create the update expression and attribute values
     const { updateExpression, expressionAttributeValues, expressionAttributeNames } = 
-      buildUpdateExpression(body.attributeKey, body.attributeValue);
+    updateTripDbService.buildUpdateExpression(body.attributeKey, body.attributeValue);
 
     const updateCommand = {
-      TableName: process.env.TRIPS_TABLE_NAME,
+      TableName: TABLE_NAME,
       Key: {
-        PK: `TRIP#${tripId}`
+        PK: `${getTripIdPk(tripId)}`,
+        SK: body.SK
       },
       UpdateExpression: updateExpression,
       ExpressionAttributeValues: expressionAttributeValues,
       ExpressionAttributeNames: expressionAttributeNames,
       ConditionExpression: "attribute_exists(PK)",
-      ReturnValues: "ALL_NEW"
+      ReturnValues: "ALL_NEW" as const
     };
+
+    console.log('Update command:', updateCommand);
 
     const result = await docClient.send(new UpdateCommand(updateCommand));
     
@@ -82,65 +88,6 @@ export async function PATCH(
       { status: 500 }
     );
   }
-}
-
-// Helper function to build the update expression
-function buildUpdateExpression(
-  attributeKey: string,
-  attributeValue: any
-): {
-  updateExpression: string;
-  expressionAttributeValues: Record<string, any>;
-  expressionAttributeNames: Record<string, string>;
-} {
-  // Validate that attributeKey is a valid property of TripRecord
-  const validTopLevelKeys = [
-    'name', 'description', 'isPublic', 'sharedWith',
-    'tags', 'days'
-  ];
-
-  if (!validTopLevelKeys.includes(attributeKey)) {
-    throw new Error(`Invalid attribute key: ${attributeKey}`);
-  }
-
-  // Special handling for arrays and complex types
-  if (attributeKey === 'days') {
-    // Validate days array structure
-    if (!Array.isArray(attributeValue) || !validateDaysArray(attributeValue)) {
-      throw new Error('Invalid days array structure');
-    }
-  }
-
-  if (attributeKey === 'sharedWith' || attributeKey === 'tags') {
-    // Validate array input
-    if (!Array.isArray(attributeValue)) {
-      throw new Error(`${attributeKey} must be an array`);
-    }
-  }
-
-  return {
-    updateExpression: `SET #${attributeKey} = :${attributeKey}`,
-    expressionAttributeValues: {
-      [`:${attributeKey}`]: attributeValue
-    },
-    expressionAttributeNames: {
-      [`#${attributeKey}`]: attributeKey
-    }
-  };
-}
-
-// Helper function to validate days array structure
-function validateDaysArray(days: any[]): boolean {
-  return days.every(day => {
-    return (
-      typeof day.date === 'string' &&
-      typeof day.itinerary === 'string' &&
-      typeof day.reservations === 'string' &&
-      typeof day.lodging === 'string' &&
-      typeof day.driveTimes === 'string' &&
-      typeof day.notes === 'string'
-    );
-  });
 }
 
 // Delete trip

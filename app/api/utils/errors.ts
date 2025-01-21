@@ -1,4 +1,4 @@
-// src/utils/errors.ts
+// app/api/utils/errors.ts
 
 export class TripError extends Error {
     constructor(
