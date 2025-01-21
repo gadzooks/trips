@@ -4,14 +4,34 @@ import { Card } from '../ui/shadcn/card';
 import { Switch } from '../ui/shadcn/switch';
 import type { TripFormProps } from './trip-types';
 import TripDayComponent from './TripDayComponent';
+import { EditableText } from '../ui/input/EditableText';
 
 export const TripForm: React.FC<TripFormProps> = ({
   formData,
   onFieldChange,
-  onSubmit,
   isReadOnly = false,
   submitLabel = 'Save Trip'
 }) => {
+  const handleFieldUpdate = async (field: string, value: string | boolean) => {
+    onFieldChange(field, value);
+    
+    try {
+      const response = await fetch(`/api/trips/${formData.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          [field]: field === 'tags' ? value.split(' ') : value 
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update field');
+      }
+    } catch (error) {
+      console.error(`Failed to update ${field}:`, error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -26,7 +46,7 @@ export const TripForm: React.FC<TripFormProps> = ({
                   <div className="flex items-center space-x-2">
                     <Switch
                       checked={formData.isPublic}
-                      onCheckedChange={(checked) => onFieldChange('isPublic', checked)}
+                      onCheckedChange={(checked) => handleFieldUpdate('isPublic', checked)}
                       className="bg-red-400 data-[state=checked]:bg-green-600"
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -38,75 +58,51 @@ export const TripForm: React.FC<TripFormProps> = ({
             </div>
           </div>
 
-          <form onSubmit={onSubmit}>
-            <div className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Trip Name
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => onFieldChange('name', e.target.value)}
-                    className="block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm shadow-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500 placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                    required
-                    placeholder="Enter trip name"
-                    readOnly={isReadOnly}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Tags
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.tags}
-                    onChange={(e) => onFieldChange('tags', e.target.value)}
-                    className="block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm shadow-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500 placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                    placeholder="summer beach family"
-                    readOnly={isReadOnly}
-                  />
-                </div>
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Trip Name
+                </label>
+                <EditableText
+                  value={formData.name}
+                  onSave={(value) => handleFieldUpdate('name', value)}
+                  className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Description
+                  Tags
                 </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => onFieldChange('description', e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm shadow-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500 placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                  rows={3}
-                  placeholder="Describe your trip"
-                  readOnly={isReadOnly}
-                />
-              </div>
-
-              <div className="rounded-lg overflow-hidden">
-                <TripDayComponent
-                  onChange={(days) => onFieldChange('days', days)}
-                  initialRows={formData.days}
-                  isReadOnly={isReadOnly}
+                <EditableText
+                  value={formData.tags}
+                  onSave={(value) => handleFieldUpdate('tags', value)}
+                  className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
                 />
               </div>
             </div>
 
-            {!isReadOnly && (
-              <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-colors"
-                  >
-                    {submitLabel}
-                  </button>
-                </div>
-              </div>
-            )}
-          </form>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Description
+              </label>
+              <EditableText
+                value={formData.description}
+                onSave={(value) => handleFieldUpdate('description', value)}
+                isTextArea={true}
+                className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
+              />
+            </div>
+
+            <div className="rounded-lg overflow-hidden">
+              <TripDayComponent
+                onChange={(days) => handleFieldUpdate('days', days)}
+                initialRows={formData.days}
+                isReadOnly={isReadOnly}
+              />
+            </div>
+          </div>
         </Card>
       </div>
     </div>

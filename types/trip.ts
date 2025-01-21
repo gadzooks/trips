@@ -15,6 +15,8 @@ export interface MinimumTripRecord {
 }
 
 export interface TripRecordDTO {
+    tripId?: string
+    timestamp?: string
     userId?: string
     fakeData?: boolean
     name: string
@@ -22,15 +24,17 @@ export interface TripRecordDTO {
     isPublic: boolean
     sharedWith?: string[]
     tags?: string[]
-    days?: TripDay[]
+    days?: TripDayDTO[]
+    createdAt?: string
+    createdBy?: string
 }
 
-export interface TripDay {
+export interface TripDayDTO {
     date: string;
     itinerary: string;
     reservations: string;
     lodging: string;
-    driveTimes: string;
+    travelTime: string;
     notes: string;
 }
 

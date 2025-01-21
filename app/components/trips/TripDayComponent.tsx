@@ -1,16 +1,31 @@
-// app/components/trips/TripDayComponent.tsx
-import React, { useState } from 'react';
-import { Clock, Trash2, Plus, Calendar } from 'lucide-react';
-import type { TripDay, TripDayProps } from './trip-types';
+import React, { useState, useEffect } from 'react';
+import { Clock, Trash2, Plus } from 'lucide-react';
+import type { TripDayProps } from './trip-types';
+import { TripDayDTO } from '@/types/trip';
 
 const TripDayComponent: React.FC<TripDayProps> = ({ 
   onChange, 
   initialRows = [], 
   isReadOnly = false 
 }) => {
-  const [days, setDays] = useState<TripDay[]>(initialRows);
+  const [days, setDays] = useState<TripDayDTO[]>(() => {
+    return initialRows.map(row => ({
+      date: row.date || '',
+      itinerary: row.itinerary || '',
+      reservations: row.reservations || '',
+      lodging: row.lodging || '',
+      travelTime: row.travelTime || '',
+      notes: row.notes || ''
+    }));
+  });
 
-  const updateDay = (index: number, field: keyof TripDay, value: string) => {
+  useEffect(() => {
+    if (initialRows.length > 0) {
+      setDays(initialRows);
+    }
+  }, [initialRows]);
+
+  const updateDay = (index: number, field: keyof TripDayDTO, value: string) => {
     const newDays = [...days];
     newDays[index] = { ...newDays[index], [field]: value };
     setDays(newDays);
@@ -18,12 +33,13 @@ const TripDayComponent: React.FC<TripDayProps> = ({
   };
 
   const addDay = () => {
-    const newDay: TripDay = {
+    const newDay: TripDayDTO = {
       date: '',
       itinerary: '',
       reservations: '',
       lodging: '',
-      driveTimes: ''
+      travelTime: '',
+      notes: ''
     };
     setDays([...days, newDay]);
     onChange([...days, newDay]);
@@ -66,12 +82,12 @@ const TripDayComponent: React.FC<TripDayProps> = ({
               </td>
               <td className="p-3">
                 <textarea
-                    value={day.itinerary}
-                    onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none text-left focus:text-left placeholder:text-left focus:placeholder:text-transparent"
-                    rows={3}
-                    placeholder="Add itinerary details..."
-                    readOnly={isReadOnly}
+                  value={day.itinerary}
+                  onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
+                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none text-left focus:text-left placeholder:text-left focus:placeholder:text-transparent"
+                  rows={3}
+                  placeholder="Add itinerary details..."
+                  readOnly={isReadOnly}
                 />
               </td>
               <td className="p-3">
@@ -99,10 +115,10 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   <Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                   <input
                     type="text"
-                    value={day.driveTimes}
-                    onChange={(e) => updateDay(index, 'driveTimes', e.target.value)}
+                    value={day.travelTime}
+                    onChange={(e) => updateDay(index, 'travelTime', e.target.value)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:placeholder:text-transparent"
-                    placeholder="Drive time"
+                    placeholder="Travel time"
                     readOnly={isReadOnly}
                   />
                 </div>
