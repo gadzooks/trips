@@ -39,7 +39,7 @@ export async function PATCH(
     const params = await context.params;
     const { tripId } = params;
     const body = await request.json();
-    console.log(`Updating trip ${tripId} with:`, body);
+    // console.log(`Updating trip ${tripId} with:`, body);
     
     // Validate request body
     if (!body.attributeKey || body.attributeValue === undefined || body.attributeKey === null) {
@@ -66,7 +66,7 @@ export async function PATCH(
       ReturnValues: "ALL_NEW" as const
     };
 
-    console.log('Update command:', updateCommand);
+    // console.log('Update command:', updateCommand);
 
     const result = await docClient.send(new UpdateCommand(updateCommand));
     

@@ -3,7 +3,6 @@ import React from 'react';
 import { Card } from '../ui/shadcn/card';
 import { Switch } from '../ui/shadcn/switch';
 import type { TripFormProps } from './trip-types';
-import TripDayComponent from './TripDayComponent';
 import { EditableText } from '../ui/input/EditableText';
 import { updateTripAttribute } from '../ui/utils/updateTrip';
 

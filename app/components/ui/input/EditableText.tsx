@@ -1,11 +1,16 @@
 // app/components/ui/input/EditableText.tsx
-"use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { updateTripAttribute } from '../utils/updateTrip';
 
-// Editable Text Component for inline editing
 export const EditableText = ({
-    tripId, SK, createdAt, attributeKey, attributeValue, isReadyOnly, isTextArea = false, className = ""
+    tripId,
+    SK,
+    createdAt,
+    attributeKey,
+    attributeValue,
+    isReadyOnly,
+    isTextArea = false,
+    className = ""
 }: {
     tripId?: string;
     SK?: string;
@@ -19,15 +24,19 @@ export const EditableText = ({
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(attributeValue);
 
+    useEffect(() => {
+        setEditValue(attributeValue);
+    }, [attributeValue]);
+
     const handleSave = async () => {
         setIsEditing(false);
-        console.log('handlesave : tripId is : ', tripId)
-        if (!isReadyOnly && tripId && SK && editValue !== attributeValue ) {
+        if (!isReadyOnly && tripId && SK && editValue !== attributeValue) {
             const result = await updateTripAttribute(
                 { tripId, SK, attributeKey, attributeValue: editValue }
             );
             if (!result.success) {
                 console.error(`Failed to update ${attributeKey}:`, result.error);
+                setEditValue(attributeValue); // Revert on failure
             }
         }
     };
@@ -44,35 +53,26 @@ export const EditableText = ({
     };
 
     if (isEditing) {
-        if (isTextArea) {
-            return (
-                <textarea
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    onBlur={handleSave}
-                    onKeyDown={handleKeyDown}
-                    className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${className}`}
-                    autoFocus />
-            );
-        }
+        const InputComponent = isTextArea ? 'textarea' : 'input';
         return (
-            <input
-                type="text"
+            <InputComponent
+                type={isTextArea ? undefined : "text"}
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
                 onBlur={handleSave}
                 onKeyDown={handleKeyDown}
                 className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${className}`}
-                autoFocus />
+                autoFocus
+            />
         );
     }
 
     return (
         <div
-            onClick={() => setIsEditing(true)}
-            className={`cursor-pointer hover:bg-gray-50 rounded-lg p-2 ${className}`}
+            onClick={() => !isReadyOnly && setIsEditing(true)}
+            className={`${!isReadyOnly ? 'cursor-pointer hover:bg-gray-50' : ''} rounded-lg p-2 ${className}`}
         >
-            {attributeValue}
+            {editValue}
         </div>
     );
 };
