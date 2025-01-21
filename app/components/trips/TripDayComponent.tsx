@@ -1,6 +1,6 @@
 // app/components/trips/TripDayComponent.tsx
 import React, { useState, useEffect } from 'react';
-import { Clock, Trash2, Plus } from 'lucide-react';
+import { Clock, Trash2, Plus, Pencil } from 'lucide-react';
 import type { TripDayProps } from './trip-types';
 import { TripDayDTO } from '@/types/trip';
 
@@ -57,12 +57,13 @@ const TripDayComponent: React.FC<TripDayProps> = ({
       <table className="w-full border-collapse bg-white dark:bg-gray-800 shadow-sm">
         <thead className="bg-gray-50 dark:bg-gray-700">
           <tr>
-            <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Date</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Itinerary</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Reservations</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Lodging</th>
-            <th className="p-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100">Travel times</th>
-            {!isReadOnly && <th className="w-16"></th>}
+            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-14">DATE</th>
+            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">ITINERARY</th>
+            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">RESERVATIONS</th>
+            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">LODGING</th>
+            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-10">TRAVEL TIMES</th>
+            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">NOTES</th>
+            {!isReadOnly && <th className="p-2 w-8"> <Pencil className="w-4 h-4" /> </th>}
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
@@ -71,7 +72,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
               key={index}
               className="group hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
             >
-              <td className="p-3">
+              <td className="p-1">
                 <input
                   type="text"
                   value={day.date}
@@ -81,7 +82,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   readOnly={isReadOnly}
                 />
               </td>
-              <td className="p-3">
+              <td className="p-1">
                 <textarea
                   value={day.itinerary}
                   onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
@@ -91,7 +92,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   readOnly={isReadOnly}
                 />
               </td>
-              <td className="p-3">
+              <td className="p-1">
                 <textarea
                   value={day.reservations}
                   onChange={(e) => updateDay(index, 'reservations', e.target.value)}
@@ -101,17 +102,19 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   readOnly={isReadOnly}
                 />
               </td>
-              <td className="p-3">
-                <textarea
-                  value={day.lodging}
-                  onChange={(e) => updateDay(index, 'lodging', e.target.value)}
-                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none text-left focus:text-left placeholder:text-left focus:placeholder:text-transparent"
-                  rows={3}
-                  placeholder="Add lodging details..."
-                  readOnly={isReadOnly}
-                />
+              <td className="p-1">
+                  <div className="flex items-center justify-center h-full space-x-2">
+                    <textarea
+                        value={day.lodging}
+                        onChange={(e) => updateDay(index, 'lodging', e.target.value)}
+                        className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none"
+                        rows={3}
+                        placeholder="Add lodging details..."
+                        readOnly={isReadOnly}
+                    />
+                  </div>
               </td>
-              <td className="p-3">
+              <td className="p-1">
                 <div className="flex items-center space-x-2">
                   <Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                   <input
@@ -124,8 +127,21 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   />
                 </div>
               </td>
+              <td className="p-1">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    value={day.notes}
+                    onChange={(e) => updateDay(index, 'travelTime', e.target.value)}
+                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:placeholder:text-transparent"
+                    placeholder="Notes"
+                    readOnly={isReadOnly}
+                  />
+                </div>
+              </td>
+
               {!isReadOnly && (
-                <td className="p-3">
+                <td className="p-1">
                   <button
                     type="button"
                     onClick={() => removeDay(index)}

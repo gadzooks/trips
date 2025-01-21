@@ -7,6 +7,7 @@ import type { TripFormProps } from './trip-types';
 import { EditableText } from '../ui/input/EditableText';
 import { updateTripAttribute } from '../ui/utils/updateTrip';
 import { useState } from 'react';
+import TripDayComponent from './TripDayComponent';
 
 export const TripForm: React.FC<TripFormProps> = ({
   formData,
@@ -106,14 +107,13 @@ export const TripForm: React.FC<TripFormProps> = ({
                 className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
               />
             </div>
-{/* 
             <div className="rounded-lg overflow-hidden">
               <TripDayComponent
                 onChange={(days) => handleFieldUpdate('days', days)}
                 initialRows={formData.days}
                 isReadOnly={isReadOnly}
               />
-            </div> */}
+            </div>
           </div>
         </Card>
       </div>
