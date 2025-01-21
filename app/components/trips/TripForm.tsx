@@ -1,10 +1,12 @@
 // app/components/trips/TripForm.tsx
 import React from 'react';
+import { useEffect } from 'react';
 import { Card } from '../ui/shadcn/card';
 import { Switch } from '../ui/shadcn/switch';
 import type { TripFormProps } from './trip-types';
 import { EditableText } from '../ui/input/EditableText';
 import { updateTripAttribute } from '../ui/utils/updateTrip';
+import { useState } from 'react';
 
 export const TripForm: React.FC<TripFormProps> = ({
   formData,
@@ -12,6 +14,12 @@ export const TripForm: React.FC<TripFormProps> = ({
   isReadOnly = false,
   submitLabel = 'Save Trip'
 }) => {
+
+  const [isPublic, setIsPublic] = useState(formData.isPublic);
+
+  useEffect(() => {
+    setIsPublic(formData.isPublic);
+  }, [formData.isPublic]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -26,8 +34,19 @@ export const TripForm: React.FC<TripFormProps> = ({
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     <Switch
-                      checked={formData.isPublic}
-                      onCheckedChange={(checked) => updateTripAttribute(formData.tripId || '', 'isPublic', checked)}
+                      checked={isPublic}
+                      onCheckedChange={async (checked) => {
+                        setIsPublic(checked);
+                        const result = await updateTripAttribute({
+                          tripId: formData.tripId || '',
+                          SK: formData.SK || '',
+                          attributeKey: 'isPublic',
+                          attributeValue: checked
+                        });
+                        if (!result.success) {
+                          setIsPublic(!checked); // Revert on failure
+                        }
+                      }}
                       className="bg-red-400 data-[state=checked]:bg-green-600"
                     />
                     <span className="text-sm text-gray-700 dark:text-gray-300">
