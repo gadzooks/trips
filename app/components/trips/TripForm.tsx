@@ -109,7 +109,8 @@ export const TripForm: React.FC<TripFormProps> = ({
             </div>
             <div className="rounded-lg overflow-hidden">
               <TripDayComponent
-                onChange={(days) => handleFieldUpdate('days', days)}
+                // onChange={(days) => handleFieldUpdate('days', days)}
+                onChange={() => {}}
                 initialRows={formData.days}
                 isReadOnly={isReadOnly}
               />

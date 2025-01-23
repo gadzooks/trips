@@ -19,7 +19,7 @@ export default function NewTrip() {
         },
         body: JSON.stringify({
           ...formData,
-          tags: formData.tags.split(' '),
+          // tags: formData.tags.split(' '),
         }),
       });
       
