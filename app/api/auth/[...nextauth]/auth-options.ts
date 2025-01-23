@@ -14,10 +14,12 @@ export const authOptions: any = {
     signIn: '/auth/login',
   },
   callbacks: {
+    // @ts-ignore
     async jwt({ token, user }) {
       if (user) token.id = user.id;
       return token;
     },
+    // @ts-ignore
     async session({ session, token }) {
       if (session?.user) session.user.id = token.id as string;
       return session;

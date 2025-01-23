@@ -23,6 +23,7 @@ interface TripUpdateResponse {
         body: JSON.stringify({
           'SK': SK,
           'attributeKey': attributeKey,
+          // @ts-ignore
           'attributeValue': attributeKey === 'tags' ? attributeValue.split(' ') : attributeValue
         })
       });
