@@ -6,12 +6,11 @@ const tripService = new CreateTripDbService()
 
 export async function GET(
   request: Request,
-  context: { params: { tagName: string } }
+  { params }: { params: Promise<{ tagName: string }> }
 ) {
+  const tagName = (await params).tagName
   try {
 
-    const params = await context.params;
-    const { tagName } = params;
     const trips = await tripService.getByTag(tagName, true)
 
     return NextResponse.json(trips)

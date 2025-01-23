@@ -9,10 +9,9 @@ const tripService = new CreateTripDbService();
 
 export async function GET(
   request: Request,
-  context: { params: { type: string } }
+  { params }: { params: Promise<{ type: string }> }
 ) {
-  const params = await context.params;
-  const { type } = params;
+  const type = (await params).type
   
   try {
     const session = await auth()

@@ -13,9 +13,9 @@ const updateTripDbService = new UpdateTripDbService()
 // GET single trip
 export async function GET(
   request: Request,
-  { params }: { params: { tripId: string } }
+  { params }: { params: Promise<{ tripId: string }> }
 ) {
-  const { tripId } = await params;
+  const tripId = (await params).tripId
 
   try {
     const result = await createTripDbService.getTripById(tripId)
@@ -33,11 +33,10 @@ export async function GET(
 // Update trip
 export async function PATCH(
   request: Request,
-  context: { params: { tripId: string } }
+  { params }: { params: Promise<{ tripId: string }> }
 ) {
+  const tripId = (await params).tripId
   try {
-    const params = await context.params;
-    const { tripId } = params;
     const body = await request.json();
     // console.log(`Updating trip ${tripId} with:`, body);
     
@@ -93,10 +92,9 @@ export async function PATCH(
 // Delete trip
 export async function DELETE(
   request: Request,
-  context: { params: { tripId: string } }
+  { params }: { params: Promise<{ tripId: string }> }
 ) {
-  const params = await context.params;
-  const { tripId } = params;
+  const tripId = (await params).tripId
 
   try {
     throw new Error('DELETE Not implemented')
