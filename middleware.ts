@@ -2,15 +2,32 @@
 import { auth } from "@/auth"
  
 export default auth((req) => {
+  // Skip middleware for API routes
+  if (req.nextUrl.pathname.startsWith('/api/')) {
+    return
+  }
+
   if (!req.auth && req.nextUrl.pathname !== "/") {
     const newUrl = new URL("/", req.nextUrl.origin)
+    newUrl.searchParams.set("callbackUrl", req.nextUrl.pathname)
     return Response.redirect(newUrl)
   }
 })
 
 export const config = {
-    matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public files (public folder)
+     * - auth paths
+     */
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.css$|.*\\.js$).*)"
+  ],
 }
+
 // export default auth((req) => {
 //     // req.auth
 //   })
