@@ -1,14 +1,14 @@
+// auth.ts
 import NextAuth from "next-auth"
-// import GitHub from "next-auth/providers/github"
 import Google from "next-auth/providers/google"
- 
-export const { auth, handlers, signIn, signOut } = NextAuth({
-  // debug: true,
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google],
   callbacks: {
-    authorized: async ({ auth }) => {
-      // Logged in users are authenticated, otherwise redirect to login page
-      return !!auth
-    },
-  },
+    redirect({ url, baseUrl }) {
+      if (url.startsWith('/')) return `${baseUrl}${url}`
+      else if (new URL(url).origin === baseUrl) return url
+      return baseUrl
+    }
+  }
 })
