@@ -191,7 +191,7 @@ const users = [
           }
           
           const data = await response.json();
-        //   console.log(`Created trip ${trip.name} for ${user} with ID: ${data.tripId}`);
+          console.log(`Created trip ${trip.name} for ${user} with ID: ${data.tripId}`);
         } catch (error) {
           console.error(`Failed to create trip ${trip.name} for ${user}:`, error);
         }
