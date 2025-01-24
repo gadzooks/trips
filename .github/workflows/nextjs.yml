@@ -73,7 +73,7 @@ jobs:
           code=$?
           if [ $code -eq 0 ]; then
             deploymentUrl=$(cat deployment-url.txt)
-            vercel alias $deploymentUrl qa.mtp.weekendwanderings.com --scope=your-team-or-username --token=${{ secrets.VERCEL_TOKEN }}
+            vercel alias $deploymentUrl qa.mtp.weekendwanderings.com --token=${{ secrets.VERCEL_TOKEN }}
             echo "::set-output name=url::qa.mtp.weekendwanderings.com"
           else
             errorMessage=$(cat error.txt)
