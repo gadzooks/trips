@@ -22,7 +22,7 @@ export default function RootLayout({
               <Navbar />
               <div className="flex">
                 <SidebarWrapper />
-                <main className="flex-1 p-8 ml-64 mt-16">
+                <main className="flex-1 p-4 md:p-8 mt-16 md:ml-64">
                   {children}
                 </main>
               </div>
@@ -33,3 +33,6 @@ export default function RootLayout({
     </html>
   )
 }
+
+
+
