@@ -69,17 +69,9 @@ jobs:
       - name: Deploy to QA
         id: deploy
         run: |
-          vercel deploy --token=${{ secrets.VERCEL_TOKEN }} >deployment-url.txt 2>error.txt
-          code=$?
-          if [ $code -eq 0 ]; then
-            deploymentUrl=$(cat deployment-url.txt)
-            vercel alias $deploymentUrl qa.mtp.weekendwanderings.com --token=${{ secrets.VERCEL_TOKEN }}
-            echo "::set-output name=url::qa.mtp.weekendwanderings.com"
-          else
-            errorMessage=$(cat error.txt)
-            echo "::error::Deployment failed: $errorMessage"
-            exit 1
-          fi
+          DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})
+          vercel alias set $DEPLOYMENT_URL qa.mtp.weekendwanderings.com --token=${{ secrets.VERCEL_TOKEN }}
+          echo "url=qa.mtp.weekendwanderings.com" >> $GITHUB_OUTPUT
 
   prod-deploy:
       needs: [test, qa-deploy]
