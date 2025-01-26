@@ -27,7 +27,11 @@ jobs:
         with:
           node-version: '22'
       - name: Push to QA Branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
           git checkout -b qa
           git push origin qa --force
           
