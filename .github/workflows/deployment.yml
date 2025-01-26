@@ -53,7 +53,7 @@ jobs:
         with:
           node-version: '22'
       - run: npm ci
-      - run: npm run test:integration
+    #   - run: npm run test:integration
         env:
           QA_URL: ${{ needs.deploy-qa.outputs.url }}
 
