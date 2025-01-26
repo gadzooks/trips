@@ -28,7 +28,7 @@ jobs:
           node-version: '22'
       - name: Push to QA Branch
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TRIPS_TOKEN }}
         run: |
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
