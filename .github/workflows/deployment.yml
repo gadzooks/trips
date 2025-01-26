@@ -32,6 +32,7 @@ jobs:
         run: |
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
+          git remote set-url origin https://x-access-token:${{ secrets.TRIPS_TOKEN }}@github.com/${{ github.repository }}
           git checkout -b qa
           git push origin qa --force
           
@@ -54,7 +55,6 @@ jobs:
           node-version: '22'
       - run: npm ci
     #   - run: npm run test:integration
-    #  add this later
         env:
           QA_URL: ${{ needs.deploy-qa.outputs.url }}
 
