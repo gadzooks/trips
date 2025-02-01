@@ -1,5 +1,7 @@
 // app/components/ui/utils/updateTrip.ts
 
+import { TripDayDTO } from "@/types/trip";
+
 interface TripUpdateResponse {
     success: boolean;
     error?: string;
@@ -9,14 +11,14 @@ interface TripUpdateResponse {
     tripId: string;
     SK: string;
     attributeKey: string;
-    attributeValue: string | boolean | number;
+    attributeValue: string | boolean | string[] | TripDayDTO[] | undefined;
   }
   
   export const updateTripAttribute = async (
     { tripId, SK, attributeKey, attributeValue }: UpdateTripAttributeRequest
   ): Promise<TripUpdateResponse> => {
     try {
-      // console.log('updatetripattribute tripId is : ', tripId)
+      console.log('updatetripattribute tripId is : ', tripId)
       const response = await fetch(`/api/trips/${tripId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

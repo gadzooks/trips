@@ -1,59 +1,102 @@
 // app/components/trips/TripForm.tsx
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../ui/shadcn/card';
 import { Switch } from '../ui/shadcn/switch';
-import type { TripFormProps } from './trip-types';
+import { Button } from '../ui/shadcn/button';
 import { EditableText } from '../ui/input/EditableText';
 import { updateTripAttribute } from '../ui/utils/updateTrip';
-import { useState } from 'react';
 import TripDayComponent from './TripDayComponent';
+import { TripRecordDTO } from '@/types/trip';
+import { TripFormProps } from './trip-types';
+
+const defaultTrip: TripRecordDTO = {
+  name: '',
+  description: '',
+  tags: [],
+  isPublic: false,
+  days: []
+};
 
 export const TripForm: React.FC<TripFormProps> = ({
-  formData,
-  onFieldChange,
+  initialData = {},
   isReadOnly = false,
-  submitLabel = 'Save Trip'
+  isNewRecord = false,
+  onSubmit
 }) => {
+  const [formData, setFormData] = useState<TripRecordDTO>({ ...defaultTrip, ...initialData });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [isPublic, setIsPublic] = useState(formData.isPublic);
+  console.log('TripForm initialData is : ', JSON.stringify(initialData))
+  const isEditMode = Boolean(formData.tripId && formData.SK);
 
-  useEffect(() => {
-    setIsPublic(formData.isPublic);
-  }, [formData.isPublic]);
+  const handleAttributeUpdate = async (
+    key: keyof TripRecordDTO,
+    value: TripRecordDTO[keyof TripRecordDTO]
+  ): Promise<boolean> => {
+    if (isNewRecord || !isEditMode) {
+      setFormData(prev => {
+        const updated = { ...prev, [key]: value };
+        console.log('Updated form data:', updated); // Log inside setState callback
+        return updated;
+      });
+      return true;
+    }
+  
+    try {
+      const result = await updateTripAttribute({
+        tripId: formData.tripId!,
+        SK: formData.SK!,
+        attributeKey: key,
+        attributeValue: value
+      });
+  
+      if (result.success) {
+        setFormData(prev => ({ ...prev, [key]: value }));
+        return true;
+      }
+      setError('Failed to update trip');
+      return false;
+    } catch (err) {
+      setError('Error updating trip');
+      return false;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isReadOnly || !onSubmit) return;
+
+    try {
+      setIsSubmitting(true);
+      setError(null);
+      await onSubmit(formData);
+    } catch (err: any) {
+      setError('Failed to save trip : ' + err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <form onSubmit={handleSubmit} className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <Card className="bg-white dark:bg-gray-800 border-0 shadow-sm">
           <div className="p-6 border-b border-gray-200 dark:border-gray-700">
             <div className="flex justify-between items-center">
               <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                {isReadOnly ? 'Trip Details' : submitLabel}
+                {isReadOnly ? 'Trip Details' : isEditMode ? 'Edit Trip' : 'Create Trip'}
               </h1>
               {!isReadOnly && (
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      checked={isPublic}
-                      onCheckedChange={async (checked) => {
-                        setIsPublic(checked);
-                        const result = await updateTripAttribute({
-                          tripId: formData.tripId || '',
-                          SK: formData.SK || '',
-                          attributeKey: 'isPublic',
-                          attributeValue: checked
-                        });
-                        if (!result.success) {
-                          setIsPublic(!checked); // Revert on failure
-                        }
-                      }}
-                      className="bg-red-400 data-[state=checked]:bg-green-600"
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {formData.isPublic ? 'Public' : 'Private'} Trip
-                    </span>
-                  </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    checked={formData.isPublic}
+                    onCheckedChange={(checked) => handleAttributeUpdate('isPublic', checked)}
+                    className="bg-red-400 data-[state=checked]:bg-green-600"
+                  />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    {formData.isPublic ? 'Public' : 'Private'} Trip
+                  </span>
                 </div>
               )}
             </div>
@@ -69,9 +112,9 @@ export const TripForm: React.FC<TripFormProps> = ({
                   tripId={formData.tripId}
                   SK={formData.SK}
                   attributeValue={formData.name}
-                  attributeKey='name'
+                  attributeKey="name"
                   isReadyOnly={isReadOnly}
-                  // onSave={(value) => updateTripAttribute(formData.tripId || '','name', value)}
+                  onSave={(value: string) => handleAttributeUpdate('name', value)}
                   className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
                 />
               </div>
@@ -84,9 +127,9 @@ export const TripForm: React.FC<TripFormProps> = ({
                   tripId={formData.tripId}
                   SK={formData.SK}
                   attributeValue={(formData.tags || []).join(' ')}
-                  attributeKey='tags'
+                  attributeKey="tags"
                   isReadyOnly={isReadOnly}
-                  // onSave={(value) => updateTripAttribute(formData.tripId || '', 'tags', value)}
+                  onSave={(value) => handleAttributeUpdate('tags', value.split(' ').filter(Boolean))}
                   className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
                 />
               </div>
@@ -99,25 +142,43 @@ export const TripForm: React.FC<TripFormProps> = ({
               <EditableText
                 tripId={formData.tripId}
                 SK={formData.SK}
-                attributeKey='description'
+                attributeKey="description"
                 attributeValue={formData.description}
                 isReadyOnly={isReadOnly}
-                // onSave={(value) => handleFieldUpdate('description', value)}
+                onSave={(value: string) => handleAttributeUpdate('description', value)}
                 isTextArea={true}
                 className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
               />
             </div>
+
             <div className="rounded-lg overflow-hidden">
               <TripDayComponent
-                // onChange={(days) => handleFieldUpdate('days', days)}
-                onChange={() => {}}
+                onChange={(days) => handleAttributeUpdate('days', days)}
                 initialRows={formData.days}
                 isReadOnly={isReadOnly}
               />
             </div>
+
+            {error && (
+              <div className="text-red-500 text-sm mt-2">
+                {error}
+              </div>
+            )}
+
+            {!isReadOnly && !isEditMode && (
+              <div className="flex justify-end mt-6">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  {isSubmitting ? 'Saving...' : 'Create Trip'}
+                </Button>
+              </div>
+            )}
           </div>
         </Card>
       </div>
-    </div>
+    </form>
   );
 };

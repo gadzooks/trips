@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardHeader, CardContent } from '../ui/shadcn/card';
 import { Calendar, Navigation, Share2, Pencil, Trash2 } from "lucide-react";
-import { MinimumTripRecord, TripListType } from '@/types/trip';
+// import { TripListType } from '@/types/trip';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,9 +18,9 @@ const gradients = [
   'from-blue-500 to-indigo-500'
 ];
 
-interface TripListProps {
-    type: TripListType;
-}
+// interface TripListProps {
+//     type: TripListType;
+// }
 
 const TripCard = ({ title = "Untitled Trip", date = "No date set", id = "000", index = 0 }) => {
   const gradientClass = gradients[index % gradients.length];

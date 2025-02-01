@@ -9,6 +9,7 @@ export const EditableText = ({
     attributeKey,
     attributeValue,
     isReadyOnly,
+    onSave,
     isTextArea = false,
     className = ""
 }: {
@@ -18,6 +19,7 @@ export const EditableText = ({
     attributeKey: string;
     attributeValue: string;
     isReadyOnly: boolean;
+    onSave?: (value: string) => void;
     isTextArea?: boolean;
     className?: string;
 }) => {
@@ -30,14 +32,17 @@ export const EditableText = ({
 
     const handleSave = async () => {
         setIsEditing(false);
-        if (!isReadyOnly && tripId && SK && editValue !== attributeValue) {
-            const result = await updateTripAttribute(
-                { tripId, SK, attributeKey, attributeValue: editValue }
-            );
-            if (!result.success) {
-                console.error(`Failed to update ${attributeKey}:`, result.error);
-                setEditValue(attributeValue); // Revert on failure
+        if (editValue !== attributeValue) {
+            if (tripId && SK) {
+                const result = await updateTripAttribute(
+                    { tripId, SK, attributeKey, attributeValue: editValue }
+                );
+                if (!result.success) {
+                    setEditValue(attributeValue);
+                    return;
+                }
             }
+            onSave?.(editValue); // Call onSave with new value
         }
     };
 
@@ -57,6 +62,7 @@ export const EditableText = ({
         return (
             <InputComponent
                 type={isTextArea ? undefined : "text"}
+                name={attributeKey}
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
                 onBlur={handleSave}
