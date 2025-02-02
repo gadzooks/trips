@@ -32,6 +32,8 @@ export class UpdateTripDbService {
             if (!Array.isArray(attributeValue)) {
                 throw new Error(`${attributeKey} must be an array`);
             }
+
+            attributeValue = attributeValue.filter((tag: string) => tag.trim().length > 0);
         }
 
         return {

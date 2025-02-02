@@ -18,7 +18,6 @@ interface TripUpdateResponse {
     { tripId, SK, attributeKey, attributeValue }: UpdateTripAttributeRequest
   ): Promise<TripUpdateResponse> => {
     try {
-      console.log('updatetripattribute tripId is : ', tripId)
       const response = await fetch(`/api/trips/${tripId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

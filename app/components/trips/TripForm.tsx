@@ -23,11 +23,14 @@ export const TripForm: React.FC<TripFormProps> = ({
   isNewRecord = false,
   onSubmit
 }) => {
-  const [formData, setFormData] = useState<TripRecordDTO>({ ...defaultTrip, ...initialData });
+  const [formData, setFormData] = useState<TripRecordDTO>({ 
+    ...defaultTrip, 
+    ...initialData,
+    tags: Array.isArray(initialData.tags) ? initialData.tags : []
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('TripForm initialData is : ', JSON.stringify(initialData))
   const isEditMode = Boolean(formData.tripId && formData.SK);
 
   const handleAttributeUpdate = async (
@@ -37,7 +40,7 @@ export const TripForm: React.FC<TripFormProps> = ({
     if (isNewRecord || !isEditMode) {
       setFormData(prev => {
         const updated = { ...prev, [key]: value };
-        console.log('Updated form data:', updated); // Log inside setState callback
+        // console.log('Updated form data:', updated); // Log inside setState callback
         return updated;
       });
       return true;
@@ -126,10 +129,10 @@ export const TripForm: React.FC<TripFormProps> = ({
                 <EditableText
                   tripId={formData.tripId}
                   SK={formData.SK}
-                  attributeValue={(formData.tags || []).join(' ')}
+                  attributeValue={typeof formData.tags === 'string' ? formData.tags : (formData.tags || []).join(' ')}
                   attributeKey="tags"
                   isReadyOnly={isReadOnly}
-                  onSave={(value) => handleAttributeUpdate('tags', value.split(' ').filter(Boolean))}
+                  onSave={(value: string) => handleAttributeUpdate('tags', value)}
                   className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
                 />
               </div>
