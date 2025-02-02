@@ -38,11 +38,7 @@ export const TripForm: React.FC<TripFormProps> = ({
     value: TripRecordDTO[keyof TripRecordDTO]
   ): Promise<boolean> => {
     if (isNewRecord || !isEditMode) {
-      setFormData(prev => {
-        const updated = { ...prev, [key]: value };
-        // console.log('Updated form data:', updated); // Log inside setState callback
-        return updated;
-      });
+      setFormData(prev => ({ ...prev, [key]: value }));
       return true;
     }
   
@@ -105,10 +101,10 @@ export const TripForm: React.FC<TripFormProps> = ({
             </div>
           </div>
 
-          <div className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <div className="p-6 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label htmlFor="tripName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Trip Name
                 </label>
                 <EditableText
@@ -118,12 +114,14 @@ export const TripForm: React.FC<TripFormProps> = ({
                   attributeKey="name"
                   isReadyOnly={isReadOnly}
                   onSave={(value: string) => handleAttributeUpdate('name', value)}
-                  className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
+                  className="block w-full h-12 px-4 py-3 text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter trip name"
+                  tabIndex={1}
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <div className="space-y-2">
+                <label htmlFor="tripTags" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Tags
                 </label>
                 <EditableText
@@ -133,13 +131,15 @@ export const TripForm: React.FC<TripFormProps> = ({
                   attributeKey="tags"
                   isReadyOnly={isReadOnly}
                   onSave={(value: string) => handleAttributeUpdate('tags', value)}
-                  className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
+                  className="block w-full h-12 px-4 py-3 text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter tags separated by spaces"
+                  tabIndex={2}
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <div className="space-y-2">
+              <label htmlFor="tripDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Description
               </label>
               <EditableText
@@ -150,7 +150,9 @@ export const TripForm: React.FC<TripFormProps> = ({
                 isReadyOnly={isReadOnly}
                 onSave={(value: string) => handleAttributeUpdate('description', value)}
                 isTextArea={true}
-                className="block w-full text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800"
+                className="block w-full h-32 px-4 py-3 text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                placeholder="Enter trip description"
+                tabIndex={3}
               />
             </div>
 
@@ -174,6 +176,7 @@ export const TripForm: React.FC<TripFormProps> = ({
                   type="submit"
                   disabled={isSubmitting}
                   className="bg-blue-600 hover:bg-blue-700 text-white"
+                  tabIndex={4}
                 >
                   {isSubmitting ? 'Saving...' : 'Create Trip'}
                 </Button>

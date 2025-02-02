@@ -1,4 +1,3 @@
-// app/components/ui/input/EditableText.tsx
 import React, { useState, useEffect } from 'react';
 import { updateTripAttribute } from '../utils/updateTrip';
 
@@ -9,6 +8,7 @@ export const EditableText = ({
     attributeKey,
     attributeValue,
     isReadyOnly,
+    tabIndex,
     onSave,
     isTextArea = false,
     className = ""
@@ -19,6 +19,8 @@ export const EditableText = ({
     attributeKey: string;
     attributeValue: string;
     isReadyOnly: boolean;
+    placeholder?: string;
+    tabIndex?: number;
     onSave?: (value: string) => void;
     isTextArea?: boolean;
     className?: string;
@@ -42,7 +44,7 @@ export const EditableText = ({
                     return;
                 }
             }
-            onSave?.(editValue); // Call onSave with new value
+            onSave?.(editValue);
         }
     };
 
@@ -54,6 +56,10 @@ export const EditableText = ({
         if (e.key === 'Escape') {
             setEditValue(attributeValue);
             setIsEditing(false);
+        }
+        // Add Enter key handling for non-editing mode
+        if (e.key === 'Enter' && !isEditing && !isReadyOnly) {
+            setIsEditing(true);
         }
     };
 
@@ -67,6 +73,8 @@ export const EditableText = ({
                 onChange={(e) => setEditValue(e.target.value)}
                 onBlur={handleSave}
                 onKeyDown={handleKeyDown}
+                placeholder={attributeValue}
+                tabIndex={tabIndex}
                 className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${className}`}
                 autoFocus
             />
@@ -76,7 +84,9 @@ export const EditableText = ({
     return (
         <div
             onClick={() => !isReadyOnly && setIsEditing(true)}
-            className={`${!isReadyOnly ? 'cursor-pointer hover:bg-gray-50' : ''} rounded-lg p-2 ${className}`}
+            onKeyDown={handleKeyDown}
+            tabIndex={isReadyOnly ? undefined : tabIndex}
+            className={`${!isReadyOnly ? 'cursor-pointer hover:bg-gray-50' : ''} rounded-lg p-2 ${className} focus:ring-2 focus:ring-purple-500 focus:outline-none`}
         >
             {editValue}
         </div>
