@@ -7,7 +7,8 @@ import { TripDayDTO } from '@/types/trip';
 const TripDayComponent: React.FC<TripDayProps> = ({ 
   onChange, 
   initialRows = [], 
-  isReadOnly = false 
+  isReadOnly,
+  isNewRecord
 }) => {
   const [days, setDays] = useState<TripDayDTO[]>(() => 
     initialRows.map(row => ({
@@ -215,7 +216,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
           </button>
           
           <div className="space-x-2">
-            {hasChanges && (
+            {hasChanges && !isNewRecord && (
               <>
                 <button
                   type="button"

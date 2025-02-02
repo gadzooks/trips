@@ -28,5 +28,6 @@ export interface TripFormProps {
 export interface TripDayProps {
   onChange: (days: TripDayDTO[]) => void;
   initialRows?: TripDayDTO[];
-  isReadOnly?: boolean;
+  isReadOnly: boolean;
+  isNewRecord: boolean;
 }

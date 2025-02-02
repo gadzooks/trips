@@ -156,13 +156,22 @@ export const TripForm: React.FC<TripFormProps> = ({
               />
             </div>
 
+            {!isNewRecord && (
             <div className="rounded-lg overflow-hidden">
               <TripDayComponent
                 onChange={(days) => handleAttributeUpdate('days', days)}
                 initialRows={formData.days}
                 isReadOnly={isReadOnly}
+                isNewRecord={isNewRecord}
               />
             </div>
+            )}
+
+            {isNewRecord && (
+            <div className='flex justify-center' >
+              Create a new trip to add itinerary
+              </div>
+            )}
 
             {error && (
               <div className="text-red-500 text-sm mt-2">
