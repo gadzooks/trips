@@ -18,6 +18,9 @@ export async function POST(request: Request) {
     }
     const body: TripRecordDTO = await request.json()
     const userId = body.userId || session.user.email
+    // console.log('tags type is ', typeof body.tags)
+    // console.log('tags is ', body.tags)
+    // const createTripRequest: TripRecordDTO = toArrayTags(body)
     
     const result = await tripService.createTrip(body, userId)
     return NextResponse.json({ tripId: result })

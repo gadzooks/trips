@@ -121,10 +121,21 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string):
         });
     });
  
-    let allTags = tripData.tags || [];
-    if (tripData.isPublic) {
-        allTags.push('PUBLIC');
+    let allTags: string[] = [];
+    if (typeof tripData.tags === 'string') {
+        allTags = tripData.tags.split(' ').map(tag => tag.trim());
+    } else if (Array.isArray(tripData.tags)) {
+        allTags = tripData.tags;
     }
+    // console.log('allTags is ', allTags);
+    // console.log('tripData.tags type is ', typeof tripData.tags);
+    // console.log('tripData.tags is ', tripData.tags);
+    // if (tripData.isPublic) {
+    //     allTags.push('PUBLIC');
+    // }
+
+    allTags = uniqueStrings(allTags);
+    // console.log('allTags after uniqueStrings is ', allTags);
  
     // Search for tags using eq('TAG#{tag}') and SK begins_with('TIMESTAMP#')
     // to delete tags, search for PK eq('TAG#{tag}') and SK eq('TIMESTAMP#{timestamp}#{tripId}')
@@ -135,6 +146,13 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string):
             ...partialTripDetails,
         });
     });
+    if (tripData.isPublic) {
+        records.push({
+            PK: getTagDbPK('PUBLIC', true),
+            SK: tripId,
+            ...partialTripDetails,
+        });
+    }
 
     const transactItems = records.map(record => ({
         Put: {
@@ -161,6 +179,10 @@ export function getTripIdPrefix() {
 export function getTripIdPk(tripId: string) {
     return `${getTripIdPrefix()}${tripId}`;
 }
+
+function uniqueStrings(arr: string[]): string[] {
+    return [...new Set(arr.filter(str => str.trim().length > 0))];
+   }
 
 function getSharedWithDbPK(sharedUserId: string) {
     return `SHAREDWITH#${sharedUserId}`;

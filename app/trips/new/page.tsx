@@ -8,12 +8,16 @@ export default function NewTrip() {
  const router = useRouter();
 
  const handleSubmit = async (tripData: TripRecordDTO) => {
-  if (!tripData.name.trim()) {
-    throw new Error('Trip name is required');
-  }
+   if (!tripData.name.trim()) {
+     throw new Error('Trip name is required');
+   }
+
+   if (!tripData.description.trim()) {
+     throw new Error('Trip description is required');
+   }
 
    try {
-      console.log('new trip tripData:', JSON.stringify(tripData));
+      // console.log('new trip tripData:', JSON.stringify(tripData));
      const response = await fetch('/api/trips', {
        method: 'POST',
        headers: { 'Content-Type': 'application/json' },

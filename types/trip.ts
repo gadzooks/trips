@@ -24,7 +24,7 @@ export interface TripRecordDTO {
     description: string
     isPublic: boolean
     sharedWith?: string[]
-    tags?: string[]
+    tags?: string | string[]
     days?: TripDayDTO[]
     createdAt?: string
     createdBy?: string

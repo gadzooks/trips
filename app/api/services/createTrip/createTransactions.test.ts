@@ -52,6 +52,21 @@ describe('TripService', () => {
           transactionCount: 3, // 1 trip + 1 public status + 1 owner
           hasPublicStatus: true
         }
+      }],
+      ['trip with undefined tags', {
+        input: {
+          tripData: {
+            name: 'No Tags Trip',
+            description: 'No Tags Trip',
+            isPublic: true,
+            sharedWith: []
+          },
+          userId: 'user123'
+        },
+        expected: {
+          transactionCount: 3, // 1 trip + 1 public status + 1 owner
+          hasPublicStatus: true
+        }
       }]
     ])('%s', (_, testCase) => {
       const { tripId, userId, timestamp, transactItems } = createTripTransactions(
