@@ -1,6 +1,6 @@
 // app/components/trips/TripDayComponent.tsx
 import React, { useState, useEffect } from 'react';
-import { Clock, Trash2, Plus, Pencil } from 'lucide-react';
+import { Clock, Trash2, Plus, Pencil, Save, RotateCcw, GripVertical } from 'lucide-react';
 import type { TripDayProps } from './trip-types';
 import { TripDayDTO } from '@/types/trip';
 
@@ -9,20 +9,24 @@ const TripDayComponent: React.FC<TripDayProps> = ({
   initialRows = [], 
   isReadOnly = false 
 }) => {
-  const [days, setDays] = useState<TripDayDTO[]>(() => {
-    return initialRows.map(row => ({
+  const [days, setDays] = useState<TripDayDTO[]>(() => 
+    initialRows.map(row => ({
       date: row.date || '',
       itinerary: row.itinerary || '',
       reservations: row.reservations || '',
       lodging: row.lodging || '',
       travelTime: row.travelTime || '',
       notes: row.notes || ''
-    }));
-  });
+    }))
+  );
+  const [originalDays, setOriginalDays] = useState<TripDayDTO[]>(days);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (initialRows.length > 0) {
       setDays(initialRows);
+      setOriginalDays(initialRows);
     }
   }, [initialRows]);
 
@@ -30,10 +34,11 @@ const TripDayComponent: React.FC<TripDayProps> = ({
     const newDays = [...days];
     newDays[index] = { ...newDays[index], [field]: value };
     setDays(newDays);
-    onChange(newDays);
+    setHasChanges(true);
   };
 
-  const addDay = () => {
+  const addDay = (e: React.MouseEvent) => {
+    e.preventDefault();
     const newDay: TripDayDTO = {
       date: '',
       itinerary: '',
@@ -43,129 +48,194 @@ const TripDayComponent: React.FC<TripDayProps> = ({
       notes: ''
     };
     setDays([...days, newDay]);
-    onChange([...days, newDay]);
+    setHasChanges(true);
   };
 
   const removeDay = (index: number) => {
-    const newDays = days.filter((_, i) => i !== index);
+    setDays(days.filter((_, i) => i !== index));
+    setHasChanges(true);
+  };
+
+  const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    setDragIndex(index);
+    e.currentTarget.style.opacity = '0.4';
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
+    e.preventDefault();
+    if (dragIndex === null) return;
+    
+    const newDays = [...days];
+    const dragDay = newDays[dragIndex];
+    newDays.splice(dragIndex, 1);
+    newDays.splice(index, 0, dragDay);
+    
     setDays(newDays);
-    onChange(newDays);
+    setDragIndex(index);
+  };
+
+  const handleDragEnd = (e: React.DragEvent<HTMLTableRowElement>) => {
+    e.currentTarget.style.opacity = '';
+    setDragIndex(null);
+    setHasChanges(true);
+  };
+
+  const handleSave = () => {
+    onChange(days);
+    setHasChanges(false);
+    setOriginalDays(days);
+  };
+
+  const handleReset = () => {
+    setDays(originalDays);
+    setHasChanges(false);
   };
 
   return (
-    <div className="overflow-x-auto rounded-lg">
-      <table className="w-full border-collapse bg-white dark:bg-gray-800 shadow-sm">
-        <thead className="bg-gray-50 dark:bg-gray-700">
-          <tr>
-            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-14">DATE</th>
-            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">ITINERARY</th>
-            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">RESERVATIONS</th>
-            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">LODGING</th>
-            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-10">TRAVEL TIMES</th>
-            <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">NOTES</th>
-            {!isReadOnly && <th className="p-2 w-8"> <Pencil className="w-4 h-4" /> </th>}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
-          {days.map((day, index) => (
-            <tr 
-              key={index}
-              className="group hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
-            >
-              <td className="p-1">
-                <input
-                  type="text"
-                  value={day.date}
-                  onChange={(e) => updateDay(index, 'date', e.target.value)}
-                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:placeholder:text-transparent"
-                  placeholder="Date"
-                  readOnly={isReadOnly}
-                />
-              </td>
-              <td className="p-1">
-                <textarea
-                  value={day.itinerary}
-                  onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
-                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none text-left focus:text-left placeholder:text-left focus:placeholder:text-transparent"
-                  rows={3}
-                  placeholder="Add itinerary details..."
-                  readOnly={isReadOnly}
-                />
-              </td>
-              <td className="p-1">
-                <textarea
-                  value={day.reservations}
-                  onChange={(e) => updateDay(index, 'reservations', e.target.value)}
-                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none text-left focus:text-left placeholder:text-left focus:placeholder:text-transparent"
-                  rows={3}
-                  placeholder="Add reservation details..."
-                  readOnly={isReadOnly}
-                />
-              </td>
-              <td className="p-1">
-                  <div className="flex items-center justify-center h-full space-x-2">
-                    <textarea
-                        value={day.lodging}
-                        onChange={(e) => updateDay(index, 'lodging', e.target.value)}
-                        className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none resize-none"
-                        rows={3}
-                        placeholder="Add lodging details..."
-                        readOnly={isReadOnly}
-                    />
-                  </div>
-              </td>
-              <td className="p-1">
-                <div className="flex items-center space-x-2">
-                  <Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+    <div className="space-y-4">
+      <div className="overflow-x-auto rounded-lg">
+        <table className="w-full border-collapse bg-white dark:bg-gray-800 shadow-sm">
+          <thead className="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              {!isReadOnly && <th className="w-8"></th>}
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">DATE</th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">ACTIVITIES</th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">BOOKINGS</th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">STAY</th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">TRAVEL TIME</th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">NOTES</th>
+              {!isReadOnly && <th className="w-8"></th>}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
+            {days.map((day, index) => (
+              <tr
+                key={index}
+                draggable={!isReadOnly}
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragEnd={handleDragEnd}
+                className="group hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+              >
+                {!isReadOnly && (
+                  <td className="w-8 cursor-move">
+                    <GripVertical className="w-4 h-4 mx-auto opacity-0 group-hover:opacity-100" />
+                  </td>
+                )}
+                <td className="p-1">
                   <input
                     type="text"
-                    value={day.travelTime}
-                    onChange={(e) => updateDay(index, 'travelTime', e.target.value)}
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:placeholder:text-transparent"
-                    placeholder="Travel time"
+                    value={day.date}
+                    onChange={(e) => updateDay(index, 'date', e.target.value)}
+                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
+                    placeholder="Date"
                     readOnly={isReadOnly}
                   />
-                </div>
-              </td>
-              <td className="p-1">
-                <div className="flex items-center space-x-2">
+                </td>
+                <td className="p-1">
+                  <textarea
+                    value={day.itinerary}
+                    onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
+                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
+                    rows={2}
+                    placeholder="Add activities..."
+                    readOnly={isReadOnly}
+                  />
+                </td>
+                <td className="p-1">
+                  <textarea
+                    value={day.reservations}
+                    onChange={(e) => updateDay(index, 'reservations', e.target.value)}
+                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
+                    rows={2}
+                    placeholder="Add booking details..."
+                    readOnly={isReadOnly}
+                  />
+                </td>
+                <td className="p-1">
+                  <input
+                    type="text"
+                    value={day.lodging}
+                    onChange={(e) => updateDay(index, 'lodging', e.target.value)}
+                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
+                    placeholder="Stay location"
+                    readOnly={isReadOnly}
+                  />
+                </td>
+                <td className="p-1">
+                  <div className="flex items-center space-x-2">
+                    <Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                    <input
+                      type="text"
+                      value={day.travelTime}
+                      onChange={(e) => updateDay(index, 'travelTime', e.target.value)}
+                      className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
+                      placeholder="Travel time"
+                      readOnly={isReadOnly}
+                    />
+                  </div>
+                </td>
+                <td className="p-1">
                   <input
                     type="text"
                     value={day.notes}
-                    onChange={(e) => updateDay(index, 'travelTime', e.target.value)}
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:placeholder:text-transparent"
+                    onChange={(e) => updateDay(index, 'notes', e.target.value)}
+                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
                     placeholder="Notes"
                     readOnly={isReadOnly}
                   />
-                </div>
-              </td>
-
-              {!isReadOnly && (
-                <td className="p-1">
-                  <button
-                    type="button"
-                    onClick={() => removeDay(index)}
-                    className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-opacity"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
                 </td>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      
+                {!isReadOnly && (
+                  <td className="p-1">
+                    <button
+                      type="button"
+                      onClick={() => removeDay(index)}
+                      className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-opacity"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       {!isReadOnly && (
-        <div className="mt-4 flex justify-center">
+        <div className="flex justify-between items-center mt-4">
           <button
             type="button"
             onClick={addDay}
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 focus:outline-none"
+            className="inline-flex items-center px-4 py-2 text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Day
           </button>
+          
+          <div className="space-x-2">
+            {hasChanges && (
+              <>
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                >
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  Reset
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Changes
+                </button>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>

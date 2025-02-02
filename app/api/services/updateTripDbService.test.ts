@@ -51,7 +51,7 @@ describe('buildUpdateExpression', () => {
       itinerary: 'Visit museum',
       reservations: 'Lunch at 12pm',
       lodging: 'Hotel ABC',
-      driveTimes: '30 mins',
+      travelTime: '30 mins',
       notes: 'Bring camera'
     }];
     const result = buildUpdateExpression('days', days);
@@ -98,7 +98,7 @@ describe('validateDaysArray', () => {
       itinerary: 'Visit museum',
       reservations: 'Lunch at 12pm',
       lodging: 'Hotel ABC',
-      driveTimes: '30 mins',
+      travelTime: '30 mins',
       notes: 'Bring camera'
     }];
     expect(validateDaysArray(days)).toBe(true);
@@ -119,7 +119,7 @@ describe('validateDaysArray', () => {
       itinerary: 123, // Should be string
       reservations: 'Lunch at 12pm',
       lodging: 'Hotel ABC',
-      driveTimes: '30 mins',
+      travelTime: '30 mins',
       notes: 'Bring camera'
     }];
     expect(validateDaysArray(days)).toBe(false);

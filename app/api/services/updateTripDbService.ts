@@ -55,7 +55,7 @@ export class UpdateTripDbService {
             typeof day.itinerary === 'string' &&
             typeof day.reservations === 'string' &&
             typeof day.lodging === 'string' &&
-            typeof day.driveTimes === 'string' &&
+            typeof day.travelTime === 'string' &&
             typeof day.notes === 'string'
         );
     });
