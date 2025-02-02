@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { updateTripAttribute } from '../utils/updateTrip';
 
 export const EditableText = ({
@@ -27,6 +27,8 @@ export const EditableText = ({
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(attributeValue);
+    const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+    const spanRef = useRef<HTMLSpanElement>(null);
 
     useEffect(() => {
         setEditValue(attributeValue);
@@ -57,9 +59,22 @@ export const EditableText = ({
             setEditValue(attributeValue);
             setIsEditing(false);
         }
-        // Add Enter key handling for non-editing mode
-        if (e.key === 'Enter' && !isEditing && !isReadyOnly) {
+    };
+
+    const handleFocus = () => {
+        if (!isReadyOnly) {
             setIsEditing(true);
+            // Use requestAnimationFrame to ensure the input is rendered before focusing
+            requestAnimationFrame(() => {
+                if (inputRef.current) {
+                    inputRef.current.focus();
+                    // Position cursor at the end of the text
+                    const length = editValue.length;
+                    if ('setSelectionRange' in inputRef.current) {
+                        inputRef.current.setSelectionRange(length, length);
+                    }
+                }
+            });
         }
     };
 
@@ -67,6 +82,7 @@ export const EditableText = ({
         const InputComponent = isTextArea ? 'textarea' : 'input';
         return (
             <InputComponent
+                ref={inputRef as any}
                 type={isTextArea ? undefined : "text"}
                 name={attributeKey}
                 value={editValue}
@@ -76,19 +92,20 @@ export const EditableText = ({
                 placeholder={attributeValue}
                 tabIndex={tabIndex}
                 className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${className}`}
-                autoFocus
             />
         );
     }
 
     return (
-        <div
-            onClick={() => !isReadyOnly && setIsEditing(true)}
-            onKeyDown={handleKeyDown}
+        <span
+            ref={spanRef}
+            role="textbox"
             tabIndex={isReadyOnly ? undefined : tabIndex}
-            className={`${!isReadyOnly ? 'cursor-pointer hover:bg-gray-50' : ''} rounded-lg p-2 ${className} focus:ring-2 focus:ring-purple-500 focus:outline-none`}
+            onFocus={handleFocus}
+            onClick={handleFocus}
+            className={`${!isReadyOnly ? 'cursor-text hover:bg-gray-50' : ''} inline-block w-full rounded-lg p-2 ${className} focus:ring-2 focus:ring-purple-500 focus:outline-none`}
         >
             {editValue}
-        </div>
+        </span>
     );
 };
