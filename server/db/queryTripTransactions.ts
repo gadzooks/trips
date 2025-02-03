@@ -1,6 +1,6 @@
 // app/api/services/createTrip/createTransactions.ts
 
-import { getOwnerWithDbPK, getTagDbPK } from "./dbKeys";
+import { getOwnerWithDbPK, getTagDbPK, getTripIdPk } from "./dbKeys";
 
 export function queryByTripId(tripId: string) {
     return {
@@ -60,27 +60,4 @@ export function queryByTagPaginated(tag: string, isPublic: boolean, limit: numbe
         ScanIndexForward: false,
         ExclusiveStartKey: exclusiveStartKey
     }
-}
-
-
-export function extractTagsFromTripData(tags: string | string[] | undefined): string[] {
-    let allTags: string[] = [];
-    if (typeof tags === 'string') {
-        allTags = tags.split(' ').map(tag => tag.trim());
-    } else if (Array.isArray(tags)) {
-        allTags = tags;
-    }
-    return uniqueStrings(allTags);
-}
-
-function uniqueStrings(arr: string[]): string[] {
-    return [...new Set(arr.filter(str => str.trim().length > 0))];
-}
-
-export function getTripIdPrefix() {
-    return 'TRIP#';
-}
-
-export function getTripIdPk(tripId: string) {
-    return `${getTripIdPrefix()}${tripId}`;
 }

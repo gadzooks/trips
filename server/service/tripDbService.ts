@@ -3,7 +3,7 @@
 import { QueryCommand } from '@aws-sdk/lib-dynamodb'
 import { docClient } from '@/lib/dynamodb'
 import { TripRecord } from '@/types/trip'
-import { getTripIdPk } from '../db/queryTripTransactions'
+import { getTripIdPk } from '../db/dbKeys'
 
 export interface TripAccessResult {
   allowed: boolean

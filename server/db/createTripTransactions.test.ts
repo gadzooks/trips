@@ -1,7 +1,7 @@
 // app/api/services/createTrip/createTransactions.test.ts
 import { describe, it, expect } from '@jest/globals';
 import { createTripTransactions } from './createTripTransactions';
-import { extractTagsFromTripData } from './queryTripTransactions';
+import { extractTagsFromTripData } from '@/lib/tags';
 
 // Mock environment variables
 process.env.TRIP_PLANNER_TABLE_NAME = 'test-table';

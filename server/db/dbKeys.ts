@@ -12,3 +12,11 @@ export function getTagDbPK(tag: string, isPublic: boolean) {
 export function getOwnerWithDbPK(userId: string) {
   return `CREATEDBY#${userId}`;
 }
+
+export function getTripIdPrefix() {
+  return 'TRIP#';
+}
+
+export function getTripIdPk(tripId: string) {
+  return `${getTripIdPrefix()}${tripId}`;
+}

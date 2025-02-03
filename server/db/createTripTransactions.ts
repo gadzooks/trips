@@ -1,8 +1,8 @@
 import { MinimumTripRecord, TripRecordDTO } from "@/types/trip";
 import { timestampIsoFormat } from "@/lib/time";
 import { ulid } from 'ulid'
-import { extractTagsFromTripData, getTripIdPk } from "./queryTripTransactions";
-import { getOwnerWithDbPK, getSharedWithDbPK, getTagDbPK } from "./dbKeys";
+import { getOwnerWithDbPK, getSharedWithDbPK, getTagDbPK, getTripIdPk } from "./dbKeys";
+import { extractTagsFromTripData } from "@/lib/tags";
 
 export interface CreateTripTransactionsResult {
   tripId: string;

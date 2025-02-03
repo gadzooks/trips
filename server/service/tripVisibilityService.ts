@@ -6,7 +6,7 @@ import { TransactWriteCommand } from '@aws-sdk/lib-dynamodb';
 import { createVisibilityTransactions } from '../db/tripVisibilityTransactions';
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
 import { UpdateTripDbService } from '../db/updateTripTransactions';
-import { getTripIdPk } from '../db/queryTripTransactions';
+import { getTripIdPk } from '../db/dbKeys';
 
 const updateTripDbService = new UpdateTripDbService()
 
