@@ -1,5 +1,5 @@
 // app/server/service/updateTripDbService.test.ts
-import { UpdateTripDbService } from './updateTripDbService';
+import { UpdateTripDbService } from './updateTripTransactions';
 
 const { buildUpdateExpression, validateDaysArray } = new UpdateTripDbService();
 

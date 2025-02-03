@@ -1,6 +1,6 @@
 // app/api/services/createTrip/tripVisibilityTransactions.ts
 import { TransactWriteCommandInput } from '@aws-sdk/lib-dynamodb';
-import { extractTagsFromTripData } from './createTransactions';
+import { extractTagsFromTripData } from './queryTripTransactions';
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
 
 export function createVisibilityTransactions(request: UpdateTripAttributeRequest):

@@ -1,4 +1,4 @@
-// app/api/utils/time.ts
+// lib/time.ts
 export function timestampIsoFormat(date: Date) {
   return date.toISOString()
 }
