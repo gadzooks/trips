@@ -1,15 +1,10 @@
 // app/api/trips/[tripId]/route.ts
-import { UpdateCommand } from '@aws-sdk/lib-dynamodb'
 import { NextResponse } from 'next/server'
-import { docClient } from '@/lib/dynamodb'
 import { CreateTripDbService } from '../../services/createTripDbService';
-import { UpdateTripDbService } from '../../services/updateTripDbService';
-import { getTripIdPk } from '../../services/createTrip/createTransactions';
 import { TripVisibilityService } from '../../services/tripVisibilityService';
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
 
 const createTripDbService = new CreateTripDbService()
-const updateTripDbService = new UpdateTripDbService()
 const tripVisibilityService = new TripVisibilityService()
 
 // GET single trip
@@ -50,41 +45,11 @@ export async function PATCH(
       );
     }
 
-    let result: any;
-    //FIXME move all this to a service
-    if (body.attributeKey !== 'isPublic') {
-
-      // Create the update expression and attribute values
-      const { updateExpression, expressionAttributeValues, expressionAttributeNames } =
-        updateTripDbService.buildUpdateExpression(body.attributeKey, body.attributeValue);
-
-      const updateCommand = {
-        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
-        Key: {
-          PK: `${getTripIdPk(tripId)}`,
-          SK: body.createdAt
-        },
-        UpdateExpression: updateExpression,
-        ExpressionAttributeValues: expressionAttributeValues,
-        ExpressionAttributeNames: expressionAttributeNames,
-        ConditionExpression: "attribute_exists(PK)",
-        ReturnValues: "ALL_NEW" as const
-      };
-
-      // console.log('Update command:', updateCommand);
-
-      result = await docClient.send(new UpdateCommand(updateCommand));
-      return NextResponse.json({
-        success: true,
-        updatedTrip: result.Attributes
-      });
-    } else {
-      result = await tripVisibilityService.updateTripVisibility(body); 
-      return NextResponse.json({
-        success: true,
-        updatedTrip: body.attributeValue
-      });
-    }
+    await tripVisibilityService.updateTripAtributes(body)
+    return NextResponse.json({
+      success: true,
+      updatedTrip: body.attributeValue
+    });
 
   } catch (error) {
     console.error('Failed to update trip:', error);

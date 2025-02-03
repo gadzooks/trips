@@ -1,12 +1,45 @@
 // app/api/services/tripVisibilityService.ts
 
+import { UpdateCommand } from '@aws-sdk/lib-dynamodb'
 import { docClient } from '@/lib/dynamodb';
-import { TripRecord } from '@/types/trip';
 import { TransactWriteCommand } from '@aws-sdk/lib-dynamodb';
 import { createVisibilityTransactions } from './createTrip/tripVisibilityTransactions';
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
+import { UpdateTripDbService } from './updateTripDbService';
+import { getTripIdPk } from './createTrip/createTransactions';
+
+const updateTripDbService = new UpdateTripDbService()
 
 export class TripVisibilityService {
+  async updateTripAtributes(body: UpdateTripAttributeRequest): Promise<void> {
+
+    if (body.attributeKey !== 'isPublic') {
+
+      // Create the update expression and attribute values
+      const { updateExpression, expressionAttributeValues, expressionAttributeNames } =
+        updateTripDbService.buildUpdateExpression(body.attributeKey, body.attributeValue);
+
+      const updateCommand = {
+        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
+        Key: {
+          PK: `${getTripIdPk(body.tripId)}`,
+          SK: body.createdAt
+        },
+        UpdateExpression: updateExpression,
+        ExpressionAttributeValues: expressionAttributeValues,
+        ExpressionAttributeNames: expressionAttributeNames,
+        ConditionExpression: "attribute_exists(PK)",
+        ReturnValues: "ALL_NEW" as const
+      };
+
+      // console.log('Update command:', updateCommand);
+
+      await docClient.send(new UpdateCommand(updateCommand));
+    } else {
+      await this.updateTripVisibility(body); 
+    }
+  }
+
   async updateTripVisibility(request: UpdateTripAttributeRequest): Promise<void> {
     
     const transactItems = createVisibilityTransactions(request);
