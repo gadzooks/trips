@@ -1,7 +1,4 @@
 // app/api/services/updateTripDbService.ts
-import { TripVisibilityService } from "./tripVisibilityService";
-
-// app/api/services/updateTripDbService.ts
 export class UpdateTripDbService {
 // Helper function to build the update expression
     buildUpdateExpression(

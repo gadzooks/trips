@@ -3,10 +3,10 @@
 import { UpdateCommand } from '@aws-sdk/lib-dynamodb'
 import { docClient } from '@/lib/dynamodb';
 import { TransactWriteCommand } from '@aws-sdk/lib-dynamodb';
-import { createVisibilityTransactions } from './createTrip/tripVisibilityTransactions';
+import { createVisibilityTransactions } from '../db/tripVisibilityTransactions';
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
 import { UpdateTripDbService } from './updateTripDbService';
-import { getTripIdPk } from './createTrip/createTransactions';
+import { getTripIdPk } from '../db/createTransactions';
 
 const updateTripDbService = new UpdateTripDbService()
 

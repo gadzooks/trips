@@ -2,7 +2,7 @@
 
 import { NextResponse } from 'next/server'
 import { TripRecordDTO } from '@/types/trip'
-import { CreateTripDbService } from '../services/createTripDbService'
+import { CreateTripDbService } from '../../../server/service/createTripDbService'
 import { auth } from '@/auth'
 
 const tripService = new CreateTripDbService()

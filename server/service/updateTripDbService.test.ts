@@ -1,6 +1,4 @@
-// app/api/services/updateTripDbService.test.ts
-// app/api/trips/[tripId]/route.test.ts
-
+// app/server/service/updateTripDbService.test.ts
 import { UpdateTripDbService } from './updateTripDbService';
 
 const { buildUpdateExpression, validateDaysArray } = new UpdateTripDbService();

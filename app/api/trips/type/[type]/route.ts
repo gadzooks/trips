@@ -1,6 +1,6 @@
 // app/api/trips/type/[type]/route.ts
 import { NextResponse } from 'next/server';
-import { CreateTripDbService } from '../../../services/createTripDbService';
+import { CreateTripDbService } from '../../../../../server/service/createTripDbService';
 import { MinimumTripRecord, TripListType } from '@/types/trip';
 // import { getServerSession } from "next-auth/next";
 import { auth } from '@/auth'

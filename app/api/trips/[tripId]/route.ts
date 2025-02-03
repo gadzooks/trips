@@ -1,7 +1,7 @@
 // app/api/trips/[tripId]/route.ts
 import { NextResponse } from 'next/server'
-import { CreateTripDbService } from '../../services/createTripDbService';
-import { TripVisibilityService } from '../../services/tripVisibilityService';
+import { CreateTripDbService } from '../../../../server/service/createTripDbService';
+import { TripVisibilityService } from '../../../../server/service/tripVisibilityService';
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
 
 const createTripDbService = new CreateTripDbService()

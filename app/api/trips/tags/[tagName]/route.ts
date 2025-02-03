@@ -1,6 +1,6 @@
 // app/api/trips/tags/[tagName]/route.ts
 import { NextResponse } from 'next/server';
-import { CreateTripDbService } from '../../../services/createTripDbService'
+import { CreateTripDbService } from '../../../../../server/service/createTripDbService'
 
 const tripService = new CreateTripDbService()
 

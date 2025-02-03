@@ -1,6 +1,6 @@
 // app/api/services/createTrip/createTransactions.ts
 import { MinimumTripRecord, TripRecordDTO } from "@/types/trip";
-import { timestampIsoFormat } from "../common";
+import { timestampIsoFormat } from "@/app/api/utils/time";
 import { ulid } from 'ulid'
 
 export function queryByTripId(tripId: string) {

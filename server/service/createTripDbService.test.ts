@@ -1,7 +1,7 @@
 // app/api/services/createTripDbService.test.ts
 import { CreateTripDbService } from './createTripDbService';
 import { TripRecordDTO, TripDayDTO } from '@/types/trip';
-import { getTripIdPrefix } from './createTrip/createTransactions';
+import { getTripIdPrefix } from '../db/createTransactions';
 import { ulid } from 'ulid';
 
 describe('TripMapper', () => {
