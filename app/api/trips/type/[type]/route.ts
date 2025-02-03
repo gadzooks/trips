@@ -2,7 +2,6 @@
 import { NextResponse } from 'next/server';
 import { CreateTripDbService } from '../../../../../server/service/createTripDbService';
 import { MinimumTripRecord, TripListType } from '@/types/trip';
-// import { getServerSession } from "next-auth/next";
 import { auth } from '@/auth'
 
 const tripService = new CreateTripDbService();
