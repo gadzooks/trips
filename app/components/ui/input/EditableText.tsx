@@ -1,3 +1,4 @@
+// app/components/ui/input/EditableText.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { updateTripAttribute } from '../utils/updateTrip';
 
@@ -5,17 +6,20 @@ export const EditableText = ({
     tripId,
     SK,
     createdAt,
+    createdBy,
     attributeKey,
     attributeValue,
     isReadyOnly,
     tabIndex,
     onSave,
     isTextArea = false,
+    tags,
     className = ""
 }: {
     tripId?: string;
     SK?: string;
     createdAt?: string;
+    createdBy?: string;
     attributeKey: string;
     attributeValue: string;
     isReadyOnly: boolean;
@@ -23,6 +27,7 @@ export const EditableText = ({
     tabIndex?: number;
     onSave?: (value: string) => void;
     isTextArea?: boolean;
+    tags?: string;
     className?: string;
 }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -36,10 +41,13 @@ export const EditableText = ({
 
     const handleSave = async () => {
         setIsEditing(false);
+        tags = tags || '';
+        createdAt = createdAt || '';
+        createdBy = createdBy || '';
         if (editValue !== attributeValue) {
             if (tripId && SK) {
                 const result = await updateTripAttribute(
-                    { tripId, SK, attributeKey, attributeValue: editValue }
+                    { tripId, createdAt, createdBy, attributeKey, attributeValue: editValue, tags }
                 );
                 if (!result.success) {
                     setEditValue(attributeValue);

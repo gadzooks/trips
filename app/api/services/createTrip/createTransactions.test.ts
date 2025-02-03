@@ -1,6 +1,9 @@
 // app/api/services/createTrip/createTransactions.test.ts
 import { describe, it, expect } from '@jest/globals';
-import { createTripTransactions } from "./createTransactions"
+import { createTripTransactions, extractTagsFromTripData } from "./createTransactions"
+
+// Mock environment variables
+process.env.TRIP_PLANNER_TABLE_NAME = 'test-table';
 
 describe('TripService', () => {
   describe('createTripTransactions', () => {
@@ -11,7 +14,7 @@ describe('TripService', () => {
             name: 'Paris Trip',
             description: 'Trip to Paris',
             isPublic: true,
-            tags: ['europe', 'france', 'england'],
+            tags: 'europe france england',
             sharedWith: ['bob123', 'alice456']
           },
           userId: 'user123'
@@ -27,7 +30,7 @@ describe('TripService', () => {
             name: 'Secret Trip',
             description: 'Secret Trip',
             isPublic: false,
-            tags: ['secret'],
+            tags: 'secret',
             sharedWith: []
           },
           userId: 'user123'
@@ -43,7 +46,7 @@ describe('TripService', () => {
             name: 'No Tags Trip',
             description: 'No Tags Trip',
             isPublic: true,
-            tags: [],
+            tags: '',
             sharedWith: []
           },
           userId: 'user123'
@@ -59,7 +62,8 @@ describe('TripService', () => {
             name: 'No Tags Trip',
             description: 'No Tags Trip',
             isPublic: true,
-            sharedWith: []
+            sharedWith: [],
+            tags: undefined
           },
           userId: 'user123'
         },
@@ -86,28 +90,28 @@ describe('TripService', () => {
         expect(itemData).toHaveProperty('PK')
         expect(itemData).toHaveProperty('SK')
         expect(itemData).toHaveProperty('name', testCase.input.tripData.name)
-        // expect(itemData).toHaveProperty('tripId', tripId)
-        expect(itemData).toHaveProperty('isPublic', testCase.expected.hasPublicStatus)
         expect(itemData).toHaveProperty('createdAt', timestamp)
 
         const pk = itemData.PK
         const sk = itemData.SK
 
-        if (pk.startsWith('CREATEDBY#')) {
+        if (pk.startsWith('TRIP#')) {
+          if (testCase.input.tripData.tags !== undefined) {
+            const allTags = extractTagsFromTripData(testCase.input.tripData.tags);
+            expect(itemData).toHaveProperty('tags', allTags)
+          }
+        } else if (pk.startsWith('CREATEDBY#')) {
           expect(pk).toEqual(`CREATEDBY#${testCase.input.userId}`)
           expect(sk).toEqual(tripId)
           expect(itemData).toHaveProperty('name', testCase.input.tripData.name)
-          expect(itemData).toHaveProperty('isPublic', testCase.expected.hasPublicStatus)
           expect(itemData).toHaveProperty('createdAt', timestamp)
         } else if (pk.startsWith('SHAREDWITH#')) {
           expect(sk).toEqual(tripId)
           expect(itemData).toHaveProperty('name', testCase.input.tripData.name)
-          expect(itemData).toHaveProperty('isPublic', testCase.expected.hasPublicStatus)
           expect(itemData).toHaveProperty('createdAt', timestamp)
         } else if (pk.startsWith('TAG#')) {
           expect(sk).toEqual(tripId)
           expect(itemData).toHaveProperty('name', testCase.input.tripData.name)
-          expect(itemData).toHaveProperty('isPublic', testCase.expected.hasPublicStatus)
           expect(itemData).toHaveProperty('createdAt', timestamp)
         }
       })

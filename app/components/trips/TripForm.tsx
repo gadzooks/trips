@@ -28,6 +28,7 @@ export const TripForm: React.FC<TripFormProps> = ({
     ...initialData,
     tags: Array.isArray(initialData.tags) ? initialData.tags : []
   });
+  // console.log('TripForm formData:', JSON.stringify(formData));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,8 +45,10 @@ export const TripForm: React.FC<TripFormProps> = ({
   
     try {
       const result = await updateTripAttribute({
-        tripId: formData.tripId!,
-        SK: formData.SK!,
+        tripId: formData.tripId || '',
+        createdAt: formData.SK || '',
+        createdBy: formData.createdBy || '',
+        tags: Array.isArray(formData.tags) ? formData.tags.join(' ') : '',
         attributeKey: key,
         attributeValue: value
       });
@@ -110,6 +113,8 @@ export const TripForm: React.FC<TripFormProps> = ({
                 <EditableText
                   tripId={formData.tripId}
                   SK={formData.SK}
+                  createdAt={formData.createdAt}
+                  createdBy={formData.createdBy}
                   attributeValue={formData.name}
                   attributeKey="name"
                   isReadyOnly={isReadOnly}
@@ -127,6 +132,8 @@ export const TripForm: React.FC<TripFormProps> = ({
                 <EditableText
                   tripId={formData.tripId}
                   SK={formData.SK}
+                  createdAt={formData.createdAt}
+                  createdBy={formData.createdBy}
                   attributeValue={typeof formData.tags === 'string' ? formData.tags : (formData.tags || []).join(' ')}
                   attributeKey="tags"
                   isReadyOnly={isReadOnly}
@@ -145,6 +152,8 @@ export const TripForm: React.FC<TripFormProps> = ({
               <EditableText
                 tripId={formData.tripId}
                 SK={formData.SK}
+                createdAt={formData.createdAt}
+                createdBy={formData.createdBy}
                 attributeKey="description"
                 attributeValue={formData.description}
                 isReadyOnly={isReadOnly}

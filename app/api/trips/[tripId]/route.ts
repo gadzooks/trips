@@ -5,10 +5,12 @@ import { docClient } from '@/lib/dynamodb'
 import { CreateTripDbService } from '../../services/createTripDbService';
 import { UpdateTripDbService } from '../../services/updateTripDbService';
 import { getTripIdPk } from '../../services/createTrip/createTransactions';
-import { TABLE_NAME } from '../../services/common';
+import { TripVisibilityService } from '../../services/tripVisibilityService';
+import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
 
 const createTripDbService = new CreateTripDbService()
 const updateTripDbService = new UpdateTripDbService()
+const tripVisibilityService = new TripVisibilityService()
 
 // GET single trip
 export async function GET(
@@ -37,42 +39,52 @@ export async function PATCH(
 ) {
   const tripId = (await params).tripId
   try {
-    const body = await request.json();
+    const body = await request.json() as UpdateTripAttributeRequest;
     // console.log(`Updating trip ${tripId} with:`, body);
     
     // Validate request body
-    if (!body.attributeKey || body.attributeValue === undefined || body.attributeKey === null) {
+    if (!body.attributeKey || body.attributeValue === undefined || body.attributeKey === null ) {
       return NextResponse.json(
         { error: "Missing attributeKey or attributeValue" },
         { status: 400 }
       );
     }
 
-    // Create the update expression and attribute values
-    const { updateExpression, expressionAttributeValues, expressionAttributeNames } = 
-    updateTripDbService.buildUpdateExpression(body.attributeKey, body.attributeValue);
+    let result: any;
+    //FIXME move all this to a service
+    if (body.attributeKey !== 'isPublic') {
 
-    const updateCommand = {
-      TableName: TABLE_NAME,
-      Key: {
-        PK: `${getTripIdPk(tripId)}`,
-        SK: body.SK
-      },
-      UpdateExpression: updateExpression,
-      ExpressionAttributeValues: expressionAttributeValues,
-      ExpressionAttributeNames: expressionAttributeNames,
-      ConditionExpression: "attribute_exists(PK)",
-      ReturnValues: "ALL_NEW" as const
-    };
+      // Create the update expression and attribute values
+      const { updateExpression, expressionAttributeValues, expressionAttributeNames } =
+        updateTripDbService.buildUpdateExpression(body.attributeKey, body.attributeValue);
 
-    // console.log('Update command:', updateCommand);
+      const updateCommand = {
+        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
+        Key: {
+          PK: `${getTripIdPk(tripId)}`,
+          SK: body.createdAt
+        },
+        UpdateExpression: updateExpression,
+        ExpressionAttributeValues: expressionAttributeValues,
+        ExpressionAttributeNames: expressionAttributeNames,
+        ConditionExpression: "attribute_exists(PK)",
+        ReturnValues: "ALL_NEW" as const
+      };
 
-    const result = await docClient.send(new UpdateCommand(updateCommand));
-    
-    return NextResponse.json({
-      success: true,
-      updatedTrip: result.Attributes
-    });
+      // console.log('Update command:', updateCommand);
+
+      result = await docClient.send(new UpdateCommand(updateCommand));
+      return NextResponse.json({
+        success: true,
+        updatedTrip: result.Attributes
+      });
+    } else {
+      result = await tripVisibilityService.updateTripVisibility(body); 
+      return NextResponse.json({
+        success: true,
+        updatedTrip: body.attributeValue
+      });
+    }
 
   } catch (error) {
     console.error('Failed to update trip:', error);

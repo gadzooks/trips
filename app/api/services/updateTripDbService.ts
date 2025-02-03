@@ -1,4 +1,7 @@
 // app/api/services/updateTripDbService.ts
+import { TripVisibilityService } from "./tripVisibilityService";
+
+// app/api/services/updateTripDbService.ts
 export class UpdateTripDbService {
 // Helper function to build the update expression
     buildUpdateExpression(
@@ -35,6 +38,19 @@ export class UpdateTripDbService {
 
             attributeValue = attributeValue.filter((tag: string) => tag.trim().length > 0);
         }
+
+        // if attributeKey is isPublic
+        // 1. if making trip public
+            // 1.1 if trip is already public, do nothing
+            // 1.2 if trip is private, update isPublic to true
+            // 1.3 DELETE all rows with PK = TAG#PUBLIC#tag and SK = tripId
+            // 1.4 INSERT all rows with PK = TAG#PRIVATE#tag and SK = tripId, createdAt, createdBy, name, tripId
+
+        // 2. if making trip private
+            // 2.1 if trip is already private, do nothing
+            // 2.2 if trip is public, update isPublic to false
+            // 2.3 DELETE all rows with PK = TAG#PRIVATE#tag and SK = tripId
+            // 2.4 INSERT all rows with PK = TAG#PUBLIC#tag and SK = tripId, createdAt, createdBy, name, tripId
 
         return {
             updateExpression: `SET #${attributeKey} = :${attributeKey}`,

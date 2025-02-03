@@ -3,7 +3,6 @@
 import { QueryCommand } from '@aws-sdk/lib-dynamodb'
 import { docClient } from '@/lib/dynamodb'
 import { TripRecord } from '@/types/trip'
-import { TABLE_NAME } from './common'
 import { getTripIdPk } from './createTrip/createTransactions'
 
 export interface TripAccessResult {
@@ -15,7 +14,7 @@ export class TripDbService {
   async validateTripAccess(tripId: string, userId: string, requireOwnership: boolean = false): Promise<TripAccessResult> {
     try {
       const result = await docClient.send(new QueryCommand({
-        TableName: TABLE_NAME,
+        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
         KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
         ExpressionAttributeValues: {
           ':pk': `${getTripIdPk(tripId)}`,

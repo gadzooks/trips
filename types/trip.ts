@@ -10,7 +10,7 @@ export interface MinimumTripRecord {
     createdBy: string
     tripId: string
     name: string
-    isPublic: boolean
+    // isPublic: boolean
     createdAt: string
 }
 

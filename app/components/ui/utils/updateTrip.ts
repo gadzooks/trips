@@ -1,6 +1,7 @@
 // app/components/ui/utils/updateTrip.ts
 
-import { TripDayDTO } from "@/types/trip";
+import { MinimumTripRecord, TripDayDTO } from "@/types/trip";
+import { table } from "console";
 
 interface TripUpdateResponse {
     success: boolean;
@@ -8,24 +9,30 @@ interface TripUpdateResponse {
   }
   
   export interface UpdateTripAttributeRequest {
+    createdAt: string;
+    createdBy: string;
     tripId: string;
-    SK: string;
     attributeKey: string;
     attributeValue: string | boolean | string[] | TripDayDTO[] | undefined;
+    tags: string;
   }
   
   export const updateTripAttribute = async (
-    { tripId, SK, attributeKey, attributeValue }: UpdateTripAttributeRequest
+    { tripId, createdAt, createdBy, attributeKey, attributeValue, tags }: UpdateTripAttributeRequest
   ): Promise<TripUpdateResponse> => {
     try {
       const response = await fetch(`/api/trips/${tripId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          'SK': SK,
+          tripId,
+          'SK': createdAt,
+          'createdAt': createdAt,
+          'createdBy': createdBy,
           'attributeKey': attributeKey,
           // @ts-ignore
-          'attributeValue': attributeKey === 'tags' ? attributeValue.split(' ') : attributeValue
+          'attributeValue': attributeKey === 'tags' ? attributeValue.split(' ') : attributeValue,
+          'tags': tags
         })
       });
   

@@ -118,7 +118,6 @@ export class CreateTripDbService {
   mapToMinimumTripRecord(item: Record<string, any>): MinimumTripRecord {
     return {
       name: item.name,
-      isPublic: item.isPublic,
       tripId: item.tripId,
       createdAt: item.createdAt,
       createdBy: item.createdBy

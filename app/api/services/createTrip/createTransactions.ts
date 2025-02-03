@@ -1,11 +1,11 @@
 // app/api/services/createTrip/createTransactions.ts
 import { MinimumTripRecord, TripRecordDTO } from "@/types/trip";
-import { TABLE_NAME, timestampIsoFormat } from "../common";
+import { timestampIsoFormat } from "../common";
 import { ulid } from 'ulid'
 
 export function queryByTripId(tripId: string) {
     return {
-        TableName: TABLE_NAME,
+        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
         KeyConditionExpression: 'PK = :pk',
         ExpressionAttributeValues: {
             ':pk': getTripIdPk(tripId)
@@ -16,7 +16,7 @@ export function queryByTripId(tripId: string) {
 
 export function queryByTag(tag: string, isPublic: boolean, limit: number = 10) {
     return {
-        TableName: TABLE_NAME,
+        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
         KeyConditionExpression: 'PK = :pk',
         ExpressionAttributeValues: {
             ':pk': getTagDbPK(tag, isPublic)
@@ -32,7 +32,7 @@ export function queryByTag(tag: string, isPublic: boolean, limit: number = 10) {
 
 export function queryByCreatedBy(createdBy: string, limit: number = 10) {
     return {
-        TableName: TABLE_NAME,
+        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
         KeyConditionExpression: 'PK = :pk',
         ExpressionAttributeValues: {
             ':pk': getOwnerWithDbPK(createdBy)
@@ -48,7 +48,7 @@ export function queryByCreatedBy(createdBy: string, limit: number = 10) {
 
 export function queryByTagPaginated(tag: string, isPublic: boolean, limit: number = 10, exclusiveStartKey?: Record<string, any>) {
     return {
-        TableName: TABLE_NAME,
+        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
         KeyConditionExpression: 'PK = :pk',
         ExpressionAttributeValues: {
             ':pk': getTagDbPK(tag, isPublic)
@@ -69,6 +69,8 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string):
     const timestamp = timestampIsoFormat(new Date()); //.toISOString();
 
     const records = [];
+    const allTags: string[] = extractTagsFromTripData(tripData.tags);
+    // console.log('allTags : ', JSON.stringify(allTags, null, 2));
 
     // We want to store : 
     // 1. The main record : PK = TRIP#{tripId} - store all attributes here
@@ -89,7 +91,8 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string):
             SK: timestamp,
             createdAt: timestamp,
             createdBy: userId,
-            ...tripData
+            ...tripData,
+            tags: allTags,
         }
     );
  
@@ -97,7 +100,6 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string):
         tripId,
         name: tripData.name,
         // description: tripData.description, // will be too huge to store in shared records
-        isPublic: tripData.isPublic,
         createdAt: timestamp,
         createdBy: userId,
     };
@@ -121,22 +123,7 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string):
         });
     });
  
-    let allTags: string[] = [];
-    if (typeof tripData.tags === 'string') {
-        allTags = tripData.tags.split(' ').map(tag => tag.trim());
-    } else if (Array.isArray(tripData.tags)) {
-        allTags = tripData.tags;
-    }
-    // console.log('allTags is ', allTags);
-    // console.log('tripData.tags type is ', typeof tripData.tags);
-    // console.log('tripData.tags is ', tripData.tags);
-    // if (tripData.isPublic) {
-    //     allTags.push('PUBLIC');
-    // }
 
-    allTags = uniqueStrings(allTags);
-    // console.log('allTags after uniqueStrings is ', allTags);
- 
     // Search for tags using eq('TAG#{tag}') and SK begins_with('TIMESTAMP#')
     // to delete tags, search for PK eq('TAG#{tag}') and SK eq('TIMESTAMP#{timestamp}#{tripId}')
     (allTags).forEach(tag => {
@@ -156,7 +143,7 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string):
 
     const transactItems = records.map(record => ({
         Put: {
-            TableName: TABLE_NAME,
+            TableName: process.env.TRIP_PLANNER_TABLE_NAME,
             Item: record
         }
     }));
@@ -172,6 +159,20 @@ export interface CreateTripTransactionsResult {
     transactItems: any[]; //FIXME add type
 }
 
+export function extractTagsFromTripData(tags: string | string[] | undefined): string[] {
+    let allTags: string[] = [];
+    if (typeof tags === 'string') {
+        allTags = tags.split(' ').map(tag => tag.trim());
+    } else if (Array.isArray(tags)) {
+        allTags = tags;
+    }
+    return uniqueStrings(allTags);
+}
+
+function uniqueStrings(arr: string[]): string[] {
+    return [...new Set(arr.filter(str => str.trim().length > 0))];
+}
+
 export function getTripIdPrefix() {
     return 'TRIP#';
 }
@@ -179,10 +180,6 @@ export function getTripIdPrefix() {
 export function getTripIdPk(tripId: string) {
     return `${getTripIdPrefix()}${tripId}`;
 }
-
-function uniqueStrings(arr: string[]): string[] {
-    return [...new Set(arr.filter(str => str.trim().length > 0))];
-   }
 
 function getSharedWithDbPK(sharedUserId: string) {
     return `SHAREDWITH#${sharedUserId}`;
