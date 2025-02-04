@@ -2,30 +2,34 @@
 import { auth } from "@/auth"
  
 export default auth((req) => {
-  // Allow unauthenticated GET requests for these specific paths
+  // console.log(`Path: ${req.nextUrl.pathname}, Method: ${req.method}, Auth: ${!!req.auth}`)
+
   if (req.method === 'GET' && (
+    req.nextUrl.pathname.startsWith('/api/auth/') || 
     req.nextUrl.pathname.startsWith('/trips/') || 
     req.nextUrl.pathname.startsWith('/api/trips/') || 
     req.nextUrl.pathname.startsWith('/api/trips/type/public')
   )) {
+    // console.log('Allowing public GET access')
     return
   }
- 
- // All other API requests require auth
- if (req.nextUrl.pathname.startsWith('/api/')) {
-  if (!req.auth) {
-    return new Response('Unauthorized', { status: 401 })
+
+  if (req.nextUrl.pathname.startsWith('/api/trips') && req.method !== 'GET') {
+    if (!req.auth) {
+      console.log('Returning 401 for unauthenticated API request')
+      return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    // console.log('Allowing authenticated API request')
+    return
   }
-  return
-}
- 
-  // Redirect non-API unauthenticated requests
+
   if (!req.auth && req.nextUrl.pathname !== "/") {
+    // console.log('Redirecting unauthenticated request to /')
     const newUrl = new URL("/", req.nextUrl.origin)
     newUrl.searchParams.set("callbackUrl", req.nextUrl.pathname)
     return Response.redirect(newUrl)
   }
- })
+})
 
 export const config = {
   matcher: [
