@@ -1,3 +1,4 @@
+// app/components/site-wide/SideBar.tsx
 "use client";
 import { useTrips } from '@/hooks/useTrips';
 import { TripCard } from './TripCard';

@@ -2,17 +2,30 @@
 import { auth } from "@/auth"
  
 export default auth((req) => {
-  // Skip middleware for API routes
-  if (req.nextUrl.pathname.startsWith('/api/')) {
+  // Allow unauthenticated GET requests for these specific paths
+  if (req.method === 'GET' && (
+    req.nextUrl.pathname.startsWith('/trips/') || 
+    req.nextUrl.pathname.startsWith('/api/trips/') || 
+    req.nextUrl.pathname.startsWith('/api/trips/type/public')
+  )) {
     return
   }
-
+ 
+ // All other API requests require auth
+ if (req.nextUrl.pathname.startsWith('/api/')) {
+  if (!req.auth) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+  return
+}
+ 
+  // Redirect non-API unauthenticated requests
   if (!req.auth && req.nextUrl.pathname !== "/") {
     const newUrl = new URL("/", req.nextUrl.origin)
     newUrl.searchParams.set("callbackUrl", req.nextUrl.pathname)
     return Response.redirect(newUrl)
   }
-})
+ })
 
 export const config = {
   matcher: [
@@ -24,7 +37,7 @@ export const config = {
      * - public files (public folder)
      * - auth paths
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.css$|.*\\.js$).*)"
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.css$|.*\\.js$).*)",
   ],
 }
 
