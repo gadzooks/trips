@@ -3,18 +3,29 @@ import { NextResponse } from 'next/server'
 import { CreateTripDbService } from '../../../../server/service/createTripDbService';
 import { TripVisibilityService } from '../../../../server/service/tripVisibilityService';
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
+import { auth } from '@/auth';
+import { AccessType, TripAccessResult, TripPermissionsService } from '@/server/service/tripPermissionsService';
 
 const createTripDbService = new CreateTripDbService()
 const tripVisibilityService = new TripVisibilityService()
+const tripPermissionsService = new TripPermissionsService()
 
 // GET single trip
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ tripId: string }> }
 ) {
+  const session = await auth()
   const tripId = (await params).tripId
 
+  const tripAccessResult: TripAccessResult = await tripPermissionsService.validateTripAccess(AccessType.ReadOnly, tripId, session?.user?.email)
+
+  if (!tripAccessResult.allowed) {
+    return new NextResponse(null, { status: 403 })
+  }
+
   try {
+    //FIXME validateTripAccess should return the trip data too for AccessType.ReadOnly to avoid this extra call
     const result = await createTripDbService.getTripById(tripId)
     if (!result) {
       return new Response('Trip not found', { status: 404 })
@@ -32,7 +43,14 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ tripId: string }> }
 ) {
+  const session = await auth()
   const tripId = (await params).tripId
+  const tripAccessResult: TripAccessResult = await tripPermissionsService.validateTripAccess(AccessType.ReadOnly, tripId, session?.user?.email)
+
+  if (!tripAccessResult.allowed) {
+    return new NextResponse(null, { status: 403 })
+  }
+
   try {
     const body = await request.json() as UpdateTripAttributeRequest;
     // console.log(`Updating trip ${tripId} with:`, body);
@@ -71,7 +89,13 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ tripId: string }> }
 ) {
+  const session = await auth()
   const tripId = (await params).tripId
+  const tripAccessResult: TripAccessResult = await tripPermissionsService.validateTripAccess(AccessType.ReadOnly, tripId, session?.user?.email)
+
+  if (!tripAccessResult.allowed) {
+    return new NextResponse(null, { status: 403 })
+  }
 
   try {
     throw new Error('DELETE Not implemented')
@@ -83,7 +107,7 @@ export async function DELETE(
     //   }
     // }))
 
-    return NextResponse.json({ success: true })
+    // return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Failed to delete trip:', error)
     return new Response('Failed to delete trip', { status: 500 })

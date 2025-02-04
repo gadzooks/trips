@@ -13,6 +13,25 @@ export function queryByTripId(tripId: string) {
     }
 }
 
+export interface TripPermissionsDTO {
+    tripId: string
+    isPublic: boolean
+    createdBy: string
+    sharedWith?: string[]
+}
+
+export function queryByTripIdForPermissions(tripId: string) {
+    return {
+        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
+        KeyConditionExpression: 'PK = :pk',
+        ExpressionAttributeValues: {
+            ':pk': getTripIdPk(tripId)
+        },
+        ProjectionExpression: 'tripId, isPublic, createdBy, sharedWith',
+        Limit: 1
+    }
+}
+
 export function queryByTag(tag: string, isPublic: boolean, limit: number = 10) {
     return {
         TableName: process.env.TRIP_PLANNER_TABLE_NAME,

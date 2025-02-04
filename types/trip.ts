@@ -10,10 +10,10 @@ export interface MinimumTripRecord {
     createdBy: string
     tripId: string
     name: string
-    // isPublic: boolean
     createdAt: string
 }
 
+//FIXME use zod to validate the incoming data
 export interface TripRecordDTO {
     tripId?: string
     SK?: string
@@ -30,6 +30,7 @@ export interface TripRecordDTO {
     createdBy?: string
 }
 
+//FIXME use zod to validate the incoming data
 export interface TripDayDTO {
     date: string;
     itinerary: string;
@@ -39,6 +40,7 @@ export interface TripDayDTO {
     notes: string;
 }
 
+//FIXME use zod to validate the incoming data
 export interface TripRecord extends TripRecordDTO{
     PK: string
     SK: string
