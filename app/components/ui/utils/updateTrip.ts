@@ -14,7 +14,7 @@ interface TripUpdateResponse {
     tripId: string;
     attributeKey: string;
     attributeValue: string | boolean | string[] | TripDayDTO[] | undefined;
-    tags: string;
+    tags?: string;
   }
   
   export const updateTripAttribute = async (

@@ -33,11 +33,15 @@ export const TripForm: React.FC<TripFormProps> = ({
     }
   
     try {
+      if (formData.tripId === undefined || formData.SK === undefined || formData.createdBy === undefined) {
+        setError('Invalid trip data : missing tripId, SK or createdBy : ' + [formData.tripId, formData.SK, formData.createdBy]);
+        return false;
+      }
       const result = await updateTripAttribute({
-        tripId: formData.tripId || '',
-        createdAt: formData.SK || '',
-        createdBy: formData.createdBy || '',
-        tags: Array.isArray(formData.tags) ? formData.tags.join(' ') : formData.tags || '',
+        tripId: formData.tripId,
+        createdAt: formData.SK,
+        createdBy: formData.createdBy,
+        tags: Array.isArray(formData.tags) ? formData.tags.join(' ') : formData.tags,
         attributeKey: key,
         attributeValue: value
       });
@@ -56,7 +60,7 @@ export const TripForm: React.FC<TripFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name?.trim() || !onSubmit) {
+    if (!formData.name?.trim()) {
       setError('Trip name is required');
       return;
     }
@@ -79,7 +83,9 @@ export const TripForm: React.FC<TripFormProps> = ({
         days: formData.days || []
       };
 
-      await onSubmit(tripDataToSubmit as TripRecordDTO);
+      if (onSubmit) {
+        await onSubmit(tripDataToSubmit as TripRecordDTO);
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to save trip');
     } finally {
