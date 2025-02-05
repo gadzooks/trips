@@ -1,36 +1,71 @@
 // middleware.ts
 import { auth } from "@/auth"
- 
+import { NextResponse } from 'next/server'
+
 export default auth((req) => {
-  // console.log(`Path: ${req.nextUrl.pathname}, Method: ${req.method}, Auth: ${!!req.auth}`)
+  const isApiRoute = req.nextUrl.pathname.startsWith('/api/')
+  const path = req.nextUrl.pathname
+  
+  // Debug logging for headers test
+  // console.log('Headers:', Object.fromEntries(req.headers.entries()))
 
-  if (req.method === 'GET' && (
-    req.nextUrl.pathname.startsWith('/api/auth/') || 
-    req.nextUrl.pathname.startsWith('/trips/') || 
-    req.nextUrl.pathname.startsWith('/api/trips/') || 
-    req.nextUrl.pathname.startsWith('/api/trips/type/public')
-  )) {
-    // console.log('Allowing public GET access')
+  // Skip middleware for auth routes
+  if (path.startsWith('/api/auth/')) {
     return
   }
 
-  if (req.nextUrl.pathname.startsWith('/api/trips') && req.method !== 'GET') {
-    if (!req.auth) {
-      console.log('Returning 401 for unauthenticated API request')
-      return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  // Handle public GET requests
+  if (req.method === 'GET') {
+    if (
+      // path.startsWith('/api/auth/') || 
+      path.startsWith('/trips/') || 
+      path.startsWith('/api/trips/') || 
+      path.startsWith('/api/trips/type/public')
+    ) {
+      return NextResponse.next()
     }
-    // console.log('Allowing authenticated API request')
-    return
   }
 
-  if (!req.auth && req.nextUrl.pathname !== "/") {
-    // console.log('Redirecting unauthenticated request to /')
-    const newUrl = new URL("/", req.nextUrl.origin)
-    newUrl.searchParams.set("callbackUrl", req.nextUrl.pathname)
-    return Response.redirect(newUrl)
+  // Handle API routes that require auth
+  if (isApiRoute) {
+    if (!req.auth) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }), 
+        { 
+          status: 401,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+    } 
+    return NextResponse.next()
   }
+
+  // Handle non-API routes without auth
+  if (!req.auth && path !== "/") {
+    // Use NextResponse.redirect for proper redirect type
+    return NextResponse.redirect(
+      new URL("/api/auth/signin", req.nextUrl.origin)
+    )
+  }
+
+  // if (req.auth && req.method === 'GET') {
+  //   return new Response(
+  //     JSON.stringify({ message: 'Page could not be found' }),
+  //     { 
+  //       status: 404,
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       }
+  //     }
+  //   )
+  // }
+
+  return NextResponse.next()
 })
 
+// Export config for middleware matcher
 export const config = {
   matcher: [
     /*
@@ -44,62 +79,3 @@ export const config = {
     "/((?!_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.css$|.*\\.js$).*)",
   ],
 }
-
-// export default auth((req) => {
-//     // req.auth
-//   })
-// export const config = { matcher: ["/api/trips(.*)"] }
-// import { auth } from "@/auth"
-// import { NextResponse } from "next/server"
-// import type { NextRequest } from "next/server"
-
-// // This function handles routes that need custom protection
-// async function customProtection(request: NextRequest) {
-//   const path = request.nextUrl.pathname
-  
-//   // For public routes, we allow access without auth
-//   if (path.startsWith('/api/trips/public')) {
-//     return NextResponse.next()
-//   }
-  
-//   // For protected routes, we check the session
-//   const session = await auth()
-//   console.log('session is ', JSON.stringify(session))
-//   if (!session) {
-//     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-//   }
-  
-//   return NextResponse.next()
-// }
-
-// // This is our main middleware function that Next.js will call
-// export async function middleware(request: NextRequest) {
-//   const path = request.nextUrl.pathname
-  
-//   // For API routes that need custom protection
-//   if (path.startsWith('/api/trips')) {
-//     return customProtection(request)
-//   }
-  
-//   // For all other authenticated routes, use NextAuth's built-in auth
-//   const authMiddleware = auth as any
-//   return authMiddleware(request)
-// }
-
-// // The matcher tells Next.js which routes should use this middleware
-// export const config = {
-//   matcher: [
-//     // Routes that need custom protection
-//     '/api/trips/:path*',
-//     '/api/trips/new', 
-    
-//     // Routes that only need session management
-//     // Add your authenticated routes here
-//     // '/dashboard/:path*',
-//     // '/profile/:path*',
-    
-//     // Important: Add other routes that should be protected
-//     // but exclude API routes and public routes
-//     '/((?!api|_next/static|_next/image|favicon.ico).*)'
-//   ]
-// }

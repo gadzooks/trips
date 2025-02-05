@@ -1,10 +1,11 @@
-// import { jest } from '@jest/globals';
-// import '@testing-library/jest-dom';
+// jest.setup.js
+require('isomorphic-fetch');
+const { TextEncoder, TextDecoder } = require('util');
 
-// global.matchMedia = jest.fn().mockImplementation(query => ({
-//   matches: false,
-//   media: query,
-//   onchange: null,
-//   addListener: jest.fn(),
-//   removeListener: jest.fn(),
-// }));
+Object.assign(global, {
+  TextDecoder,
+  TextEncoder
+});
+
+// We don't need to explicitly set these as isomorphic-fetch handles them
+// Headers, Request, and Response are automatically added to global

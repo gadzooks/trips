@@ -21,13 +21,11 @@ export const TripForm: React.FC<TripFormProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isEditMode = Boolean(formData.tripId && formData.SK);
-
   const handleAttributeUpdate = async (
     key: keyof TripRecordDTO,
     value: TripRecordDTO[keyof TripRecordDTO]
   ): Promise<boolean> => {
-    if (isNewRecord || !isEditMode) {
+    if (isNewRecord) {
       setFormData(prev => ({ ...prev, [key]: value }));
       return true;
     }
@@ -103,7 +101,7 @@ export const TripForm: React.FC<TripFormProps> = ({
           <div className="p-6 border-b border-gray-200 dark:border-gray-700">
             <div className="flex justify-between items-center">
               <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                {isReadOnly ? 'Trip Details' : isEditMode ? 'Edit Trip' : 'Create Trip'}
+                {isNewRecord ? 'Create New Trip' : isReadOnly ? 'View Trip' : 'Edit Trip'}
               </h1>
               {!isReadOnly && (
                 <div className="flex items-center space-x-2">
@@ -204,7 +202,7 @@ export const TripForm: React.FC<TripFormProps> = ({
               </div>
             )}
 
-            {!isReadOnly && !isEditMode && (
+            {!isReadOnly && (
               <div className="flex justify-end mt-6">
                 <Button
                   type="submit"
