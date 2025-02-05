@@ -133,7 +133,7 @@ export const TripForm: React.FC<TripFormProps> = ({
                   createdBy={formData.createdBy}
                   attributeValue={formData.name || ''}
                   attributeKey="name"
-                  isReadyOnly={isReadOnly}
+                  isReadyOnly={isReadOnly || !isNewRecord}
                   onSave={(value: string) => handleAttributeUpdate('name', value)}
                   className="block w-full h-12 px-4 py-3 text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter trip name"
