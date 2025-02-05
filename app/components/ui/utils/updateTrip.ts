@@ -1,7 +1,7 @@
 // app/components/ui/utils/updateTrip.ts
 
-import { MinimumTripRecord, TripDayDTO } from "@/types/trip";
-import { table } from "console";
+import { extractTagsFromTripData } from "@/lib/tags";
+import { TripDayDTO } from "@/types/trip";
 
 interface TripUpdateResponse {
     success: boolean;
@@ -31,7 +31,7 @@ interface TripUpdateResponse {
           'createdBy': createdBy,
           'attributeKey': attributeKey,
           // @ts-ignore
-          'attributeValue': attributeKey === 'tags' ? attributeValue.split(' ') : attributeValue,
+          'attributeValue': attributeKey === 'tags' ? extractTagsFromTripData(attributeValue) : attributeValue,
           'tags': tags
         })
       });

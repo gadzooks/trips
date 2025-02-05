@@ -1,5 +1,5 @@
 // app/components/trips/TripForm.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card } from '../ui/shadcn/card';
 import { Switch } from '../ui/shadcn/switch';
 import { Button } from '../ui/shadcn/button';
@@ -16,9 +16,8 @@ export const TripForm: React.FC<TripFormProps> = ({
 }) => {
   const [formData, setFormData] = useState<Partial<TripRecordDTOWithAccess>>({ 
     ...initialData,
-    tags: Array.isArray(initialData?.tags) ? initialData.tags : []
+    tags: Array.isArray(initialData?.tags) ? initialData.tags : initialData?.tags?.split(' ').filter(Boolean) || []
   });
-  console.log('TripForm formData:', JSON.stringify(formData));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +37,7 @@ export const TripForm: React.FC<TripFormProps> = ({
         tripId: formData.tripId || '',
         createdAt: formData.SK || '',
         createdBy: formData.createdBy || '',
-        tags: Array.isArray(formData.tags) ? formData.tags.join(' ') : '',
+        tags: Array.isArray(formData.tags) ? formData.tags.join(' ') : formData.tags || '',
         attributeKey: key,
         attributeValue: value
       });
@@ -57,24 +56,39 @@ export const TripForm: React.FC<TripFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name || !onSubmit) return;
+    if (!formData.name?.trim() || !onSubmit) {
+      setError('Trip name is required');
+      return;
+    }
+
+    if (!formData.description?.trim()) {
+      setError('Trip description is required');
+      return;
+    }
 
     try {
       setIsSubmitting(true);
       setError(null);
-      // formData.name = formData.name || '';
-      await onSubmit(formData as TripRecordDTO);
+      
+      // Prepare the trip data for submission
+      const tripDataToSubmit = {
+        ...formData,
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        tags: Array.isArray(formData.tags) ? formData.tags.join(' ') : formData.tags || '',
+        days: formData.days || []
+      };
+
+      await onSubmit(tripDataToSubmit as TripRecordDTO);
     } catch (err: any) {
-      setError('Failed to save trip : ' + err.message);
+      setError(err.message || 'Failed to save trip');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  console.log(formData.tripAccessResult);
-  const hasWriteAccess = formData.tripAccessResult && formData.tripAccessResult.hasWriteAccess;
+  const hasWriteAccess = formData.tripAccessResult?.hasWriteAccess;
   const isReadOnly = !hasWriteAccess;
-  console.log([formData?.tripAccessResult?.hasWriteAccess, hasWriteAccess, isReadOnly]);
 
   return (
     <form onSubmit={handleSubmit} className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -104,7 +118,7 @@ export const TripForm: React.FC<TripFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label htmlFor="tripName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Trip Name
+                  Trip Name*
                 </label>
                 <EditableText
                   tripId={formData.tripId}
@@ -130,10 +144,10 @@ export const TripForm: React.FC<TripFormProps> = ({
                   SK={formData.SK}
                   createdAt={formData.createdAt}
                   createdBy={formData.createdBy}
-                  attributeValue={typeof formData.tags === 'string' ? formData.tags : (formData.tags || []).join(' ')}
+                  attributeValue={Array.isArray(formData.tags) ? formData.tags.join(' ') : formData.tags || ''}
                   attributeKey="tags"
                   isReadyOnly={isReadOnly}
-                  onSave={(value: string) => handleAttributeUpdate('tags', value)}
+                  onSave={(value: string) => handleAttributeUpdate('tags', value.split(' ').filter(Boolean))}
                   className="block w-full h-12 px-4 py-3 text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter tags separated by spaces"
                   tabIndex={2}
@@ -143,7 +157,7 @@ export const TripForm: React.FC<TripFormProps> = ({
 
             <div className="space-y-2">
               <label htmlFor="tripDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Description
+                Description*
               </label>
               <EditableText
                 tripId={formData.tripId}
@@ -162,19 +176,19 @@ export const TripForm: React.FC<TripFormProps> = ({
             </div>
 
             {!isNewRecord && (
-            <div className="rounded-lg overflow-hidden">
-              <TripDayComponent
-                onChange={(days) => handleAttributeUpdate('days', days)}
-                initialRows={formData.days}
-                isReadOnly={isReadOnly}
-                isNewRecord={isNewRecord}
-              />
-            </div>
+              <div className="rounded-lg overflow-hidden">
+                <TripDayComponent
+                  onChange={(days) => handleAttributeUpdate('days', days)}
+                  initialRows={formData.days}
+                  isReadOnly={isReadOnly}
+                  isNewRecord={isNewRecord}
+                />
+              </div>
             )}
 
             {isNewRecord && (
-            <div className='flex justify-center' >
-              Create a new trip to add itinerary
+              <div className='flex justify-center text-gray-600 dark:text-gray-400'>
+                Create a new trip to add itinerary
               </div>
             )}
 

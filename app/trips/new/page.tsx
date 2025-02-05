@@ -17,7 +17,7 @@ export default function NewTrip() {
    }
 
    try {
-     console.log('new trip tripData:', JSON.stringify(tripData));
+    //  console.log('new trip tripData:', JSON.stringify(tripData));
      const response = await fetch('/api/trips', {
        method: 'POST',
        headers: { 'Content-Type': 'application/json' },

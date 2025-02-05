@@ -16,7 +16,7 @@ export default function TripPage({ params }: { params: Promise<{ tripId: string 
         const response = await fetch(`/api/trips/${tripId}`);
         if (!response.ok) throw new Error('Failed to fetch trip details');
         const data = await response.json();
-        console.log('data -------------->>>>>>>', JSON.stringify(data, null, 2));
+        // console.log('data -------------->>>>>>>', JSON.stringify(data, null, 2));
         setTrip(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load trip details');

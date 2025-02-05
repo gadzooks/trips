@@ -67,9 +67,9 @@ export class TripVisibilityService {
       };
 
       if (dynamoError?.CancellationReasons) {
-        console.log('Transaction Cancellation Details:');
+        console.error('Transaction Cancellation Details:');
         dynamoError.CancellationReasons.forEach((reason, index) => {
-          console.log(`Item ${index}:`, {
+          console.error(`Item ${index}:`, {
             Code: reason.Code,
             Message: reason.Message,
             Item: reason.Item
