@@ -3,22 +3,7 @@
 import { QueryCommand } from '@aws-sdk/lib-dynamodb'
 import { docClient } from '@/lib/dynamodb'
 import { queryByTripIdForPermissions, TripPermissionsDTO } from '../db/queryTripTransactions'
-
-export interface TripAccessResult {
-  allowed: boolean
-  reason: string
-  hasCreateAccess: boolean
-  hasReadAccess: boolean
-  hasWriteAccess: boolean
-  hasDeleteAccess: boolean
-}
-
-export enum AccessType {
-  Create = 'create',
-  ReadOnly = 'read-only',
-  ReadWrite = 'read-write',
-  Delete = 'delete'
-}
+import { AccessType, TripAccessResult } from '@/types/trip'
 
 export class TripPermissionsService {
   async validateTripAccess(accessType: AccessType, tripId?: string, userId?: string | null): Promise<TripAccessResult> {

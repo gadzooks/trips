@@ -1,6 +1,7 @@
-import { TripPermissionsService, AccessType } from './tripPermissionsService'
+import { TripPermissionsService } from './tripPermissionsService'
 import { docClient } from '@/lib/dynamodb'
 import { TripPermissionsDTO } from '../db/queryTripTransactions'
+import { AccessType } from '@/types/trip'
 
 jest.mock('@/lib/dynamodb', () => ({
   docClient: {

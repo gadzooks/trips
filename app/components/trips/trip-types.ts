@@ -1,11 +1,10 @@
 // app/components/trips/trip-types.ts
 
-import { TripDayDTO, TripRecordDTO } from "@/types/trip";
+import { TripDayDTO, TripRecordDTO, TripRecordDTOWithAccess } from "@/types/trip";
   
 export interface TripFormProps {
-  initialData?: Partial<TripRecordDTO>;
-  isReadOnly?: boolean;
-  isNewRecord?: boolean;
+  initialData: Partial<TripRecordDTOWithAccess>;
+  isNewRecord: boolean;
   onSubmit?: (tripData: TripRecordDTO) => Promise<void>;
 }
 

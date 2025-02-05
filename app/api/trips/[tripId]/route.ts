@@ -4,7 +4,8 @@ import { CreateTripDbService } from '../../../../server/service/createTripDbServ
 import { TripVisibilityService } from '../../../../server/service/tripVisibilityService';
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
 import { auth } from '@/auth';
-import { AccessType, TripAccessResult, TripPermissionsService } from '@/server/service/tripPermissionsService';
+import { TripPermissionsService } from '@/server/service/tripPermissionsService';
+import { AccessType, TripAccessResult } from '@/types/trip';
 
 const createTripDbService = new CreateTripDbService()
 const tripVisibilityService = new TripVisibilityService()
@@ -31,7 +32,7 @@ export async function GET(
       return new Response('Trip not found', { status: 404 })
     }
 
-    return NextResponse.json({ ...result })
+    return NextResponse.json({ ...result, tripAccessResult })
   } catch (error) {
     console.error('Failed to fetch trip:', error)
     return new NextResponse('Failed to fetch trip', { status: 500 })

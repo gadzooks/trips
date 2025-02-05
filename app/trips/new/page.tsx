@@ -17,7 +17,7 @@ export default function NewTrip() {
    }
 
    try {
-      // console.log('new trip tripData:', JSON.stringify(tripData));
+     console.log('new trip tripData:', JSON.stringify(tripData));
      const response = await fetch('/api/trips', {
        method: 'POST',
        headers: { 'Content-Type': 'application/json' },
@@ -33,9 +33,31 @@ export default function NewTrip() {
  };
 
  return (
-   <TripForm 
+   <TripForm
+     initialData={
+       {
+         name: '', description: '', tags: '',
+         days: [
+           {
+             date: '1',
+             itinerary: 'Day 1',
+             reservations: '',
+             lodging: '',
+             travelTime: '',
+             notes: ''
+           }
+         ],
+         tripAccessResult: {
+           allowed: true,
+           reason: 'new trip',
+           hasCreateAccess: true,
+           hasReadAccess: true,
+           hasWriteAccess: true,
+           hasDeleteAccess: true
+         }
+       }}
+
      onSubmit={handleSubmit}
-     isReadOnly={false}
      isNewRecord={true}
    />
  );

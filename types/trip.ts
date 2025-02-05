@@ -45,4 +45,24 @@ export interface TripRecord extends TripRecordDTO{
     PK: string
     SK: string
 }
+
+export interface TripAccessResult {
+  allowed: boolean
+  reason: string
+  hasCreateAccess: boolean
+  hasReadAccess: boolean
+  hasWriteAccess: boolean
+  hasDeleteAccess: boolean
+}
+
+export enum AccessType {
+  Create = 'create',
+  ReadOnly = 'read-only',
+  ReadWrite = 'read-write',
+  Delete = 'delete'
+}
+
+export interface TripRecordDTOWithAccess extends TripRecordDTO {
+    tripAccessResult: TripAccessResult
+}
 // ============== TYPES defining a trip ==============

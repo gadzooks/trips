@@ -6,29 +6,19 @@ import { Button } from '../ui/shadcn/button';
 import { EditableText } from '../ui/input/EditableText';
 import { updateTripAttribute } from '../ui/utils/updateTrip';
 import TripDayComponent from './TripDayComponent';
-import { TripRecordDTO } from '@/types/trip';
+import { TripRecordDTO, TripRecordDTOWithAccess } from '@/types/trip';
 import { TripFormProps } from './trip-types';
 
-const defaultTrip: TripRecordDTO = {
-  name: '',
-  description: '',
-  tags: [],
-  isPublic: false,
-  days: []
-};
-
 export const TripForm: React.FC<TripFormProps> = ({
-  initialData = {},
-  isReadOnly = false,
-  isNewRecord = false,
+  initialData,
+  isNewRecord,
   onSubmit
 }) => {
-  const [formData, setFormData] = useState<TripRecordDTO>({ 
-    ...defaultTrip, 
+  const [formData, setFormData] = useState<Partial<TripRecordDTOWithAccess>>({ 
     ...initialData,
-    tags: Array.isArray(initialData.tags) ? initialData.tags : []
+    tags: Array.isArray(initialData?.tags) ? initialData.tags : []
   });
-  // console.log('TripForm formData:', JSON.stringify(formData));
+  console.log('TripForm formData:', JSON.stringify(formData));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -67,18 +57,24 @@ export const TripForm: React.FC<TripFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isReadOnly || !onSubmit) return;
+    if (formData.name || !onSubmit) return;
 
     try {
       setIsSubmitting(true);
       setError(null);
-      await onSubmit(formData);
+      // formData.name = formData.name || '';
+      await onSubmit(formData as TripRecordDTO);
     } catch (err: any) {
       setError('Failed to save trip : ' + err.message);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  console.log(formData.tripAccessResult);
+  const hasWriteAccess = formData.tripAccessResult && formData.tripAccessResult.hasWriteAccess;
+  const isReadOnly = !hasWriteAccess;
+  console.log([formData?.tripAccessResult?.hasWriteAccess, hasWriteAccess, isReadOnly]);
 
   return (
     <form onSubmit={handleSubmit} className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -115,7 +111,7 @@ export const TripForm: React.FC<TripFormProps> = ({
                   SK={formData.SK}
                   createdAt={formData.createdAt}
                   createdBy={formData.createdBy}
-                  attributeValue={formData.name}
+                  attributeValue={formData.name || ''}
                   attributeKey="name"
                   isReadyOnly={isReadOnly}
                   onSave={(value: string) => handleAttributeUpdate('name', value)}
@@ -155,7 +151,7 @@ export const TripForm: React.FC<TripFormProps> = ({
                 createdAt={formData.createdAt}
                 createdBy={formData.createdBy}
                 attributeKey="description"
-                attributeValue={formData.description}
+                attributeValue={formData.description || ''}
                 isReadyOnly={isReadOnly}
                 onSave={(value: string) => handleAttributeUpdate('description', value)}
                 isTextArea={true}
