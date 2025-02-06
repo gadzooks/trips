@@ -199,8 +199,8 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   </div>
                 </td>
                 <td className="p-1">
-                  <input
-                    type="text"
+                  <textarea
+                    // type="text"
                     value={day.notes}
                     onChange={(e) => updateDay(index, 'notes', e.target.value)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"

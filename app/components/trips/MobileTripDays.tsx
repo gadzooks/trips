@@ -125,6 +125,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({ days, isReadOnly, onCha
                   value={day.notes}
                   onChange={(e) => updateDay(index, 'notes', e.target.value)}
                   placeholder="Add notes"
+                  multiline
                 />
           </div>
         </div>
