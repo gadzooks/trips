@@ -90,7 +90,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({ days, isReadOnly, onCha
           <div className="space-y-2">
             <InputWithIcon
               icon={Map}
-              label="ACTIVITIES"
+              label="ITINERARY"
               value={day.itinerary}
               onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
               placeholder="What's planned..."

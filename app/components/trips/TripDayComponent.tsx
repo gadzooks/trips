@@ -122,7 +122,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
             <tr>
               {!isReadOnly && <th className="w-8"></th>}
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">DATE</th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">ACTIVITIES</th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">ITINERARY</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">BOOKINGS</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">STAY</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">TRAVEL TIME</th>
@@ -161,7 +161,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
                     rows={2}
-                    placeholder="Add activities..."
+                    placeholder="Add itinerary..."
                     readOnly={isReadOnly}
                   />
                 </td>
