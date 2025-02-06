@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Clock, Trash2, Plus, Pencil, Save, RotateCcw, GripVertical } from 'lucide-react';
 import type { TripDayProps } from './trip-types';
 import { TripDayDTO } from '@/types/trip';
+import MobileTripDays from './MobileTripDays';
 
 const TripDayComponent: React.FC<TripDayProps> = ({ 
   onChange, 
@@ -10,6 +11,18 @@ const TripDayComponent: React.FC<TripDayProps> = ({
   isReadOnly,
   isNewRecord
 }) => {
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+
+
   const [days, setDays] = useState<TripDayDTO[]>(() => 
     initialRows.map(row => ({
       date: row.date || '',
@@ -30,6 +43,10 @@ const TripDayComponent: React.FC<TripDayProps> = ({
       setOriginalDays(initialRows);
     }
   }, [initialRows]);
+
+  if (isMobile) {
+    return <MobileTripDays days={days} isReadOnly={isReadOnly} />;
+  }
 
   const updateDay = (index: number, field: keyof TripDayDTO, value: string) => {
     const newDays = [...days];
@@ -92,6 +109,10 @@ const TripDayComponent: React.FC<TripDayProps> = ({
     setDays(originalDays);
     setHasChanges(false);
   };
+
+  if (isMobile) {
+    return <MobileTripDays days={days} isReadOnly={isReadOnly} />;
+  }
 
   return (
     <div className="space-y-4">

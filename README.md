@@ -72,6 +72,10 @@ AWS_REGION=us-west-2
 
 ```
 
+### AWS credentials & Tables per env
+#### Prod
+
+
 ### DB schema
 | Description | PK | SK | Attribute |
 |------------|----|----|-----------|
