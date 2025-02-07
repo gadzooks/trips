@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Switch } from '../../ui/shadcn/switch';
 import { TripRecordDTO } from '@/types/trip';
 import { EditableText } from '../../ui/input/EditableText';
+import { Plane } from 'lucide-react';
 
 interface CompactTripViewProps {
   isReadOnly: boolean;
@@ -15,15 +16,14 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
   formData,
   handleAttributeUpdate
 }) => {
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const tags = Array.isArray(formData.tags) ? formData.tags : (formData.tags || '').split(' ').filter(Boolean);
-  const maxDescriptionLength = 50;
 
   return (
     <>
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+      <div className="p-2 border-b border-gray-200 dark:border-gray-700">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-4">
+              <Plane className="w-8 h-8 text-blue-600" />
             <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
               {formData.name}
             </h1>

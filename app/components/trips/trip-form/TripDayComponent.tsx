@@ -1,10 +1,9 @@
 // app/components/trips/trip-form/TripDayComponent.tsx
 import React, { useState, useEffect } from 'react';
-import { Clock, Trash2, Plus, Pencil, Save, RotateCcw, GripVertical, MoveVertical } from 'lucide-react';
+import { Clock, Trash2, Plus, Save, RotateCcw, GripVertical, MoveVertical } from 'lucide-react';
 import type { TripDayProps } from '../trip-types';
 import { TripDayDTO } from '@/types/trip';
 import MobileTripDays from './MobileTripDays';
-import { Tooltip } from 'react-tooltip';
 
 const TripDayComponent: React.FC<TripDayProps> = ({
   onChange,
@@ -123,7 +122,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
           <thead className="bg-gray-50 dark:bg-gray-700">
             <tr className="divide-x divide-gray-200 dark:divide-gray-600">
               {!isReadOnly && <th className="w-8 p-2"><MoveVertical className='w-4 h-4' /> </th>}
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-24">DATE</th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">DATE</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">ITINERARY</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">BOOKINGS</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">STAY</th>
@@ -147,7 +146,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     <GripVertical className="w-4 h-4 mx-auto opacity-0 group-hover:opacity-100" />
                   </td>
                 )}
-                <td className="p-1">
+                <td className="p-1 align-middle">
                   <input
                     type="text"
                     value={day.date}
