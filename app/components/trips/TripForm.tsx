@@ -202,7 +202,7 @@ export const TripForm: React.FC<TripFormProps> = ({
               </div>
             )}
 
-            {!isReadOnly && (
+            {isNewRecord && (
               <div className="flex justify-end mt-6">
                 <Button
                   type="submit"
