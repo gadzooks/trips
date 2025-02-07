@@ -1,3 +1,4 @@
+// app/components/site-wide/sidebar/PublicTrips.tsx
 import { TripListType } from "@/types/trip";
 import { TripSection } from "./TripSection";
 

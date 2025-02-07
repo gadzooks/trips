@@ -19,8 +19,10 @@ export function TripSection({ title, type, tripsPerSection, emptyMessage }: Trip
   });
 
   return (
-    <div className="mb-8">
-      <h2 className="text-lg font-semibold mb-4">{title}</h2>
+    <div className="mb-3">
+      <div className='text-center'>
+        <h2 className="text-lg font-semibold mb-2 ">{title}</h2>
+      </div>
       <div className="space-y-4">
         {loading ? (
           <div className="animate-pulse space-y-4">
