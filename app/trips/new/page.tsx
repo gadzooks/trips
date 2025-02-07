@@ -1,7 +1,7 @@
 // app/trips/new/page.tsx
 'use client';
 import { useRouter } from 'next/navigation';
-import { TripForm } from '@/app/components/trips/TripForm';
+import { TripForm } from '@/app/components/trips/trip-form/TripForm';
 import type { TripRecordDTO } from '@/types/trip';
 
 export default function NewTrip() {

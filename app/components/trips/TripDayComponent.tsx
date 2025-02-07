@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Clock, Trash2, Plus, Pencil, Save, RotateCcw, GripVertical } from 'lucide-react';
 import type { TripDayProps } from './trip-types';
 import { TripDayDTO } from '@/types/trip';
-import MobileTripDays from './MobileTripDays';
+import MobileTripDays from './trip-form/MobileTripDays';
 
 const TripDayComponent: React.FC<TripDayProps> = ({ 
   onChange, 

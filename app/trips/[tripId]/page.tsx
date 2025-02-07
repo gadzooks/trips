@@ -1,7 +1,7 @@
 // app/trips/[tripId]/page.tsx
 "use client";
 import { use, useEffect, useState } from 'react';
-import { TripForm } from '@/app/components/trips/TripForm';
+import { TripForm } from '@/app/components/trips/trip-form/TripForm';
 import { TripRecordDTO } from '@/types/trip';
 
 export default function TripPage({ params }: { params: Promise<{ tripId: string }> }) {
