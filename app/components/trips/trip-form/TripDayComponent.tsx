@@ -1,14 +1,14 @@
 // app/components/trips/trip-form/TripDayComponent.tsx
 import React, { useState, useEffect } from 'react';
-import { Clock, Trash2, Plus, Pencil, Save, RotateCcw, GripVertical } from 'lucide-react';
+import { Clock, Trash2, Plus, Pencil, Save, RotateCcw, GripVertical, MoveVertical } from 'lucide-react';
 import type { TripDayProps } from '../trip-types';
 import { TripDayDTO } from '@/types/trip';
 import MobileTripDays from './MobileTripDays';
 import { Tooltip } from 'react-tooltip';
 
-const TripDayComponent: React.FC<TripDayProps> = ({ 
-  onChange, 
-  initialRows = [], 
+const TripDayComponent: React.FC<TripDayProps> = ({
+  onChange,
+  initialRows = [],
   isReadOnly,
   isNewRecord
 }) => {
@@ -24,7 +24,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
 
 
 
-  const [days, setDays] = useState<TripDayDTO[]>(() => 
+  const [days, setDays] = useState<TripDayDTO[]>(() =>
     initialRows.map(row => ({
       date: row.date || '',
       itinerary: row.itinerary || '',
@@ -84,12 +84,12 @@ const TripDayComponent: React.FC<TripDayProps> = ({
   const handleDragOver = (e: React.DragEvent<HTMLTableRowElement>, index: number) => {
     e.preventDefault();
     if (dragIndex === null) return;
-    
+
     const newDays = [...days];
     const dragDay = newDays[dragIndex];
     newDays.splice(dragIndex, 1);
     newDays.splice(index, 0, dragDay);
-    
+
     setDays(newDays);
     setDragIndex(index);
   };
@@ -117,21 +117,19 @@ const TripDayComponent: React.FC<TripDayProps> = ({
 
   return (
     <div className="space-y-4">
+
       <div className="overflow-x-auto rounded-lg">
-        <table className="w-full border-collapse bg-white dark:bg-gray-800 shadow-sm">
+        <table className="w-full border-collapse bg-white dark:bg-gray-800 shadow-sm divide-x divide-gray-200 dark:divide-gray-600">
           <thead className="bg-gray-50 dark:bg-gray-700">
-            <tr>
-              {!isReadOnly && <th className="w-8"></th>}
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">DATE</th>
+            <tr className="divide-x divide-gray-200 dark:divide-gray-600">
+              {!isReadOnly && <th className="w-8 p-2"><MoveVertical className='w-4 h-4' /> </th>}
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-24">DATE</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">ITINERARY</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">BOOKINGS</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">STAY</th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">TRAVEL TIME</th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">TRAVEL<br />TIME</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">NOTES</th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
-                <Trash2 className='w-4 h-4 text-red-300' />
-                </th>
-              {!isReadOnly && <th className="w-8"></th>}
+              {!isReadOnly && <th className="w-8 p-4"><Trash2 className='w-4 h-4 text-red-300' /></th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
@@ -142,7 +140,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                 onDragStart={(e) => handleDragStart(e, index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDragEnd={handleDragEnd}
-                className="group hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                className="group hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors divide-x divide-gray-200 dark:divide-gray-600"
               >
                 {!isReadOnly && (
                   <td className="w-8 cursor-move">
@@ -190,21 +188,20 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   />
                 </td>
                 <td className="p-1">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1">
                     <Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                     <input
                       type="text"
                       value={day.travelTime}
                       onChange={(e) => updateDay(index, 'travelTime', e.target.value)}
-                      className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                      placeholder="Travel time"
+                      className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1"
+                      placeholder="Time"
                       readOnly={isReadOnly}
                     />
                   </div>
                 </td>
                 <td className="p-1">
                   <textarea
-                    // type="text"
                     value={day.notes}
                     onChange={(e) => updateDay(index, 'notes', e.target.value)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
@@ -213,7 +210,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   />
                 </td>
                 {!isReadOnly && (
-                  <td className="p-1">
+                  <td className="p-4 w-8">
                     <button
                       type="button"
                       onClick={() => removeDay(index)}
@@ -239,7 +236,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
             <Plus className="w-4 h-4 mr-2" />
             Add Day
           </button>
-          
+
           <div className="space-x-2">
             {hasChanges && !isNewRecord && (
               <>
@@ -268,4 +265,4 @@ const TripDayComponent: React.FC<TripDayProps> = ({
   );
 };
 
-export default TripDayComponent;
+export default TripDayComponent;    
