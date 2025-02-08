@@ -11,6 +11,7 @@ type TransactItem = NonNullable<TransactWriteCommandInput['TransactItems']>[numb
 describe('createVisibilityTransactions', () => {
   // Base test request that we'll modify for different scenarios
   const baseRequest: UpdateTripAttributeRequest = {
+    name: 'Trip to the beach',
     tripId: 'trip123',
     createdAt: '2024-02-02',
     createdBy: 'user123',

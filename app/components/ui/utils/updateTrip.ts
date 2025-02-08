@@ -9,6 +9,7 @@ interface TripUpdateResponse {
   }
   
   export interface UpdateTripAttributeRequest {
+    name: string;
     createdAt: string;
     createdBy: string;
     tripId: string;

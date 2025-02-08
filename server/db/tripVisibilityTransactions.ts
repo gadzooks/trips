@@ -47,6 +47,7 @@ export function createVisibilityTransactions(request: UpdateTripAttributeRequest
           Item: {
             PK: `TAG#${request.attributeValue ? 'PUBLIC' : 'PRIVATE'}#${tag}`,
             SK: request.tripId,
+            name: request.name,
             createdAt: request.createdAt,
             createdBy: request.createdBy,
             tripId: request.tripId

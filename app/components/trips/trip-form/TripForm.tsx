@@ -31,12 +31,13 @@ export const TripForm: React.FC<TripFormProps> = ({
     }
   
     try {
-      if (formData.tripId === undefined || formData.SK === undefined || formData.createdBy === undefined) {
+      if (formData.tripId === undefined || formData.SK === undefined || formData.createdBy === undefined || formData.name === undefined) {
         setError('Invalid trip data : missing tripId, SK or createdBy : ' + [formData.tripId, formData.SK, formData.createdBy]);
         return false;
       }
       const result = await updateTripAttribute({
         tripId: formData.tripId,
+        name: formData.name,
         createdAt: formData.SK,
         createdBy: formData.createdBy,
         tags: Array.isArray(formData.tags) ? formData.tags.join(' ') : formData.tags,

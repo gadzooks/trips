@@ -6,6 +6,7 @@ import MyTextComponent from './MyTextComponent';
 export type EditableTextProps = {
     tripId?: string;
     SK?: string;
+    name?: string;
     createdAt?: string;
     createdBy?: string;
     attributeKey: string;
@@ -21,6 +22,7 @@ export type EditableTextProps = {
 
 export const EditableText = ({
     tripId,
+    name,
     SK,
     createdAt,
     createdBy,
@@ -45,12 +47,13 @@ export const EditableText = ({
     const handleSave = async () => {
         setIsEditing(false);
         tags = tags || '';
+        name = name || '';
         createdAt = createdAt || '';
         createdBy = createdBy || '';
         if (editValue !== attributeValue) {
             if (tripId && SK) {
                 const result = await updateTripAttribute(
-                    { tripId, createdAt, createdBy, attributeKey, attributeValue: editValue, tags }
+                    { tripId, createdAt, createdBy, attributeKey, attributeValue: editValue, tags, name }
                 );
                 if (!result.success) {
                     setEditValue(attributeValue);
