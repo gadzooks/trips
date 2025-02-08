@@ -37,8 +37,8 @@ export default function RootLayout({
             <div className="min-h-screen bg-gray-100 dark:bg-gray-900 max-w-[100vw] overflow-x-hidden">
               <Navbar />
               <div className="flex">
-                <SidebarWrapper />
-                <main className="flex-1 p-4 lg:p-6 mt-16 md:ml-64 mx-auto max-w-7xl w-full">
+                {/* <SidebarWrapper /> */}
+                <main className="flex-1 p-4 lg:p-6 mt-16 mx-auto max-w-7xl w-full">
                   {children}
                 </main>
               </div>
