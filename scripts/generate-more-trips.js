@@ -21,11 +21,11 @@ const users = [
                  i === 4 ? "Mykonos beach day and windmills" :
                  i === 5 ? "Flight to Crete, Knossos Palace" :
                  "Heraklion food tour, departure",
-        bookings: i <= 0 ? "Athens Gate Hotel" :
+        reservations: i <= 0 ? "Athens Gate Hotel" :
                   i <= 2 ? "Santorini Secret Suites" :
                   i <= 4 ? "Myconian Collection" :
                   "GDM Megaron Hotel",
-        stay: i <= 0 ? "Athens" :
+        lodging: i <= 0 ? "Athens" :
               i <= 2 ? "Santorini" :
               i <= 4 ? "Mykonos" :
               "Heraklion",
@@ -54,10 +54,10 @@ const users = [
                  i === 2 ? "Full day safari, Big Five tracking" :
                  i === 3 ? "Morning safari, flight to Cape Town" :
                  "Wine tasting in Stellenbosch",
-        bookings: i <= 0 ? "Four Seasons Johannesburg" :
+        reservations: i <= 0 ? "Four Seasons Johannesburg" :
                   i <= 2 ? "Lion Sands Game Reserve" :
                   "Mount Nelson Hotel",
-        stay: i <= 0 ? "Johannesburg" :
+        lodging: i <= 0 ? "Johannesburg" :
               i <= 2 ? "Kruger National Park" :
               "Cape Town",
         travelTime: i === 0 ? "30 min from airport" :
@@ -84,12 +84,12 @@ const users = [
                  i === 3 ? "Imperial City tour, train to Hoi An" :
                  i === 4 ? "Hoi An cooking class and tailoring" :
                  "Flight to HCMC, Cu Chi Tunnels",
-        bookings: i === 1 ? "Paradise Luxury Cruise" :
+        reservations: i === 1 ? "Paradise Luxury Cruise" :
                   i <= 2 ? "Sofitel Legend Metropole" :
                   i === 3 ? "La Residence Hue" :
                   i === 4 ? "Four Seasons Nam Hai" :
                   "Park Hyatt Saigon",
-        stay: i <= 2 ? (i === 1 ? "Ha Long Bay" : "Hanoi") :
+        lodging: i <= 2 ? (i === 1 ? "Ha Long Bay" : "Hanoi") :
               i === 3 ? "Hue" :
               i === 4 ? "Hoi An" :
               "Ho Chi Minh City",
@@ -118,8 +118,8 @@ const users = [
                  i === 1 ? "Atlas Mountains, Ait Benhaddou" :
                  i === 2 ? "Sahara camel trek and camping" :
                  "Return to Marrakech, hammam spa",
-        bookings: i === 2 ? "Luxury Desert Camp" : "La Mamounia",
-        stay: i === 2 ? "Sahara Desert" : "Marrakech",
+        reservations: i === 2 ? "Luxury Desert Camp" : "La Mamounia",
+        lodging: i === 2 ? "Sahara Desert" : "Marrakech",
         travelTime: i === 1 ? "4 hour drive" :
                     i === 2 ? "6 hour drive" :
                     i === 3 ? "8 hour drive" :
@@ -143,11 +143,11 @@ const users = [
                  i === 2 ? "Monteverde cloud forest zip-lining" :
                  i === 3 ? "Manuel Antonio beach and wildlife" :
                  "National park hike, departure",
-        bookings: i === 0 ? "Gran Hotel Costa Rica" :
+        reservations: i === 0 ? "Gran Hotel Costa Rica" :
                   i === 1 ? "Nayara Springs" :
                   i === 2 ? "El Establo Mountain Hotel" :
                   "Arenas del Mar",
-        stay: i === 0 ? "San Jose" :
+        lodging: i === 0 ? "San Jose" :
               i === 1 ? "La Fortuna" :
               i === 2 ? "Monteverde" :
               "Manuel Antonio",

@@ -101,7 +101,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({ days, isReadOnly, onCha
               <div className="flex-1">
                 <InputWithIcon
                   icon={Hotel}
-                  label="STAY"
+                  label="LODGING"
                   value={day.lodging}
                   onChange={(e) => updateDay(index, 'lodging', e.target.value)}
                   placeholder="Accommodation"
@@ -110,7 +110,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({ days, isReadOnly, onCha
               <div className="flex-1">
                 <InputWithIcon
                   icon={BookOpen}
-                  label="BOOKINGS"
+                  label="RESERVATIONS"
                   value={day.reservations}
                   onChange={(e) => updateDay(index, 'reservations', e.target.value)}
                   placeholder="Reservation details"

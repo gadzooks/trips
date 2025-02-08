@@ -15,8 +15,8 @@ const trips = [
         id: "day1",
         date: "2024-03-15",
         activity: "Tokyo exploration - Senso-ji Temple and Akihabara",
-        bookings: "Tokyu Hotel Tokyo",
-        stay: "Tokyo",
+        reservations: "Tokyu Hotel Tokyo",
+        lodging: "Tokyo",
         travelTime: "2 hours from airport",
         notes: "Remember to get Pasmo card"
       },
@@ -24,8 +24,8 @@ const trips = [
         id: "day2",
         date: "2024-03-16",
         activity: "Day trip to Kamakura - Giant Buddha",
-        bookings: "Tokyu Hotel Tokyo",
-        stay: "Tokyo",
+        reservations: "Tokyu Hotel Tokyo",
+        lodging: "Tokyo",
         travelTime: "1 hour by train",
         notes: "Pack light for day trip"
       }
@@ -41,8 +41,8 @@ const trips = [
         id: "day1",
         date: "2024-02-10",
         activity: "Blue Lagoon and Reykjavik city tour",
-        bookings: "Fosshotel Reykjavik",
-        stay: "Reykjavik",
+        reservations: "Fosshotel Reykjavik",
+        lodging: "Reykjavik",
         travelTime: "45 min from airport",
         notes: "Pickup rental car at 3 PM"
       }
