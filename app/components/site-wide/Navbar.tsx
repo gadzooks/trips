@@ -1,3 +1,4 @@
+// app/components/site-wide/navbar.tsx
 "use client";
 import Link from 'next/link';
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -25,7 +26,7 @@ export function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center space-x-6">
-            <Link href="/explore" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">
+            <Link href="/" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">
               Explore Trips
             </Link>
             {session && (
