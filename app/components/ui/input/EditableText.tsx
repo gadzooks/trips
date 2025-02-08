@@ -1,6 +1,23 @@
 // app/components/ui/input/EditableText.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { updateTripAttribute } from '../utils/updateTrip';
+import MyTextComponent from './MyTextComponent';
+
+export type EditableTextProps = {
+    tripId?: string;
+    SK?: string;
+    createdAt?: string;
+    createdBy?: string;
+    attributeKey: string;
+    attributeValue: string;
+    isReadyOnly: boolean;
+    placeholder?: string;
+    tabIndex?: number;
+    onSave?: (value: string) => void;
+    isTextArea?: boolean;
+    tags?: string;
+    className?: string;
+};
 
 export const EditableText = ({
     tripId,
@@ -15,21 +32,7 @@ export const EditableText = ({
     isTextArea = false,
     tags,
     className = ""
-}: {
-    tripId?: string;
-    SK?: string;
-    createdAt?: string;
-    createdBy?: string;
-    attributeKey: string;
-    attributeValue: string;
-    isReadyOnly: boolean;
-    placeholder?: string;
-    tabIndex?: number;
-    onSave?: (value: string) => void;
-    isTextArea?: boolean;
-    tags?: string;
-    className?: string;
-}) => {
+}: EditableTextProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(attributeValue);
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
@@ -103,6 +106,17 @@ export const EditableText = ({
             />
         );
     }
+
+    return (
+        <MyTextComponent
+            editValue={editValue}
+            isReadyOnly={isReadyOnly}
+            tabIndex={tabIndex}
+            handleFocus={handleFocus}
+            className={className}
+            spanRef={spanRef}
+        />
+    )
 
     return (
         <span

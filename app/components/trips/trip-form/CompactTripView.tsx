@@ -32,9 +32,12 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
 
           <div className='flex justify-evenly space-x-4' >
             <div className="flex items-center space-x-2">
-              <label htmlFor="tripTags" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Edit Tags
-              </label>
+              {!isReadOnly && (
+
+                <label htmlFor="tripTags" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Edit Tags
+                </label>
+              )}
               <EditableText
                 tripId={formData.tripId}
                 SK={formData.SK}
