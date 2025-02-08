@@ -1,0 +1,63 @@
+// app/components/ui/input/MyTextComponent.tsx
+import React from 'react';
+import Linkify from 'react-linkify';
+import { EditableTextProps } from './EditableText';
+
+type MyTextComponentProps = EditableTextProps & {
+  spanRef: React.RefObject<HTMLSpanElement>;
+  editValue: string;
+  handleFocus: () => void;
+};
+
+const MyTextComponent = ({
+  editValue,
+  isReadyOnly,
+  tabIndex,
+  handleFocus,
+  className = '',
+  spanRef,
+}: Partial<MyTextComponentProps>) => {
+
+  const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement> | React.TouchEvent<HTMLAnchorElement>, url: string) => {
+    event.preventDefault(); // Prevent default opening behavior
+    event.stopPropagation(); // Stop event from bubbling to EditableText
+
+    const userChoice = window.confirm(`Do you want to open this link?\n${url}`);
+    if (userChoice) {
+      window.location.href = url;
+    }
+};
+
+return (
+    <span
+        ref={spanRef}
+        role="textbox"
+        tabIndex={isReadyOnly ? undefined : tabIndex}
+        className={`
+            ${!isReadyOnly ? 'cursor-text hover:bg-gray-50' : ''}
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            ${className} focus:ring-2 focus:ring-purple-500 focus:outline-none
+        `}
+    >
+        <Linkify
+            componentDecorator={(decoratedHref, decoratedText, key) => (
+                <a
+                    key={key}
+                    href={decoratedHref}
+                    className="text-blue-500 underline"
+                    onClick={(event) => handleLinkClick(event, decoratedHref)}
+                    onTouchStart={(event) => handleLinkClick(event, decoratedHref)} // Mobile tap support
+                >
+                    {decoratedText}
+                </a>
+            )}
+        >
+            {editValue}
+        </Linkify>
+    </span>
+);
+
+};
+
+
+export default MyTextComponent;

@@ -108,26 +108,25 @@ export const EditableText = ({
     }
 
     return (
-        <MyTextComponent
-            editValue={editValue}
-            isReadyOnly={isReadyOnly}
-            tabIndex={tabIndex}
-            handleFocus={handleFocus}
-            className={className}
-            spanRef={spanRef}
-        />
-    )
-
-    return (
-        <span
-            ref={spanRef}
-            role="textbox"
-            tabIndex={isReadyOnly ? undefined : tabIndex}
-            onFocus={handleFocus}
-            onClick={handleFocus}
-            className={`${!isReadyOnly ? 'cursor-text hover:bg-gray-50' : ''} inline-block w-full rounded-lg p-2 ${className} focus:ring-2 focus:ring-purple-500 focus:outline-none`}
+        <div
+            onMouseDown={(e) => {
+                if (e.target instanceof HTMLAnchorElement) return; // Ignore clicks on links
+                handleFocus();
+            }}
+            onTouchStart={(e) => {
+                if (e.target instanceof HTMLAnchorElement) return; // Ignore taps on links
+                handleFocus();
+            }}
         >
-            {editValue}
-        </span>
+            <MyTextComponent
+                editValue={editValue}
+                isReadyOnly={isReadyOnly}
+                tabIndex={tabIndex}
+                handleFocus={handleFocus}
+                className={className}
+                spanRef={spanRef}
+            />
+        </div>
     );
+    
 };
