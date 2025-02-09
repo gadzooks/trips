@@ -21,10 +21,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Run Shared Steps  
-        uses: ./.github/workflows/reusable.yml
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
         with:
-          job: shared-steps-tf-precommit
+          terraform_version: "1.10.5" 
+      
+      - name: Install pre-commit
+        run: |
+          pip install pre-commit
+          pre-commit install
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+          
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files
         
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
