@@ -65,11 +65,12 @@ jobs:
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         run: |
-          terraform plan -var-file=$ENV_FILE
+          terraform init -backend-config="key=$ENV/terraform.tfstate"
+          terraform plan -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars"
         
       - name: Terraform Apply
         if: github.ref == 'refs/heads/develop'
         working-directory: infrastructure/dynamodb
         run: |
-          terraform --init -backend-config="key=$ENV/terraform.tfstate"
-          terraform apply -auto-approve -var-file=$ENV_FILE
+          terraform init -backend-config="key=$ENV/terraform.tfstate"
+          terraform apply -auto-approve -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars"
