@@ -13,7 +13,6 @@ on:
 env:
   ENV: prod
   ENV_FILE: environments/prod.tfvars
-  PROD_BRANCH: prod
 
 jobs:
   terraform-prod:
@@ -69,10 +68,3 @@ jobs:
         run: |
           terraform init -backend-config="key=$ENV/terraform.tfstate"
           terraform plan -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" -out=terraform.tfstate
-        
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/$PROD_BRANCH'
-        working-directory: infrastructure/dynamodb
-        run: |
-          terraform init -backend-config="key=$ENV/terraform.tfstate"
-          terraform apply -auto-approve -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" terraform.tfstate
