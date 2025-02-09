@@ -21,10 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - uses: ./.github/workflows/reusable.yml
+      - name: Run Shared Steps  
+        uses: ./.github/workflows/reusable.yml
         with:
           job: shared-steps-tf-precommit
-      
+        
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
