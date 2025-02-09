@@ -2,6 +2,10 @@ name: Deployment Pipeline
 on:
   push:
     branches: [prod]
+env:
+  ENV: prod
+  ENV_FILE: ./environments/prod.tfvars
+  PROD_BRANCH: prod
 jobs:
   integration-tests:
     runs-on: ubuntu-latest
@@ -16,8 +20,21 @@ jobs:
         env:
           QA_URL: ${{ needs.deploy-qa.outputs.url }}
 
+  deploy-prod-infrastructure:
+    needs: integration-tests
+    if: github.ref == 'refs/heads/$PROD_BRANCH'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/develop'
+        working-directory: infrastructure/dynamodb
+        run: |
+          terraform init -backend-config="key=$ENV/terraform.tfstate"
+          terraform plan -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" -out=terraform.tfstate
+          terraform apply -auto-approve -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" terraform.tfstate
+
   deploy-prod:
-    needs: [integration-tests]
+    needs: [deploy-prod-infrastructure]
     runs-on: ubuntu-latest
     environment: 
       name: production
