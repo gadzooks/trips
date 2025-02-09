@@ -1,0 +1,78 @@
+name: Terraform
+
+on:
+  push:
+    paths:
+      - 'infrastructure/**'
+    branches:
+      - prod
+  pull_request:
+    paths:
+      - 'infrastructure/**'
+
+env:
+  ENV: prod
+  ENV_FILE: environments/prod.tfvars
+  PROD_BRANCH: prod
+
+jobs:
+  terraform-prod:
+    runs-on: ubuntu-latest
+    environment: $ENV
+    defaults:
+      run:
+        working-directory: ./infrastructure
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.5" 
+      
+      - name: Install pre-commit
+        run: |
+          pip install pre-commit
+          pre-commit install
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+          
+      - name: Install tflint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+          
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files
+        
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+          
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        
+      - name: Debug Path
+        working-directory: infrastructure/dynamodb
+        run: |
+          pwd
+          ls -la
+          tree
+
+      - name: Terraform Plan
+        if: github.event_name == 'pull_request'
+        working-directory: infrastructure/dynamodb
+        run: |
+          terraform init -backend-config="key=$ENV/terraform.tfstate"
+          terraform plan -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" -out=terraform.tfstate
+        
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/$PROD_BRANCH'
+        working-directory: infrastructure/dynamodb
+        run: |
+          terraform init -backend-config="key=$ENV/terraform.tfstate"
+          terraform apply -auto-approve -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" terraform.tfstate

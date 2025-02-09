@@ -1,0 +1,29 @@
+# reusable.yml 
+name: Reusable Workflow
+
+on:
+  workflow_call:
+    inputs:
+      job:
+        required: true
+        type: string
+
+jobs:
+  shared-steps-tf-precommit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.5" 
+      
+      - name: Install pre-commit
+        run: |
+          pip install pre-commit
+          pre-commit install
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+          
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files
