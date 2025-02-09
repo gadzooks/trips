@@ -12,7 +12,7 @@ on:
 
 env:
   ENV: qa
-  ENV_FILE: infrastructure/dynamodb/environments/qa.tfvars
+  ENV_FILE: environments/qa.tfvars
 
 jobs:
   terraform:
@@ -64,11 +64,10 @@ jobs:
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         run: |
-          terraform init
           terraform plan -var-file=$ENV_FILE
         
       - name: Terraform Apply
         if: github.ref == 'refs/heads/develop'
+        working-directory: infrastructure/dynamodb
         run: |
-          terraform init
           terraform apply -auto-approve -var-file=$ENV_FILE

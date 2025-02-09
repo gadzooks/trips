@@ -12,7 +12,7 @@ on:
 
 env:
   ENV: prod
-  ENV_FILE: infrastructure/dynamodb/environments/prod.tfvars
+  ENV_FILE: environments/prod.tfvars
   PROD_BRANCH: prod
 
 jobs:
@@ -64,8 +64,10 @@ jobs:
         
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
+        working-directory: infrastructure/dynamodb
         run: terraform plan -var-file=$ENV_FILE
         
       - name: Terraform Apply
         if: github.ref == 'refs/heads/$PROD_BRANCH'
+        working-directory: infrastructure/dynamodb
         run: terraform apply -auto-approve -var-file=$ENV_FILE
