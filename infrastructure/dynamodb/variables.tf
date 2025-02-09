@@ -10,9 +10,9 @@ provider "aws" {
   }
 }
 
-locals {
-  environment = terraform.workspace
-}
+# locals {
+#   environment = terraform.workspace
+# }
 
 variable "aws_region" {
   description = "AWS region"
