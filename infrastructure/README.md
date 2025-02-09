@@ -24,3 +24,14 @@ terraform init \
 
 # store AWS creds in https://github.com/gadzooks/trips/settings/secrets/actions
 ```
+
+## apply changes to dev from localhost
+Make sure you have the AWS credendtials set up. Use trip-planner-terraform-user 
+https://us-east-1.console.aws.amazon.com/iam/home?region=us-west-2#/users/details/trip-planner-terraform-user?section=security_credentials
+
+```sh
+cd infrastructure/dynamodb
+terraform init  -backend-config="key=dev/terraform.tfstate"
+terraform plan -var-file=environments/dev.tfvars -out=terraform.tfstate
+terraform apply  -var-file=environments/dev.tfvars terraform.tfstate
+```
