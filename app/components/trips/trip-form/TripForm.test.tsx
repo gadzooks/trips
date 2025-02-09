@@ -125,6 +125,7 @@ describe('TripForm Component', () => {
     const nameSpan = screen.getByTestId('editable-span-tripName');
     fireEvent.mouseDown(nameSpan);
     const nameInput = screen.getByTestId('editable-input-tripName');
+    userEvent.clear(nameInput);
     await userEvent.type(nameInput, 'Summer Vacation 2025');
 
     const descriptionSpan = screen.getByTestId('editable-span-tripDescription');

@@ -1,3 +1,4 @@
+// app/components/trips/trip-form/TripDayComponent.test.tsx
 import React from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -153,6 +154,57 @@ describe('TripDayComponent', () => {
       rows.forEach(row => {
         expect(row).toHaveAttribute('draggable', 'true');
       });
+    });
+  });
+
+  describe('Snapshots', () => {
+    const mockInitialRows = [
+      {
+        date: '2024-02-01',
+        itinerary: 'City tour',
+        reservations: 'Tour booking #123',
+        lodging: 'Hotel ABC',
+        travelTime: '2h',
+        notes: 'Bring camera'
+      }
+    ];
+
+    it('matches read-only snapshot', () => {
+      const tree = render(
+          <TripDayComponent
+            initialRows={mockInitialRows}
+            onChange={() => {}}
+            isReadOnly={true}
+            isNewRecord={false}
+          />
+        );
+      expect(tree).toMatchSnapshot();
+    });
+
+    it('matches editable snapshot', () => {
+      const tree = render
+        (
+          <TripDayComponent
+            initialRows={mockInitialRows}
+            onChange={() => {}}
+            isReadOnly={false}
+            isNewRecord={false}
+          />
+        );
+      expect(tree).toMatchSnapshot();
+    });
+
+    it('matches empty state snapshot', () => {
+      const tree = render
+        (
+          <TripDayComponent
+            initialRows={[]}
+            onChange={() => {}}
+            isReadOnly={false}
+            isNewRecord={true}
+          />
+        );
+      expect(tree).toMatchSnapshot();
     });
   });
 });
