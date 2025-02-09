@@ -23,7 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Terraform Apply
-        working-directory: infrastructure/dynamodb
         run: |
           terraform init -backend-config="key=$ENV/terraform.tfstate"
           terraform plan -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" -out=terraform.tfstate
