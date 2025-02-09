@@ -12,7 +12,6 @@ provider "aws" {
 
 locals {
   environment = terraform.workspace
-  prefix      = "tp-${local.environment}"
 }
 
 variable "aws_region" {

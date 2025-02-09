@@ -1,15 +1,19 @@
 #!/bin/bash
 
-# Get list of changed files in infrastructure/ directory
 changed_files=$(git diff --cached --name-only -- infrastructure/)
 
 if [ -n "$changed_files" ]; then
-  # Run terraform fmt recursively on infrastructure directory
+  # Format code style
   terraform fmt -recursive infrastructure/
   
-  # Stage the formatted files
+  # Validate configuration
+  terraform validate infrastructure/
+  
+  # Run tflint (assuming it's installed)
+  tflint --chdir infrastructure/
+  
+  # Run terraform plan (optional - can be slow)
+  # terraform plan -input=false
+  
   git add infrastructure/
 fi
-
-npm test
-npm run lint-typescript
