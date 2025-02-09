@@ -115,6 +115,10 @@ export const EditableText = ({
 
     return (
         <div
+            onFocus={(e) => {
+                if (e.target instanceof HTMLAnchorElement) return; // Ignore clicks on links
+                handleFocus();
+            }}
             onMouseDown={(e) => {
                 if (e.target instanceof HTMLAnchorElement) return; // Ignore clicks on links
                 handleFocus();
