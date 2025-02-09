@@ -68,7 +68,7 @@ jobs:
         working-directory: infrastructure/dynamodb
         run: |
           terraform --init -backend-config="key=$ENV/terraform.tfstate"
-          terraform plan -var-file=$ENV_FILE
+          terraform plan -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/prod.tfvars"
         
       - name: Terraform Apply
         if: github.ref == 'refs/heads/$PROD_BRANCH'

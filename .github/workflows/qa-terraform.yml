@@ -12,7 +12,7 @@ on:
 
 env:
   ENV: qa
-  ENV_FILE: environments/qa.tfvars
+  ENV_FILE: ./environments/qa.tfvars
 
 jobs:
   terraform:
