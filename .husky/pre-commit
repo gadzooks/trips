@@ -1,2 +1,15 @@
+#!/bin/bash
+
+# Get list of changed files in infrastructure/ directory
+changed_files=$(git diff --cached --name-only -- infrastructure/)
+
+if [ -n "$changed_files" ]; then
+  # Run terraform fmt recursively on infrastructure directory
+  terraform fmt -recursive infrastructure/
+  
+  # Stage the formatted files
+  git add infrastructure/
+fi
+
 npm test
 npm run lint-typescript
