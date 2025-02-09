@@ -140,29 +140,4 @@ describe('TripForm Component', () => {
   }
   );
 
-  it.skip('calls onSubmit with trimmed values', async () => {
-    render(<TripForm initialData={initialData} isNewRecord={true} onSubmit={mockSubmit} />);
-
-    const nameSpan = screen.getByTestId('editable-span-tripName');
-    const descriptionSpan = screen.getByTestId('editable-span-tripDescription');
-
-    fireEvent.click(nameSpan);
-    await userEvent.clear(nameSpan);
-    await userEvent.type(nameSpan, 'Updated Trip Name');
-
-    fireEvent.click(descriptionSpan);
-    await userEvent.clear(descriptionSpan);
-    await userEvent.type(descriptionSpan, 'Updated description');
-
-    fireEvent.click(screen.getByText('Create Trip'));
-
-    await waitFor(() => {
-      expect(mockSubmit).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: 'Updated Trip Name',
-          description: 'Updated description',
-        })
-      );
-    });
-  });
 });
