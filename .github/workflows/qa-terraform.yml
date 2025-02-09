@@ -1,0 +1,58 @@
+name: Terraform
+
+on:
+  push:
+    paths:
+      - 'infrastructure/**'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'infrastructure/**'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    environment: qa
+    defaults:
+      run:
+        working-directory: ./infrastructure
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install pre-commit
+        run: |
+          pip install pre-commit
+          pre-commit install
+          
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+          
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        
+      - name: Terraform Init
+        run: terraform init -backend-config="key=qa/terraform.tfstate"
+        
+      - name: Terraform Format
+        run: terraform fmt -check
+        
+      - name: Terraform Plan
+        if: github.event_name == 'pull_request'
+        run: |
+          terraform init
+          terraform plan -var-file=environments/qa.tfvars
+        
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          terraform init
+          terraform apply -auto-approve -var-file=environments/qa.tfvars
