@@ -10,10 +10,15 @@ on:
     paths:
       - 'infrastructure/**'
 
+env:
+  ENV: prod
+  ENV_FILE: infrastructure/dynamodb/environments/prod.tfvars
+  PROD_BRANCH: prod
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    environment: prod
+    environment: $ENV
     defaults:
       run:
         working-directory: ./infrastructure
@@ -52,15 +57,15 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         
       - name: Terraform Init
-        run: terraform init -backend-config="key=prod/terraform.tfstate"
+        run: terraform init -backend-config="key=$ENV/terraform.tfstate"
         
       - name: Terraform Format
         run: terraform fmt -check
         
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -var-file=environments/prod.tfvars
+        run: terraform plan -var-file=$ENV_FILE
         
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/prod'
-        run: terraform apply -auto-approve -var-file=environments/prod.tfvars
+        if: github.ref == 'refs/heads/$PROD_BRANCH'
+        run: terraform apply -auto-approve -var-file=$ENV_FILE

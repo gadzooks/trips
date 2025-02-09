@@ -10,10 +10,14 @@ on:
     paths:
       - 'infrastructure/**'
 
+env:
+  ENV: qa
+  ENV_FILE: infrastructure/dynamodb/environments/qa.tfvars
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    environment: qa
+    environment: $ENV
     defaults:
       run:
         working-directory: ./infrastructure
@@ -52,7 +56,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         
       - name: Terraform Init
-        run: terraform init -backend-config="key=qa/terraform.tfstate"
+        run: terraform init -backend-config="key=$ENV/terraform.tfstate"
         
       - name: Terraform Format
         run: terraform fmt -check
@@ -61,10 +65,10 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           terraform init
-          terraform plan -var-file=environments/qa.tfvars
+          terraform plan -var-file=$ENV_FILE
         
       - name: Terraform Apply
         if: github.ref == 'refs/heads/develop'
         run: |
           terraform init
-          terraform apply -auto-approve -var-file=environments/qa.tfvars
+          terraform apply -auto-approve -var-file=$ENV_FILE
