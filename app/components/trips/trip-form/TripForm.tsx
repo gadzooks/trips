@@ -59,6 +59,7 @@ export const TripForm: React.FC<TripFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // console.log('Form submitted!'); 
     if (!formData.name?.trim()) {
       setError('Trip name is required');
       return;
@@ -122,12 +123,6 @@ export const TripForm: React.FC<TripFormProps> = ({
                 isReadOnly={isReadOnly}
                 isNewRecord={isNewRecord}
               />
-            </div>
-          )}
-
-          {isNewRecord && (
-            <div className='flex justify-center text-gray-600 dark:text-gray-400'>
-              Create a new trip to add itinerary
             </div>
           )}
 

@@ -4,15 +4,18 @@ import Linkify from 'react-linkify';
 import { EditableTextProps } from './EditableText';
 
 type MyTextComponentProps = EditableTextProps & {
+  id: string;
   spanRef: React.RefObject<HTMLSpanElement>;
   editValue: string;
   handleFocus: () => void;
 };
 
 const MyTextComponent = ({
+  id,
   editValue,
   isReadyOnly,
   tabIndex,
+  placeholder,
   handleFocus,
   className = '',
   spanRef,
@@ -30,6 +33,7 @@ const MyTextComponent = ({
 
 return (
     <span
+        data-testid={`editable-span-${id}`}
         ref={spanRef}
         role="textbox"
         tabIndex={isReadyOnly ? undefined : tabIndex}
@@ -52,7 +56,7 @@ return (
                 </a>
             )}
         >
-            {editValue}
+            {editValue || placeholder}
         </Linkify>
     </span>
 );

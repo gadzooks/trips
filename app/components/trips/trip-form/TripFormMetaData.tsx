@@ -46,6 +46,7 @@ export const TripFormMetaData: React.FC<TripFormMetaDataProps> = ({
               Trip Name (Cannot be changed) *
             </label>
             <EditableText
+              id='tripName'
               tripId={formData.tripId}
               SK={formData.SK}
               createdAt={formData.createdAt}
@@ -65,6 +66,7 @@ export const TripFormMetaData: React.FC<TripFormMetaDataProps> = ({
               Tags
             </label>
             <EditableText
+              id='tripTags'
               tripId={formData.tripId}
               SK={formData.SK}
               createdAt={formData.createdAt}
@@ -85,6 +87,7 @@ export const TripFormMetaData: React.FC<TripFormMetaDataProps> = ({
             Description*
           </label>
           <EditableText
+            id='tripDescription'
             tripId={formData.tripId}
             SK={formData.SK}
             createdAt={formData.createdAt}

@@ -39,6 +39,7 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
                 </label>
               )}
               <EditableText
+                id='tripTags'
                 tripId={formData.tripId}
                 SK={formData.SK}
                 createdAt={formData.createdAt}
@@ -75,6 +76,7 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
           Description*
         </label>
         <EditableText
+          id='tripDescription'
           tripId={formData.tripId}
           SK={formData.SK}
           createdAt={formData.createdAt}

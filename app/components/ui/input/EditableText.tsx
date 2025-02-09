@@ -4,6 +4,7 @@ import { updateTripAttribute } from '../utils/updateTrip';
 import MyTextComponent from './MyTextComponent';
 
 export type EditableTextProps = {
+    id: string;
     tripId?: string;
     SK?: string;
     name?: string;
@@ -21,6 +22,8 @@ export type EditableTextProps = {
 };
 
 export const EditableText = ({
+    id,
+    placeholder,
     tripId,
     name,
     SK,
@@ -96,6 +99,7 @@ export const EditableText = ({
         const InputComponent = isTextArea ? 'textarea' : 'input';
         return (
             <InputComponent
+                data-testid={`editable-input-${id}`}
                 ref={inputRef as any}
                 type={isTextArea ? undefined : "text"}
                 name={attributeKey}
@@ -103,7 +107,6 @@ export const EditableText = ({
                 onChange={(e) => setEditValue(e.target.value)}
                 onBlur={handleSave}
                 onKeyDown={handleKeyDown}
-                placeholder={attributeValue}
                 tabIndex={tabIndex}
                 className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${className}`}
             />
@@ -122,7 +125,9 @@ export const EditableText = ({
             }}
         >
             <MyTextComponent
+                id={id}
                 editValue={editValue}
+                placeholder={placeholder}
                 isReadyOnly={isReadyOnly}
                 tabIndex={tabIndex}
                 handleFocus={handleFocus}
