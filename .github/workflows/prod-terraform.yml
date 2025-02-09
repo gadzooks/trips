@@ -34,6 +34,10 @@ jobs:
       - name: Install ShellCheck
         run: sudo apt-get install -y shellcheck
           
+      - name: Install tflint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+          
       - name: Run pre-commit checks
         run: pre-commit run --all-files
         
