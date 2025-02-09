@@ -94,25 +94,47 @@ describe('TripForm Component', () => {
     });
   });
 
-  it.skip('handles form submission with invalid data', async () => {
+  it('handles form submission with missing trip Name', async () => {
     render(<TripForm initialData={initialData} isNewRecord={true} onSubmit={mockSubmit} />);
 
     // Clear fields
     const nameSpan = screen.getByTestId('editable-span-tripName');
-    const descriptionSpan = screen.getByTestId('editable-span-tripDescription');
-
-    fireEvent.click(nameSpan);
+    fireEvent.mouseDown(nameSpan);
     const nameInput = screen.getByTestId('editable-input-tripName');
+    fireEvent.input(nameInput, { target: { value: '' } });
     await userEvent.clear(nameInput);
 
-    fireEvent.click(descriptionSpan);
-    const descInput = screen.getByTestId('editable-input-description');
+    const descriptionSpan = screen.getByTestId('editable-span-tripDescription');
+    fireEvent.mouseDown(descriptionSpan);
+    const descInput = screen.getByTestId('editable-input-tripDescription');
     await userEvent.clear(descInput);
 
     fireEvent.click(screen.getByText('Create Trip'));
 
     await waitFor(() => {
       expect(screen.getByText('Trip name is required')).toBeInTheDocument();
+      // expect(screen.getByText('Trip description is required')).toBeInTheDocument();
+    });
+  }
+  );
+
+  it('handles form submission with missing trip description', async () => {
+    render(<TripForm initialData={initialData} isNewRecord={true} onSubmit={mockSubmit} />);
+
+    // Clear fields
+    const nameSpan = screen.getByTestId('editable-span-tripName');
+    fireEvent.mouseDown(nameSpan);
+    const nameInput = screen.getByTestId('editable-input-tripName');
+    await userEvent.type(nameInput, 'Summer Vacation 2025');
+
+    const descriptionSpan = screen.getByTestId('editable-span-tripDescription');
+    fireEvent.mouseDown(descriptionSpan);
+    const descInput = screen.getByTestId('editable-input-tripDescription');
+    await userEvent.clear(descInput);
+
+    fireEvent.click(screen.getByText('Create Trip'));
+
+    await waitFor(() => {
       expect(screen.getByText('Trip description is required')).toBeInTheDocument();
     });
   }
