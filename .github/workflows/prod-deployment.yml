@@ -3,8 +3,21 @@ on:
   push:
     branches: [prod]
 jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+      - run: npm ci
+    #   - run: npm run test:integration
+    #  add this later
+        env:
+          QA_URL: ${{ needs.deploy-qa.outputs.url }}
+
   deploy-prod:
-    # needs: [test]
+    needs: [integration-tests]
     runs-on: ubuntu-latest
     environment: 
       name: production
