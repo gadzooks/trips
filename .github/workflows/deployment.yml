@@ -20,7 +20,6 @@ jobs:
       
   deploy-qa-infrastructure:
     needs: test
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Terraform Apply
