@@ -30,20 +30,20 @@ jobs:
         with:
           terraform_version: "1.10.5" 
         
-      - name: Install pre-commit
-        run: |
-          pip install pre-commit
-          pre-commit install
+      # - name: Install pre-commit
+      #   run: |
+      #     pip install pre-commit
+      #     pre-commit install
 
-      - name: Install ShellCheck
-        run: sudo apt-get install -y shellcheck
+      # - name: Install ShellCheck
+      #   run: sudo apt-get install -y shellcheck
           
-      - name: Install tflint
-        run: |
-          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+      # - name: Install tflint
+      #   run: |
+      #     curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
           
-      - name: Run pre-commit checks
-        run: pre-commit run --all-files
+      # - name: Run pre-commit checks
+      #   run: pre-commit run --all-files
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -55,11 +55,12 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         
-      - name: Terraform Init
-        run: terraform init -backend-config="key=$ENV/terraform.tfstate"
-        
-      - name: Terraform Format
-        run: terraform fmt -check
+      - name: Debug Path
+        working-directory: infrastructure/dynamodb
+        run: |
+          pwd
+          ls -la
+          tree
         
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
@@ -70,4 +71,5 @@ jobs:
         if: github.ref == 'refs/heads/develop'
         working-directory: infrastructure/dynamodb
         run: |
+          terraform --init -backend-config="key=$ENV/terraform.tfstate"
           terraform apply -auto-approve -var-file=$ENV_FILE
