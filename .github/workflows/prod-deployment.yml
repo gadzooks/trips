@@ -74,21 +74,15 @@ jobs:
            
   deploy-prod:
     needs: [terraform-prod]
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/prod'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '22'
-      - name: Push to QA Branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.TRIPS_TOKEN }}
-        run: |
-          git checkout -B prod main
-          git push -f https://$GITHUB_TOKEN@github.com/${{ github.repository }} prod
-                      
-      - name: Deploy to QA
+                     
+      - name: Deploy to Prod
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
