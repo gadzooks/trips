@@ -31,7 +31,7 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
           </div>
 
           <div className='flex justify-evenly space-x-4' >
-            <div className="flex items-center space-x-2">
+            <div className="hidden sm:flex items-center space-x-2">
               {!isReadOnly && (
 
                 <label htmlFor="tripTags" className="block text-sm font-medium text-gray-700 dark:text-gray-300">

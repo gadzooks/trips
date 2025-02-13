@@ -33,12 +33,13 @@ const MyTextComponent = ({
 
 return (
     <span
-        data-testid={`editable-span-${id}`}
+        data-testid={`readonly-span-${id}`}
         ref={spanRef}
-        role="textbox"
+        role={isReadyOnly ? 'readonly' : 'textbox'}
         tabIndex={isReadyOnly ? undefined : tabIndex}
+        onClick={!isReadyOnly ? handleFocus : undefined}
         className={`
-            ${!isReadyOnly ? 'cursor-text hover:bg-gray-50' : ''}
+            ${!isReadyOnly ? 'cursor-text hover:bg-gray-50 dark:hover:bg-gray-800' : ''}
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
             ${className} focus:ring-2 focus:ring-purple-500 focus:outline-none
         `}
@@ -48,9 +49,9 @@ return (
                 <a
                     key={key}
                     href={decoratedHref}
-                    className="text-blue-500 underline"
+                    className="text-blue-500 dark:text-blue-400 underline"
                     onClick={(event) => handleLinkClick(event, decoratedHref)}
-                    onTouchStart={(event) => handleLinkClick(event, decoratedHref)} // Mobile tap support
+                    onTouchStart={(event) => handleLinkClick(event, decoratedHref)}
                 >
                     {decoratedText}
                 </a>

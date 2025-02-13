@@ -1,5 +1,5 @@
 // app/components/ui/input/EditableText.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { updateTripAttribute } from '../utils/updateTrip';
 import MyTextComponent from './MyTextComponent';
 
@@ -16,6 +16,7 @@ export type EditableTextProps = {
     placeholder?: string;
     tabIndex?: number;
     onSave?: (value: string) => void;
+    onChange?: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     isTextArea?: boolean;
     tags?: string;
     className?: string;
@@ -34,6 +35,7 @@ export const EditableText = ({
     isReadyOnly,
     tabIndex,
     onSave,
+    onChange,
     isTextArea = false,
     tags,
     className = ""
@@ -43,28 +45,41 @@ export const EditableText = ({
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
     const spanRef = useRef<HTMLSpanElement>(null);
 
+    const inputClassName = `w-full p-2 rounded-lg 
+        focus:ring-2 focus:ring-purple-500 focus:border-transparent
+        bg-transparent
+        hover:bg-gray-100/10 dark:hover:bg-gray-700/50
+        text-gray-900 dark:text-gray-100
+        ${className}`;
+
     useEffect(() => {
         setEditValue(attributeValue);
     }, [attributeValue]);
 
     const handleSave = async () => {
         setIsEditing(false);
-        tags = tags || '';
-        name = name || '';
-        createdAt = createdAt || '';
-        createdBy = createdBy || '';
-        if (editValue !== attributeValue) {
-            if (tripId && SK) {
-                const result = await updateTripAttribute(
-                    { tripId, createdAt, createdBy, attributeKey, attributeValue: editValue, tags, name }
-                );
-                if (!result.success) {
-                    setEditValue(attributeValue);
-                    return;
-                }
+    
+        if (editValue === attributeValue) return;
+    
+        if (tripId && SK) {
+            // Ensure default values
+            const result = await updateTripAttribute({
+                tripId,
+                createdAt: createdAt || '',
+                createdBy: createdBy || '',
+                attributeKey,
+                attributeValue: editValue,
+                tags: tags || '',
+                name: name || ''
+            });
+    
+            if (!result.success) {
+                setEditValue(attributeValue);
+                return;
             }
-            onSave?.(editValue);
         }
+    
+        onSave?.(editValue);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -81,22 +96,26 @@ export const EditableText = ({
     const handleFocus = () => {
         if (!isReadyOnly) {
             setIsEditing(true);
-            // Use requestAnimationFrame to ensure the input is rendered before focusing
-            requestAnimationFrame(() => {
-                if (inputRef.current) {
-                    inputRef.current.focus();
-                    // Position cursor at the end of the text
-                    const length = editValue.length;
-                    if ('setSelectionRange' in inputRef.current) {
-                        inputRef.current.setSelectionRange(length, length);
-                    }
-                }
-            });
+            // // Use requestAnimationFrame to ensure the input is rendered before focusing
+            // requestAnimationFrame(() => {
+            //     if (inputRef.current) {
+            //         inputRef.current.focus();
+            //         // // Position cursor at the end of the text
+            //         // const length = editValue.length;
+            //         // if ('setSelectionRange' in inputRef.current) {
+            //         //     inputRef.current.setSelectionRange(length, length);
+            //         // }
+            //     }
+            // });
         }
     };
 
     if (isEditing) {
         const InputComponent = isTextArea ? 'textarea' : 'input';
+        const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            setEditValue(e.target.value);
+            onChange?.(e);
+        };
         return (
             <InputComponent
                 data-testid={`editable-input-${id}`}
@@ -104,11 +123,17 @@ export const EditableText = ({
                 type={isTextArea ? undefined : "text"}
                 name={attributeKey}
                 value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
+                onChange={handleChange}
                 onBlur={handleSave}
                 onKeyDown={handleKeyDown}
                 tabIndex={tabIndex}
-                className={`w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${className}`}
+                rows={isTextArea ? 3 : undefined}
+                className={`w-full p-2 rounded-lg 
+                    focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                    bg-transparent text-gray-900 dark:text-gray-100
+                    hover:bg-opacity-10 hover:bg-gray-500 
+                    dark:hover:bg-opacity-20 dark:hover:bg-gray-200
+                    ${className}`}
             />
         );
     }

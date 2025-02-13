@@ -60,7 +60,7 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                 <th
                   class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
                 >
-                  BOOKINGS
+                  RESERVATIONS
                 </th>
                 <th
                   class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
@@ -176,44 +176,70 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                 <td
                   class="p-1 align-middle"
                 >
-                  <input
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                    placeholder="Date"
-                    type="text"
-                    value="2024-02-01"
-                  />
+                  <div>
+                    <span
+                      class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-date"
+                      role="textbox"
+                    >
+                      2024-02-01
+                    </span>
+                  </div>
                 </td>
                 <td
                   class="p-1"
                 >
-                  <textarea
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                    placeholder="Add itinerary..."
-                    rows="2"
-                  >
-                    City tour
-                  </textarea>
+                  <div>
+                    <span
+                      class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-itinerary"
+                      role="textbox"
+                    >
+                      City tour
+                    </span>
+                  </div>
                 </td>
                 <td
                   class="p-1"
                 >
-                  <textarea
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                    placeholder="Add booking details..."
-                    rows="2"
-                  >
-                    Tour booking #123
-                  </textarea>
+                  <div>
+                    <span
+                      class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-reservations"
+                      role="textbox"
+                    >
+                      Tour booking #123
+                    </span>
+                  </div>
                 </td>
                 <td
                   class="p-1"
                 >
-                  <input
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                    placeholder="Lodging location"
-                    type="text"
-                    value="Hotel ABC"
-                  />
+                  <div>
+                    <span
+                      class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-lodging"
+                      role="textbox"
+                    >
+                      Hotel ABC
+                    </span>
+                  </div>
                 </td>
                 <td
                   class="p-1"
@@ -242,23 +268,37 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                         points="12 6 12 12 16 14"
                       />
                     </svg>
-                    <input
-                      class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1"
-                      placeholder="Time"
-                      type="text"
-                      value="2h"
-                    />
+                    <div>
+                      <span
+                        class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                        data-testid="readonly-span-travelTime"
+                        role="textbox"
+                      >
+                        2h
+                      </span>
+                    </div>
                   </div>
                 </td>
                 <td
                   class="p-1"
                 >
-                  <textarea
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                    placeholder="Notes"
-                  >
-                    Bring camera
-                  </textarea>
+                  <div>
+                    <span
+                      class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-notes"
+                      role="textbox"
+                    >
+                      Bring camera
+                    </span>
+                  </div>
                 </td>
                 <td
                   class="p-4 w-8"
@@ -398,7 +438,7 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
               <th
                 class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
               >
-                BOOKINGS
+                RESERVATIONS
               </th>
               <th
                 class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
@@ -514,44 +554,70 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
               <td
                 class="p-1 align-middle"
               >
-                <input
-                  class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                  placeholder="Date"
-                  type="text"
-                  value="2024-02-01"
-                />
+                <div>
+                  <span
+                    class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                    data-testid="readonly-span-date"
+                    role="textbox"
+                  >
+                    2024-02-01
+                  </span>
+                </div>
               </td>
               <td
                 class="p-1"
               >
-                <textarea
-                  class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                  placeholder="Add itinerary..."
-                  rows="2"
-                >
-                  City tour
-                </textarea>
+                <div>
+                  <span
+                    class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                    data-testid="readonly-span-itinerary"
+                    role="textbox"
+                  >
+                    City tour
+                  </span>
+                </div>
               </td>
               <td
                 class="p-1"
               >
-                <textarea
-                  class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                  placeholder="Add booking details..."
-                  rows="2"
-                >
-                  Tour booking #123
-                </textarea>
+                <div>
+                  <span
+                    class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                    data-testid="readonly-span-reservations"
+                    role="textbox"
+                  >
+                    Tour booking #123
+                  </span>
+                </div>
               </td>
               <td
                 class="p-1"
               >
-                <input
-                  class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                  placeholder="Lodging location"
-                  type="text"
-                  value="Hotel ABC"
-                />
+                <div>
+                  <span
+                    class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                    data-testid="readonly-span-lodging"
+                    role="textbox"
+                  >
+                    Hotel ABC
+                  </span>
+                </div>
               </td>
               <td
                 class="p-1"
@@ -580,23 +646,37 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                       points="12 6 12 12 16 14"
                     />
                   </svg>
-                  <input
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1"
-                    placeholder="Time"
-                    type="text"
-                    value="2h"
-                  />
+                  <div>
+                    <span
+                      class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-travelTime"
+                      role="textbox"
+                    >
+                      2h
+                    </span>
+                  </div>
                 </div>
               </td>
               <td
                 class="p-1"
               >
-                <textarea
-                  class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                  placeholder="Notes"
-                >
-                  Bring camera
-                </textarea>
+                <div>
+                  <span
+                    class="
+            cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                    data-testid="readonly-span-notes"
+                    role="textbox"
+                  >
+                    Bring camera
+                  </span>
+                </div>
               </td>
               <td
                 class="p-4 w-8"
@@ -793,7 +873,7 @@ exports[`TripDayComponent Snapshots matches empty state snapshot 1`] = `
                 <th
                   class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
                 >
-                  BOOKINGS
+                  RESERVATIONS
                 </th>
                 <th
                   class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
@@ -948,7 +1028,7 @@ exports[`TripDayComponent Snapshots matches empty state snapshot 1`] = `
               <th
                 class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
               >
-                BOOKINGS
+                RESERVATIONS
               </th>
               <th
                 class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
@@ -1133,7 +1213,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                 <th
                   class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
                 >
-                  BOOKINGS
+                  RESERVATIONS
                 </th>
                 <th
                   class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
@@ -1164,48 +1244,70 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                 <td
                   class="p-1 align-middle"
                 >
-                  <input
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                    placeholder="Date"
-                    readonly=""
-                    type="text"
-                    value="2024-02-01"
-                  />
+                  <div>
+                    <span
+                      class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-date"
+                      role="readonly"
+                    >
+                      2024-02-01
+                    </span>
+                  </div>
                 </td>
                 <td
                   class="p-1"
                 >
-                  <textarea
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                    placeholder="Add itinerary..."
-                    readonly=""
-                    rows="2"
-                  >
-                    City tour
-                  </textarea>
+                  <div>
+                    <span
+                      class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-itinerary"
+                      role="readonly"
+                    >
+                      City tour
+                    </span>
+                  </div>
                 </td>
                 <td
                   class="p-1"
                 >
-                  <textarea
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                    placeholder="Add booking details..."
-                    readonly=""
-                    rows="2"
-                  >
-                    Tour booking #123
-                  </textarea>
+                  <div>
+                    <span
+                      class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-reservations"
+                      role="readonly"
+                    >
+                      Tour booking #123
+                    </span>
+                  </div>
                 </td>
                 <td
                   class="p-1"
                 >
-                  <input
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                    placeholder="Lodging location"
-                    readonly=""
-                    type="text"
-                    value="Hotel ABC"
-                  />
+                  <div>
+                    <span
+                      class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-lodging"
+                      role="readonly"
+                    >
+                      Hotel ABC
+                    </span>
+                  </div>
                 </td>
                 <td
                   class="p-1"
@@ -1234,25 +1336,37 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                         points="12 6 12 12 16 14"
                       />
                     </svg>
-                    <input
-                      class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1"
-                      placeholder="Time"
-                      readonly=""
-                      type="text"
-                      value="2h"
-                    />
+                    <div>
+                      <span
+                        class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                        data-testid="readonly-span-travelTime"
+                        role="readonly"
+                      >
+                        2h
+                      </span>
+                    </div>
                   </div>
                 </td>
                 <td
                   class="p-1"
                 >
-                  <textarea
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                    placeholder="Notes"
-                    readonly=""
-                  >
-                    Bring camera
-                  </textarea>
+                  <div>
+                    <span
+                      class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-notes"
+                      role="readonly"
+                    >
+                      Bring camera
+                    </span>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -1290,7 +1404,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
               <th
                 class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
               >
-                BOOKINGS
+                RESERVATIONS
               </th>
               <th
                 class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
@@ -1321,48 +1435,70 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
               <td
                 class="p-1 align-middle"
               >
-                <input
-                  class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                  placeholder="Date"
-                  readonly=""
-                  type="text"
-                  value="2024-02-01"
-                />
+                <div>
+                  <span
+                    class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                    data-testid="readonly-span-date"
+                    role="readonly"
+                  >
+                    2024-02-01
+                  </span>
+                </div>
               </td>
               <td
                 class="p-1"
               >
-                <textarea
-                  class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                  placeholder="Add itinerary..."
-                  readonly=""
-                  rows="2"
-                >
-                  City tour
-                </textarea>
+                <div>
+                  <span
+                    class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                    data-testid="readonly-span-itinerary"
+                    role="readonly"
+                  >
+                    City tour
+                  </span>
+                </div>
               </td>
               <td
                 class="p-1"
               >
-                <textarea
-                  class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                  placeholder="Add booking details..."
-                  readonly=""
-                  rows="2"
-                >
-                  Tour booking #123
-                </textarea>
+                <div>
+                  <span
+                    class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                    data-testid="readonly-span-reservations"
+                    role="readonly"
+                  >
+                    Tour booking #123
+                  </span>
+                </div>
               </td>
               <td
                 class="p-1"
               >
-                <input
-                  class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                  placeholder="Lodging location"
-                  readonly=""
-                  type="text"
-                  value="Hotel ABC"
-                />
+                <div>
+                  <span
+                    class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                    data-testid="readonly-span-lodging"
+                    role="readonly"
+                  >
+                    Hotel ABC
+                  </span>
+                </div>
               </td>
               <td
                 class="p-1"
@@ -1391,25 +1527,37 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                       points="12 6 12 12 16 14"
                     />
                   </svg>
-                  <input
-                    class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1"
-                    placeholder="Time"
-                    readonly=""
-                    type="text"
-                    value="2h"
-                  />
+                  <div>
+                    <span
+                      class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                      data-testid="readonly-span-travelTime"
+                      role="readonly"
+                    >
+                      2h
+                    </span>
+                  </div>
                 </div>
               </td>
               <td
                 class="p-1"
               >
-                <textarea
-                  class="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                  placeholder="Notes"
-                  readonly=""
-                >
-                  Bring camera
-                </textarea>
+                <div>
+                  <span
+                    class="
+            
+            inline-block w-full whitespace-pre-wrap rounded-lg p-2
+            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+        "
+                    data-testid="readonly-span-notes"
+                    role="readonly"
+                  >
+                    Bring camera
+                  </span>
+                </div>
               </td>
             </tr>
           </tbody>

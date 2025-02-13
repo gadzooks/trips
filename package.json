@@ -10,6 +10,7 @@
     "lint-typescript": "next lint --max-warnings=0 && tsc --noEmit",
     "test": "jest",
     "snaphot-initialize": "jest -u",
+    "snaphot-update": "jest --updateSnapshot",
     "watch": "jest --watch"
   },
   "dependencies": {

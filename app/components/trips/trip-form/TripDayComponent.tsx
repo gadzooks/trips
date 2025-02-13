@@ -4,6 +4,7 @@ import { Clock, Trash2, Plus, Save, RotateCcw, GripVertical, MoveVertical } from
 import type { TripDayProps } from '../trip-types';
 import { TripDayDTO } from '@/types/trip';
 import MobileTripDays from './MobileTripDays';
+import { EditableText } from '../../ui/input/EditableText';
 
 const TripDayComponent: React.FC<TripDayProps> = ({
   onChange,
@@ -124,7 +125,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
               {!isReadOnly && <th className="w-8 p-2"><MoveVertical className='w-4 h-4' /> </th>}
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">DATE</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">ITINERARY</th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">BOOKINGS</th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">RESERVATIONS</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">LODGING</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">TRAVEL<br />TIME</th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">NOTES</th>
@@ -147,65 +148,86 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   </td>
                 )}
                 <td className="p-1 align-middle">
-                  <input
-                    type="text"
-                    value={day.date}
-                    onChange={(e) => updateDay(index, 'date', e.target.value)}
+                  <EditableText
+                    id="date"
+                    attributeKey='date'
+                    attributeValue={day.date}
+                    onSave={(e) => updateDay(index, 'date', e)}
+                    onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
                     placeholder="Date"
-                    readOnly={isReadOnly}
+                    isReadyOnly={isReadOnly}
+                    isTextArea={false}
                   />
                 </td>
                 <td className="p-1">
-                  <textarea
-                    value={day.itinerary}
-                    onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
+                  <EditableText
+                    id='itinerary'
+                    attributeKey='itinerary'
+                    attributeValue={day.itinerary}
+                    onSave={(e) => updateDay(index, 'itinerary', e)}
+                    onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                    rows={2}
+                    // rows={2}
                     placeholder="Add itinerary..."
-                    readOnly={isReadOnly}
+                    isReadyOnly={isReadOnly}
+                    isTextArea={true}
                   />
                 </td>
                 <td className="p-1">
-                  <textarea
-                    value={day.reservations}
-                    onChange={(e) => updateDay(index, 'reservations', e.target.value)}
+                  <EditableText
+                    id='reservations'
+                    attributeKey='reservations'
+                    attributeValue={day.reservations}
+                    onSave={(e) => updateDay(index, 'reservations', e)}
+                    onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                    rows={2}
+                    // rows={2}
                     placeholder="Add booking details..."
-                    readOnly={isReadOnly}
+                    isReadyOnly={isReadOnly}
+                    isTextArea={true}
                   />
                 </td>
                 <td className="p-1">
-                  <input
-                    type="text"
-                    value={day.lodging}
-                    onChange={(e) => updateDay(index, 'lodging', e.target.value)}
+                  <EditableText
+                    id='lodging'
+                    attributeKey='lodging'
+                    attributeValue={day.lodging}
+                    onSave={(e) => updateDay(index, 'lodging', e)}
+                    onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
                     placeholder="Lodging location"
-                    readOnly={isReadOnly}
+                    isReadyOnly={isReadOnly}
+                    isTextArea={true}
                   />
                 </td>
                 <td className="p-1">
                   <div className="flex items-center space-x-1">
                     <Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                    <input
-                      type="text"
-                      value={day.travelTime}
-                      onChange={(e) => updateDay(index, 'travelTime', e.target.value)}
+                    <EditableText
+                      id='travelTime'
+                      attributeKey='travelTime'
+                      attributeValue={day.travelTime}
+                      onSave={(e) => updateDay(index, 'travelTime', e)}
+                      onChange={(e) => setHasChanges(true)}
                       className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1"
                       placeholder="Time"
-                      readOnly={isReadOnly}
+                      isReadyOnly={isReadOnly}
+                      isTextArea={false}
                     />
                   </div>
                 </td>
                 <td className="p-1">
-                  <textarea
-                    value={day.notes}
-                    onChange={(e) => updateDay(index, 'notes', e.target.value)}
+                  <EditableText
+                    id='notes'
+                    attributeKey='notes'
+                    attributeValue={day.notes}
+                    onSave={(e) => updateDay(index, 'notes', e)}
+                    onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                    placeholder="Notes"
-                    readOnly={isReadOnly}
+                    placeholder="Additional notes, including links etc"
+                    isReadyOnly={isReadOnly}
+                    isTextArea={true}
                   />
                 </td>
                 {!isReadOnly && (

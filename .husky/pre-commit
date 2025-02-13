@@ -1,2 +1,23 @@
-npm test
+#!/bin/bash
+
+# changed_files=$(git diff --cached --name-only -- infrastructure/)
+
+# if [ -n "$changed_files" ]; then
+#   # Format code style
+#   terraform fmt -recursive infrastructure/
+  
+#   # Validate configuration
+#   terraform validate infrastructure/
+  
+#   # Run tflint (assuming it's installed)
+#   tflint --chdir infrastructure/
+  
+#   # Run terraform plan (optional - can be slow)
+#   # terraform plan -input=false
+  
+#   git add infrastructure/
+# fi
+
+npm run lint
+npm run test
 npm run lint-typescript
