@@ -6,7 +6,7 @@ env:
   ENV: prod
   ENV_FILE: ./environments/prod.tfvars
 jobs:
-  integration-tests:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -14,40 +14,88 @@ jobs:
         with:
           node-version: '22'
       - run: npm ci
-    #   - run: npm run test:integration
-    #  add this later
-        env:
-          QA_URL: ${{ needs.deploy-qa.outputs.url }}
-
-  deploy-prod-infrastructure:
-    needs: integration-tests
-    if: github.ref_name == 'prod'
+      - run: npm test
+      
+  terraform-prod:
+    needs: [test]
     runs-on: ubuntu-latest
+    environment: $ENV
+    # needed to run infrastructure/.pre-commit-config.yml
+    defaults:
+      run:
+        working-directory: ./infrastructure
+
     steps:
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/develop'
+      - uses: actions/checkout@v3
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.5" 
+        
+      - name: Install pre-commit
+        run: |
+          pip install pre-commit
+          pre-commit install
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+          
+      - name: Install tflint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+          
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+          
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        
+      - name: Terraform Plan
+        if: github.event_name == 'pull_request'
+        working-directory: infrastructure/dynamodb
+        run: |
+          terraform init -backend-config="key=$ENV/terraform.tfstate"
+          terraform plan -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" -out=terraform.tfstate
+
+      - name: Terraform Plan & Apply
         working-directory: infrastructure/dynamodb
         run: |
           terraform init -backend-config="key=$ENV/terraform.tfstate"
           terraform plan -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" -out=terraform.tfstate
           terraform apply -auto-approve -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" terraform.tfstate
-
+           
   deploy-prod:
-    needs: [deploy-prod-infrastructure]
+    needs: [terraform-prod]
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment: 
-      name: production
-      url: https://mtp.weekendwanderings.com
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '22'
-      - name: Deploy to Production
+      - name: Push to QA Branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.TRIPS_TOKEN }}
+        run: |
+          git checkout -B prod main
+          git push -f https://$GITHUB_TOKEN@github.com/${{ github.repository }} prod
+                      
+      - name: Deploy to QA
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
           npm i -g vercel
-          vercel deploy --prod --token $VERCEL_TOKEN --env ENVIRONMENT=production
+          vercel deploy --token $VERCEL_TOKEN --env ENVIRONMENT=prod
+          
+
+
