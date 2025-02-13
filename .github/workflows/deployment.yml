@@ -17,11 +17,9 @@ jobs:
       - run: npm test
       
   terraform-qa:
+    needs: [test]
     runs-on: ubuntu-latest
     environment: $ENV
-    defaults:
-      run:
-        working-directory: ./infrastructure
 
     steps:
       - uses: actions/checkout@v3
@@ -62,8 +60,14 @@ jobs:
         run: |
           terraform init -backend-config="key=$ENV/terraform.tfstate"
           terraform plan -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" -out=terraform.tfstate
-        
-          
+
+      - name: Terraform Plan & Apply
+        working-directory: infrastructure/dynamodb
+        run: |
+          terraform init -backend-config="key=$ENV/terraform.tfstate"
+          terraform plan -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" -out=terraform.tfstate
+          terraform apply -auto-approve -var-file="${GITHUB_WORKSPACE}/infrastructure/dynamodb/environments/$ENV.tfvars" -out=terraform.tfstate
+           
   deploy-qa:
     needs: [terraform-qa]
     if: github.ref == 'refs/heads/main'
