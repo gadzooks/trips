@@ -20,6 +20,10 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     environment: $ENV
+    # needed to run infrastructure/.pre-commit-config.yml
+    defaults:
+      run:
+        working-directory: ./infrastructure
 
     steps:
       - uses: actions/checkout@v3
