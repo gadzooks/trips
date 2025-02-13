@@ -15,7 +15,7 @@ resource "aws_dynamodb_table" "table" {
   }
 
   point_in_time_recovery {
-    enabled = true
+    enabled = var.environment == "prod"
   }
 
   server_side_encryption {
@@ -23,7 +23,7 @@ resource "aws_dynamodb_table" "table" {
   }
 
   tags = {
-    Environment = "production"
-    Name        = "my-dynamodb-table"
+    Environment = var.environment
+    Name        = "${var.table_name}-${var.environment}"
   }
 }
