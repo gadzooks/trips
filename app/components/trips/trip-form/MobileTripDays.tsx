@@ -63,28 +63,22 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({ days, isReadOnly, onCha
               multiline
             />
 
-            <div className="flex gap-2">
-              <div className="flex-1">
-                <MobileInputComponentWithIcon
-                  icon={Hotel}
-                  label="LODGING"
-                  value={day.lodging}
-                  onChange={(e) => updateDay(index, 'lodging', e.target.value)}
-                  placeholder="Lodging details"
-                  multiline
-                />
-              </div>
-               <div className="flex-1">
-                <MobileInputComponentWithIcon
-                  icon={BookOpen}
-                  label="RESERVATIONS"
-                  value={day.reservations}
-                  onChange={(e) => updateDay(index, 'reservations', e.target.value)}
-                  placeholder="Reservation details"
-                  multiline
-                />
-              </div>
-            </div>
+            <MobileInputComponentWithIcon
+              icon={Hotel}
+              label="LODGING"
+              value={day.lodging}
+              onChange={(e) => updateDay(index, 'lodging', e.target.value)}
+              placeholder="Lodging details"
+              multiline
+            />
+            <MobileInputComponentWithIcon
+              icon={BookOpen}
+              label="RESERVATIONS"
+              value={day.reservations}
+              onChange={(e) => updateDay(index, 'reservations', e.target.value)}
+              placeholder="Reservation details"
+              multiline
+            />
 
             <MobileInputComponentWithIcon
               icon={MessageSquare}
