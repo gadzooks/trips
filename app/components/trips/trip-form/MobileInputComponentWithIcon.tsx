@@ -48,6 +48,7 @@ const InputWithIcon = ({
         key={key}
         onClick={(e) => {
           e.stopPropagation();
+          e.preventDefault();
           if (window.confirm(`Do you want to visit ${href}?`)) {
             window.open(href, '_blank');
           }
