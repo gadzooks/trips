@@ -1,7 +1,9 @@
 // app/components/trips/trip-form/MobileTripDays.tsx
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Clock, CalendarDays, Map, Hotel, BookOpen, MessageSquare } from 'lucide-react';
 import { TripDayDTO } from '@/types/trip';
+import Linkify from 'react-linkify';
+import MobileInputComponentWithIcon from './MobileInputComponentWithIcon';
 
 interface MobileTripDaysProps {
   days: TripDayDTO[];
@@ -15,42 +17,6 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({ days, isReadOnly, onCha
     const newDays = [...days];
     newDays[index] = { ...newDays[index], [field]: value };
     onChange(newDays);
-  };
-
-  const InputWithIcon = ({ 
-    icon: Icon, 
-    label, 
-    value, 
-    onChange, 
-    placeholder, 
-    multiline 
-  }: { 
-    icon: React.ElementType; 
-    label: string;
-    value: string; 
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-    placeholder: string;
-    multiline?: boolean;
-  }) => {
-    const InputComponent = multiline ? 'textarea' : 'input';
-    return (
-      <div className="relative">
-        <div className="absolute left-2 top-2 flex items-center gap-1 text-gray-400 dark:text-gray-500">
-          <Icon className="w-4 h-4" />
-          <span className="text-xs font-medium">{label}</span>
-        </div>
-        <InputComponent
-          value={value}
-          onChange={onChange}
-          readOnly={isReadOnly}
-          placeholder={placeholder}
-          rows={multiline ? 2 : undefined}
-          className={`w-full bg-gray-50 dark:bg-gray-700/50 rounded text-sm text-gray-900 dark:text-gray-100 focus:outline-none ${
-            multiline ? 'resize-none p-2 pt-8' : 'px-2 py-1 pl-20'
-          }`}
-        />
-      </div>
-    );
   };
 
   return (
@@ -88,7 +54,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({ days, isReadOnly, onCha
 
           {/* Main Content */}
           <div className="space-y-2">
-            <InputWithIcon
+            <MobileInputComponentWithIcon
               icon={Map}
               label="ITINERARY"
               value={day.itinerary}
@@ -99,7 +65,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({ days, isReadOnly, onCha
 
             <div className="flex gap-2">
               <div className="flex-1">
-                <InputWithIcon
+                <MobileInputComponentWithIcon
                   icon={Hotel}
                   label="LODGING"
                   value={day.lodging}
@@ -109,7 +75,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({ days, isReadOnly, onCha
                 />
               </div>
                <div className="flex-1">
-                <InputWithIcon
+                <MobileInputComponentWithIcon
                   icon={BookOpen}
                   label="RESERVATIONS"
                   value={day.reservations}
@@ -120,14 +86,14 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({ days, isReadOnly, onCha
               </div>
             </div>
 
-            <InputWithIcon
-                  icon={MessageSquare}
-                  label="NOTES"
-                  value={day.notes}
-                  onChange={(e) => updateDay(index, 'notes', e.target.value)}
-                  placeholder="Add notes"
-                  multiline
-                />
+            <MobileInputComponentWithIcon
+              icon={MessageSquare}
+              label="NOTES"
+              value={day.notes}
+              onChange={(e) => updateDay(index, 'notes', e.target.value)}
+              placeholder="Add notes"
+              multiline
+            />
           </div>
         </div>
       ))}
