@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint --max-warnings=0",
     "lint-typescript": "next lint --max-warnings=0 && tsc --noEmit",
+    "prepare": "husky install",
     "test": "jest",
     "type-check": "tsc --noEmit",
     "snaphot-initialize": "jest -u",
