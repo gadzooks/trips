@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Clock, CalendarDays, Map, Hotel, BookOpen, MessageSquare, Plus, Trash2, GripVertical, ChevronUp, ChevronDown, Save, RotateCcw } from 'lucide-react';
 import { TripDayDTO } from '@/types/trip';
 import MobileInputComponentWithIcon from './MobileInputComponentWithIcon';
+import DatePickerInput from '../../ui/input/DatePickerInput';
 
 interface MobileTripDaysProps {
   days: TripDayDTO[];
@@ -202,13 +203,19 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
         <div
           key={index}
           className={`bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 space-y-3 border border-gray-200 dark:border-gray-700 transition-all duration-300 ${
-            animating === index ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
-          } ${expandedDay === index ? 'border-purple-300 dark:border-purple-500' : ''}`}
+            animating === index ? "opacity-0 scale-95" : "opacity-100 scale-100"
+          } ${
+            expandedDay === index
+              ? "border-purple-300 dark:border-purple-500"
+              : ""
+          }`}
         >
           {/* Day Header */}
-          <div 
+          <div
             className={`flex items-center justify-between cursor-pointer transition-colors ${
-              expandedDay === index ? 'bg-purple-50 dark:bg-purple-900/20 -mx-4 px-4 py-2 rounded-t-xl' : ''
+              expandedDay === index
+                ? "bg-purple-50 dark:bg-purple-900/20 -mx-4 px-4 py-2 rounded-t-xl"
+                : ""
             }`}
             onClick={() => toggleExpand(index)}
           >
@@ -217,7 +224,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
               <div className="bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-xs font-medium">
                 {getDayNumber(index)}
               </div>
-              
+
               {/* Date display */}
               <div className="flex items-center">
                 <span className="text-sm font-medium text-gray-900 dark:text-gray-100 mr-1">
@@ -225,7 +232,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
                 </span>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               {/* Travel time pill - only show if it has a value */}
               {day.travelTime && (
@@ -234,24 +241,25 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
                   <span>{day.travelTime}</span>
                 </div>
               )}
-              
+
               {/* Expand/collapse button */}
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={`p-1 rounded-full ${
-                  expandedDay === index 
-                    ? 'bg-purple-100 dark:bg-purple-800/60 text-purple-600 dark:text-purple-300' 
-                    : 'text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300'
+                  expandedDay === index
+                    ? "bg-purple-100 dark:bg-purple-800/60 text-purple-600 dark:text-purple-300"
+                    : "text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
                 }`}
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleExpand(index);
                 }}
               >
-                {expandedDay === index ? 
-                  <ChevronUp className="w-5 h-5" /> : 
+                {expandedDay === index ? (
+                  <ChevronUp className="w-5 h-5" />
+                ) : (
                   <ChevronDown className="w-5 h-5" />
-                }
+                )}
               </button>
             </div>
           </div>
@@ -262,29 +270,22 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
               {getSummary(day)}
             </div>
           )}
-          
+
           {/* Expanded content */}
-                        {expandedDay === index && (
-            <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
+          {expandedDay === index && (
+            <div style={{ animation: "fadeIn 0.3s ease-out" }}>
               {/* Date and Travel Time Row - Edit Mode */}
               {!isReadOnly && (
                 <div className="grid grid-cols-2 gap-3 mb-4 mt-2">
                   <div className="relative">
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                      DATE
-                    </label>
-                    <div className="relative">
-                      <CalendarDays className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500 dark:text-purple-400" />
-                      <input
-                        type="text"
-                        value={day.date}
-                        onChange={(e) => updateDay(index, 'date', e.target.value)}
-                        placeholder="Add date"
-                        className="pl-9 pr-3 py-2 w-full text-sm rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none"
-                      />
-                    </div>
+                    <DatePickerInput
+                      value={day.date}
+                      onChange={(e) => updateDay(index, "date", e.target.value)}
+                      index={index}
+                      updateDay={updateDay}
+                    />
                   </div>
-                  
+
                   <div className="relative">
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                       TRAVEL TIME
@@ -294,7 +295,9 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
                       <input
                         type="text"
                         value={day.travelTime}
-                        onChange={(e) => updateDay(index, 'travelTime', e.target.value)}
+                        onChange={(e) =>
+                          updateDay(index, "travelTime", e.target.value)
+                        }
                         placeholder="Add time"
                         className="pl-9 pr-3 py-2 w-full text-sm rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none"
                       />
@@ -310,36 +313,40 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
                     icon={Map}
                     label="ITINERARY"
                     value={day.itinerary}
-                    onChange={(e) => updateDay(index, 'itinerary', e.target.value)}
+                    onChange={(e) =>
+                      updateDay(index, "itinerary", e.target.value)
+                    }
                     placeholder="What's planned for this day..."
                     multiline
                     rows={3}
                   />
                 </div>
-                
+
                 <MobileInputComponentWithIcon
                   icon={Hotel}
                   label="LODGING"
                   value={day.lodging}
-                  onChange={(e) => updateDay(index, 'lodging', e.target.value)}
+                  onChange={(e) => updateDay(index, "lodging", e.target.value)}
                   placeholder="Where you'll be staying..."
                   multiline
                 />
-                
+
                 <MobileInputComponentWithIcon
                   icon={BookOpen}
                   label="RESERVATIONS"
                   value={day.reservations}
-                  onChange={(e) => updateDay(index, 'reservations', e.target.value)}
+                  onChange={(e) =>
+                    updateDay(index, "reservations", e.target.value)
+                  }
                   placeholder="Any bookings or tickets..."
                   multiline
                 />
-                
+
                 <MobileInputComponentWithIcon
                   icon={MessageSquare}
                   label="NOTES"
                   value={day.notes}
-                  onChange={(e) => updateDay(index, 'notes', e.target.value)}
+                  onChange={(e) => updateDay(index, "notes", e.target.value)}
                   placeholder="Additional notes..."
                   multiline
                 />
@@ -354,9 +361,9 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
                       onClick={() => moveUp(index)}
                       disabled={index === 0}
                       className={`p-2 rounded-lg ${
-                        index === 0 
-                          ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed' 
-                          : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700'
+                        index === 0
+                          ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                          : "text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700"
                       }`}
                       aria-label="Move day up"
                     >
@@ -367,16 +374,16 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
                       onClick={() => moveDown(index)}
                       disabled={index === days.length - 1}
                       className={`p-2 rounded-lg ${
-                        index === days.length - 1 
-                          ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed' 
-                          : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700'
+                        index === days.length - 1
+                          ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                          : "text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700"
                       }`}
                       aria-label="Move day down"
                     >
                       <ChevronDown className="w-4 h-4" />
                     </button>
                   </div>
-                  
+
                   <button
                     type="button"
                     onClick={() => removeDay(index)}
@@ -427,7 +434,10 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
 
       {/* Save/Reset buttons */}
       {!isReadOnly && hasChanges && !isNewRecord && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-between z-10" style={{ animation: 'slideUp 0.3s ease-out' }}>
+        <div
+          className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-between z-10"
+          style={{ animation: "slideUp 0.3s ease-out" }}
+        >
           <button
             type="button"
             onClick={handleReset}
