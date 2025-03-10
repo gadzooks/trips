@@ -9,8 +9,6 @@ interface Day {
   title: string;
 }
 
-import { TripDayDTO } from '/Users/gadzooks/src/trips/types/trip';
-
 interface DatePickerInputProps {
   value: string;
   index: number;
