@@ -119,10 +119,6 @@ const TripDayComponent: React.FC<TripDayProps> = ({
     setHasChanges(false);
   };
 
-  // if (isMobile) {
-  //   return <MobileTripDays days={days} isReadOnly={isReadOnly} />;
-  // }
-
   return (
     <div className="space-y-4">
       <div className="overflow-x-auto rounded-lg">
