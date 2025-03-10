@@ -46,7 +46,14 @@ const TripDayComponent: React.FC<TripDayProps> = ({
   }, [initialRows]);
 
   if (isMobile) {
-    return <MobileTripDays days={days} isReadOnly={isReadOnly} />;
+    return (
+      <MobileTripDays
+        days={days}
+        isReadOnly={isReadOnly}
+        onChange={onChange}
+        isNewRecord={isNewRecord}
+      />
+    );
   }
 
   const updateDay = (index: number, field: keyof TripDayDTO, value: string) => {
@@ -111,9 +118,9 @@ const TripDayComponent: React.FC<TripDayProps> = ({
     setHasChanges(false);
   };
 
-  if (isMobile) {
-    return <MobileTripDays days={days} isReadOnly={isReadOnly} />;
-  }
+  // if (isMobile) {
+  //   return <MobileTripDays days={days} isReadOnly={isReadOnly} />;
+  // }
 
   return (
     <div className="space-y-4">
