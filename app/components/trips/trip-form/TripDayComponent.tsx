@@ -5,6 +5,7 @@ import type { TripDayProps } from '../trip-types';
 import { TripDayDTO } from '@/types/trip';
 import MobileTripDays from './MobileTripDays';
 import { EditableText } from '../../ui/input/EditableText';
+import DatePickerInput from '../../ui/input/DatePickerInput';
 
 const TripDayComponent: React.FC<TripDayProps> = ({
   onChange,
@@ -124,19 +125,40 @@ const TripDayComponent: React.FC<TripDayProps> = ({
 
   return (
     <div className="space-y-4">
-
       <div className="overflow-x-auto rounded-lg">
         <table className="w-full border-collapse bg-white dark:bg-gray-800 shadow-sm divide-x divide-gray-200 dark:divide-gray-600">
           <thead className="bg-gray-50 dark:bg-gray-700">
             <tr className="divide-x divide-gray-200 dark:divide-gray-600">
-              {!isReadOnly && <th className="w-8 p-2"><MoveVertical className='w-4 h-4' /> </th>}
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">DATE</th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">ITINERARY</th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">RESERVATIONS</th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">LODGING</th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">TRAVEL<br />TIME</th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">NOTES</th>
-              {!isReadOnly && <th className="w-8 p-4"><Trash2 className='w-4 h-4 text-red-300' /></th>}
+              {!isReadOnly && (
+                <th className="w-8 p-2">
+                  <MoveVertical className="w-4 h-4" />{" "}
+                </th>
+              )}
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">
+                DATE
+              </th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
+                ITINERARY
+              </th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
+                RESERVATIONS
+              </th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
+                LODGING
+              </th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">
+                TRAVEL
+                <br />
+                TIME
+              </th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
+                NOTES
+              </th>
+              {!isReadOnly && (
+                <th className="w-8 p-4">
+                  <Trash2 className="w-4 h-4 text-red-300" />
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
@@ -154,25 +176,21 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     <GripVertical className="w-4 h-4 mx-auto opacity-0 group-hover:opacity-100" />
                   </td>
                 )}
-                <td className="p-1 align-middle">
-                  <EditableText
-                    id="date"
-                    attributeKey='date'
-                    attributeValue={day.date}
-                    onSave={(e) => updateDay(index, 'date', e)}
-                    onChange={(e) => setHasChanges(true)}
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                    placeholder="Date"
-                    isReadyOnly={isReadOnly}
-                    isTextArea={false}
+                <td className="p-1 align-middle w-40">
+                  <DatePickerInput
+                    value={day.date}
+                    index={index}
+                    updateDay={updateDay}
+                    isReadOnly={isReadOnly}
+                    onChange={() => setHasChanges(true)}
                   />
                 </td>
                 <td className="p-1">
                   <EditableText
-                    id='itinerary'
-                    attributeKey='itinerary'
+                    id="itinerary"
+                    attributeKey="itinerary"
                     attributeValue={day.itinerary}
-                    onSave={(e) => updateDay(index, 'itinerary', e)}
+                    onSave={(e) => updateDay(index, "itinerary", e)}
                     onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
                     // rows={2}
@@ -183,10 +201,10 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                 </td>
                 <td className="p-1">
                   <EditableText
-                    id='reservations'
-                    attributeKey='reservations'
+                    id="reservations"
+                    attributeKey="reservations"
                     attributeValue={day.reservations}
-                    onSave={(e) => updateDay(index, 'reservations', e)}
+                    onSave={(e) => updateDay(index, "reservations", e)}
                     onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
                     // rows={2}
@@ -197,10 +215,10 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                 </td>
                 <td className="p-1">
                   <EditableText
-                    id='lodging'
-                    attributeKey='lodging'
+                    id="lodging"
+                    attributeKey="lodging"
                     attributeValue={day.lodging}
-                    onSave={(e) => updateDay(index, 'lodging', e)}
+                    onSave={(e) => updateDay(index, "lodging", e)}
                     onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
                     placeholder="Lodging location"
@@ -212,10 +230,10 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   <div className="flex items-center space-x-1">
                     <Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                     <EditableText
-                      id='travelTime'
-                      attributeKey='travelTime'
+                      id="travelTime"
+                      attributeKey="travelTime"
                       attributeValue={day.travelTime}
-                      onSave={(e) => updateDay(index, 'travelTime', e)}
+                      onSave={(e) => updateDay(index, "travelTime", e)}
                       onChange={(e) => setHasChanges(true)}
                       className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1"
                       placeholder="Time"
@@ -226,10 +244,10 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                 </td>
                 <td className="p-1">
                   <EditableText
-                    id='notes'
-                    attributeKey='notes'
+                    id="notes"
+                    attributeKey="notes"
                     attributeValue={day.notes}
-                    onSave={(e) => updateDay(index, 'notes', e)}
+                    onSave={(e) => updateDay(index, "notes", e)}
                     onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
                     placeholder="Additional notes, including links etc"

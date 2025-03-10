@@ -1,3 +1,5 @@
+// app/components/ui/input/DatePickerInput.tsx
+
 import React, { useState, useRef, useEffect, FC } from 'react';
 import { CalendarDays } from 'lucide-react';
 
@@ -88,33 +90,35 @@ const DatePickerInput: FC<DatePickerInputProps> = ({ value, index, updateDay, is
   
   return (
     <div className="relative">
-      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-        DATE
-      </label>
-      <div className="relative">
-        <div 
-          onClick={toggleCalendar}
-          className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${isReadOnly ? 'opacity-70' : 'cursor-pointer'}`}
-        >
-          <CalendarDays className="w-4 h-4 text-purple-500 dark:text-purple-400" />
-        </div>
-        <input
-          ref={inputRef}
-          type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          placeholder="MM/DD/YYYY"
-          disabled={isReadOnly}
-          className={`pl-9 pr-3 py-2 w-full text-sm rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none ${isReadOnly ? 'opacity-70 cursor-not-allowed' : ''}`}
-        />
+      <div
+        onClick={toggleCalendar}
+        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
+          isReadOnly ? "opacity-70" : "cursor-pointer"
+        }`}
+      >
+        <CalendarDays className="w-4 h-4 text-purple-500 dark:text-purple-400" />
       </div>
-      
+      <input
+        ref={inputRef}
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+        placeholder="MM/DD/YYYY"
+        disabled={isReadOnly}
+        className={`pl-9 pr-3 py-2 w-full text-sm rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none ${
+          isReadOnly ? "opacity-70 cursor-not-allowed" : ""
+        }`}
+      />
+
       {isOpen && (
-        <div 
+        <div
           ref={calendarRef}
           className="absolute z-10 mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-2 border border-gray-200 dark:border-gray-700"
         >
-          <SimpleDatePicker onSelect={handleDateSelect} selectedDate={currentDate} />
+          <SimpleDatePicker
+            onSelect={handleDateSelect}
+            selectedDate={currentDate}
+          />
         </div>
       )}
     </div>

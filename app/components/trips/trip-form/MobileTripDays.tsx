@@ -278,12 +278,19 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
               {!isReadOnly && (
                 <div className="grid grid-cols-2 gap-3 mb-4 mt-2">
                   <div className="relative">
-                    <DatePickerInput
-                      value={day.date}
-                      onChange={(e) => updateDay(index, "date", e.target.value)}
-                      index={index}
-                      updateDay={updateDay}
-                    />
+                    <div className="relative">
+                      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                        DATE
+                      </label>
+                      <DatePickerInput
+                        value={day.date}
+                        onChange={(e) =>
+                          updateDay(index, "date", e.target.value)
+                        }
+                        index={index}
+                        updateDay={updateDay}
+                      />
+                    </div>
                   </div>
 
                   <div className="relative">
