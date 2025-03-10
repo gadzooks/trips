@@ -14,7 +14,7 @@ import { TripDayDTO } from '/Users/gadzooks/src/trips/types/trip';
 interface DatePickerInputProps {
   value: string;
   index: number;
-  updateDay: (index: number, field: keyof TripDayDTO, value: string) => void;
+  updateDay: (index: number, field: 'date', value: string) => void;
   isReadOnly?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }

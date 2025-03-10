@@ -16,19 +16,20 @@
     "forceConsistentCasingInFileNames": true,
 
     // // Additional recommended compiler options
-    // "noImplicitAny": true,
-    // "strictNullChecks": true,
-    // "strictFunctionTypes": true,
-    // "strictBindCallApply": true,
-    // "strictPropertyInitialization": true,
-    // "noImplicitThis": true,
-    // "alwaysStrict": true,
+    // Enabling some of these to match Vercel.com requirements
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
     // "noImplicitReturns": true,
     // "noFallthroughCasesInSwitch": true,
     // "allowUnreachableCode": false,
-    // "useUnknownInCatchVariables": true,
+    "useUnknownInCatchVariables": true,
     
     // // For better import handling
     // "allowSyntheticDefaultImports": true,

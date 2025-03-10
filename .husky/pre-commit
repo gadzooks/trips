@@ -21,3 +21,4 @@
 npm run lint
 npm run test
 npm run lint-typescript
+npm run type-check

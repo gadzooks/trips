@@ -9,6 +9,7 @@
     "lint": "next lint --max-warnings=0",
     "lint-typescript": "next lint --max-warnings=0 && tsc --noEmit",
     "test": "jest",
+    "type-check": "tsc --noEmit",
     "snaphot-initialize": "jest -u",
     "snaphot-update": "jest --updateSnapshot",
     "watch": "jest --watch"
