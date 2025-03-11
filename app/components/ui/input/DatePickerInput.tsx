@@ -22,12 +22,20 @@ interface SimpleDatePickerProps {
   selectedDate: Date | null;
 }
 
-const DatePickerInput: FC<DatePickerInputProps> = ({ value, index, updateDay, isReadOnly = false, onChange }) => {
+const DatePickerInput: FC<DatePickerInputProps> = ({ 
+  value, 
+  index, 
+  updateDay, 
+  isReadOnly = false, 
+  onChange
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>(value || '');
   const [currentDate, setCurrentDate] = useState<Date | null>(parseDate(value) || new Date());
+  const [popupPosition, setPopupPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
   const calendarRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   function parseDate(dateString: string): Date | null {
     if (!dateString) return null;
@@ -81,15 +89,53 @@ const DatePickerInput: FC<DatePickerInputProps> = ({ value, index, updateDay, is
     setIsOpen(false);
   };
   
-  const toggleCalendar = (): void => {
+  const calculatePopupPosition = (event: React.MouseEvent<HTMLDivElement>): void => {
     if (isReadOnly) return;
+    
+    // Get mouse position
+    const mouseX = event.clientX;
+    const mouseY = event.clientY;
+    
+    // Get viewport dimensions
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Estimated calendar dimensions (can be adjusted based on your actual design)
+    const calendarWidth = 280;
+    const calendarHeight = 320;
+    
+    let top, left;
+    
+    // Horizontal positioning
+    if (mouseX + calendarWidth + 10 > viewportWidth) {
+      // Not enough space to the right, show on the left
+      left = mouseX - calendarWidth - 10;
+    } else {
+      // Show on the right
+      left = mouseX + 10;
+    }
+    
+    // Vertical positioning
+    if (mouseY + calendarHeight + 10 > viewportHeight) {
+      // Not enough space below, show above
+      top = mouseY - calendarHeight - 10;
+    } else {
+      // Show below
+      top = mouseY + 10;
+    }
+    
+    // Make sure we don't position off-screen
+    left = Math.max(10, left);
+    top = Math.max(10, top);
+    
+    setPopupPosition({ top, left });
     setIsOpen(!isOpen);
   };
   
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <div
-        onClick={toggleCalendar}
+        onClick={calculatePopupPosition}
         className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
           isReadOnly ? "opacity-70" : "cursor-pointer"
         }`}
@@ -111,7 +157,12 @@ const DatePickerInput: FC<DatePickerInputProps> = ({ value, index, updateDay, is
       {isOpen && (
         <div
           ref={calendarRef}
-          className="absolute z-10 mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-2 border border-gray-200 dark:border-gray-700"
+          className="absolute z-50 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-2 border border-gray-200 dark:border-gray-700"
+          style={{
+            position: 'fixed',
+            top: `${popupPosition.top}px`,
+            left: `${popupPosition.left}px`,
+          }}
         >
           <SimpleDatePicker
             onSelect={handleDateSelect}
