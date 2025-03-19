@@ -1,4 +1,4 @@
-// app/components/site-wide/navbar.tsx
+// Navbar.tsx
 "use client";
 import Link from 'next/link';
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -12,10 +12,37 @@ import {
   DropdownMenuSeparator,
 } from 'app/components/ui/shadcn/dropdown-menu'
 import { Button } from '../ui/shadcn/button';
+import { useRouter } from 'next/navigation';
+import { useYahooAuth } from '@/app/components/YahooLoginButton';
+import React from 'react';
 
 export function Navbar() {
   const { data: session } = useSession();
+  const { isAuthenticated: isYahooAuthenticated, logout: yahooLogout } = useYahooAuth();
   const { isDark, toggle } = useTheme();
+  const router = useRouter();
+
+  // Combined authentication status
+  const isAuthenticated = session || isYahooAuthenticated;
+
+  // Handle sign-in with multiple providers
+  const handleSignIn = () => {
+    // Show sign-in dropdown
+    setShowAuthDropdown(true);
+  };
+
+  // Handle sign-out from all providers
+  const handleSignOut = () => {
+    if (session) {
+      signOut();
+    }
+    if (isYahooAuthenticated) {
+      yahooLogout();
+    }
+  };
+
+  // State for showing auth dropdown
+  const [showAuthDropdown, setShowAuthDropdown] = React.useState(false);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
@@ -29,7 +56,7 @@ export function Navbar() {
             <Link href="/" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">
               Explore Trips
             </Link>
-            {session && (
+            {isAuthenticated && (
               <>
                 <Link href="/my-trips" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   My Trips
@@ -62,7 +89,7 @@ export function Navbar() {
                   <Link href="/explore" className="flex py-3">Explore Trips</Link>
                 </DropdownMenuItem>
                 
-                {session ? (
+                {isAuthenticated ? (
                   <>
                     <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-700">
                       <Link href="/my-trips" className="flex py-3">My Trips</Link>
@@ -72,39 +99,64 @@ export function Navbar() {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
                     <DropdownMenuItem 
-                      onSelect={() => signOut()}
+                      onSelect={handleSignOut}
                       className="py-3 focus:bg-gray-100 dark:focus:bg-gray-700 text-red-600 dark:text-red-400"
                     >
                       Sign Out
                     </DropdownMenuItem>
                   </>
                 ) : (
-                  <DropdownMenuItem 
-                    onSelect={() => signIn('google')}
-                    className="py-3 focus:bg-gray-100 dark:focus:bg-gray-700 text-blue-600 dark:text-blue-400"
-                  >
-                    Sign in with Google
-                  </DropdownMenuItem>
+                  <>
+                    <DropdownMenuItem 
+                      onSelect={() => signIn('google')}
+                      className="py-3 focus:bg-gray-100 dark:focus:bg-gray-700 text-blue-600 dark:text-blue-400"
+                    >
+                      Sign in with Google
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onSelect={() => router.push('/api/auth/yahoo')}
+                      className="py-3 focus:bg-gray-100 dark:focus:bg-gray-700 text-purple-600 dark:text-purple-400"
+                    >
+                      Sign in with Yahoo
+                    </DropdownMenuItem>
+                  </>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
 
             {/* Desktop Auth Buttons */}
-            {session ? (
+            {isAuthenticated ? (
               <Button
-                onClick={() => signOut()}
+                onClick={handleSignOut}
                 variant="ghost"
                 className="hidden md:flex hover:text-red-600 dark:hover:text-red-400"
               >
                 Sign Out
               </Button>
             ) : (
-              <Button
-                onClick={() => signIn('google')}
-                className="hidden md:flex bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                Sign in with Google
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    className="hidden md:flex bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    Sign in
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+                  <DropdownMenuItem 
+                    onSelect={() => signIn('google')}
+                    className="py-3 focus:bg-gray-100 dark:focus:bg-gray-700 text-blue-600 dark:text-blue-400"
+                  >
+                    Google
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onSelect={() => router.push('/api/auth/yahoo')}
+                    className="py-3 focus:bg-gray-100 dark:focus:bg-gray-700 text-purple-600 dark:text-purple-400"
+                  >
+                    Yahoo
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
         </div>
