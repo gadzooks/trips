@@ -1,154 +1,186 @@
-// app/api/auth/yahoo/callback/route.ts
+// route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 // Configure with your Yahoo OAuth credentials
-const YAHOO_CLIENT_ID = process.env.YAHOO_CLIENT_ID || "your_client_id_here";
+const YAHOO_CLIENT_ID = process.env.YAHOO_CLIENT_ID || "dj0yJmk9MWVJNWdJckRFTWJPJmQ9WVdrOWRGbFhSSE4yUjFJbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTY2";
 const YAHOO_CLIENT_SECRET = process.env.YAHOO_CLIENT_SECRET || "your_client_secret_here";
 const REDIRECT_URI = process.env.YAHOO_REDIRECT_URI || "https://9361-216-9-28-77.ngrok-free.app/api/auth/yahoo/callback";
-
-// Types for Yahoo responses
-interface YahooTokenResponse {
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
-  token_type: string;
-  id_token?: string;
-}
-
-interface YahooUserInfo {
-  sub: string;
-  name: string;
-  given_name: string;
-  family_name: string;
-  email: string;
-  email_verified: boolean;
-  picture: string;
-  birthdate?: string;
-  gender?: string;
-  locale?: string;
-  nickname?: string;
-  profile_images?: {
-    image32: string;
-    image64: string;
-    image128: string;
-    image192: string;
-  };
-}
 
 export async function GET(request: NextRequest) {
   try {
     // 1. Extract the authorization code from the URL
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get("code");
-    
+
     if (!code) {
-      return NextResponse.json({ error: "Authorization code missing" }, { status: 400 });
+      console.error("No authorization code received");
+      return NextResponse.redirect(
+        new URL("/login?error=no_code", request.url)
+      );
     }
-    
+
+    console.log("Auth code received:", code);
+
     // 2. Exchange the authorization code for tokens
-    const tokenResponse = await exchangeCodeForTokens(code);
-    if (!tokenResponse) {
-      return NextResponse.json({ error: "Failed to exchange code for tokens" }, { status: 400 });
+    const tokenEndpoint = "https://api.login.yahoo.com/oauth2/get_token";
+
+    const formData = new URLSearchParams();
+    formData.append("client_id", YAHOO_CLIENT_ID);
+    formData.append("client_secret", YAHOO_CLIENT_SECRET);
+    formData.append("redirect_uri", REDIRECT_URI);
+    formData.append("code", code);
+    formData.append("grant_type", "authorization_code");
+
+    console.log("Making token exchange request");
+
+    // Make the token exchange request
+    const tokenResponse = await fetch(tokenEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: formData.toString(),
+    });
+
+    console.log("Token exchange response status:", tokenResponse.status);
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      console.error("Token exchange failed:", errorText);
+
+      // If code expired, redirect back to auth flow
+      if (
+        errorText.includes("expired") ||
+        errorText.includes("invalid_grant")
+      ) {
+        return NextResponse.redirect(
+          new URL("/api/auth/yahoo/retry", request.url)
+        );
+      }
+
+      return NextResponse.redirect(
+        new URL("/login?error=token_exchange", request.url)
+      );
     }
-    
-    // 3. Fetch user information
-    const userInfo = await fetchUserInfo(tokenResponse.access_token);
-    if (!userInfo) {
-      return NextResponse.json({ error: "Failed to fetch user info" }, { status: 400 });
+
+    // Parse the token response
+    const tokenData = await tokenResponse.json();
+    console.log("Token exchange successful");
+
+    // Create cookies
+    // const response = NextResponse.redirect(new URL("/", request.url));
+    let redirectUrl = new URL("/", request.url);
+    if (redirectUrl.hostname === "localhost") {
+      redirectUrl.protocol = "http:";
     }
-    
-    // 4. Create a session or JWT
-    // Store tokens securely - this is just one approach
-    const cookieStore = cookies();
-    
-    // Store access token in an HTTP-only cookie (short-lived)
-    cookieStore.set("yahoo_access_token", tokenResponse.access_token, {
+    const response = NextResponse.redirect(redirectUrl);
+
+    // Store tokens in cookies using the response object
+    response.cookies.set("yahoo_access_token", tokenData.access_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: tokenResponse.expires_in,
+      secure: true,
+      maxAge: tokenData.expires_in,
       path: "/",
     });
-    
-    // Store refresh token in an HTTP-only cookie (long-lived)
-    cookieStore.set("yahoo_refresh_token", tokenResponse.refresh_token, {
+
+    response.cookies.set("yahoo_refresh_token", tokenData.refresh_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       maxAge: 30 * 24 * 60 * 60, // 30 days
       path: "/",
     });
-    
-    // Store basic user info in client accessible cookie
-    cookieStore.set("user", JSON.stringify({
-      id: userInfo.sub,
-      name: userInfo.name,
-      email: userInfo.email,
-      image: userInfo.picture,
-      provider: "yahoo"
-    }), {
-      secure: process.env.NODE_ENV === "production",
-      maxAge: tokenResponse.expires_in,
-      path: "/",
-    });
-    
-    // Redirect to dashboard or home page after successful login
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-    
+
+
+
+    // Default user info
+    let userInfo = {
+      sub: "yahoo_user",
+      name: "Yahoo User",
+      email: "",
+      picture: "",
+    };
+
+    // Try to extract info from ID token if available
+    if (tokenData.id_token) {
+      try {
+        const parts = tokenData.id_token.split(".");
+        if (parts.length >= 2) {
+          // Base64 decode and parse the payload part (index 1)
+          const base64Url = parts[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const payload = JSON.parse(Buffer.from(base64, "base64").toString());
+
+          userInfo = {
+            sub: payload.sub || userInfo.sub,
+            name: payload.name || payload.given_name || userInfo.name,
+            email: payload.email || userInfo.email,
+            picture: payload.picture || userInfo.picture,
+          };
+        }
+      } catch (e) {
+        console.error("Failed to parse ID token:", e);
+      }
+    }
+
+    // Try to fetch user info from API
+    try {
+      const userInfoResponse = await fetch(
+        "https://api.login.yahoo.com/openid/v1/userinfo",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${tokenData.access_token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      console.log("User info response : " + JSON.stringify(userInfoResponse));
+      console.log("User info response status:", userInfoResponse.status);
+
+      if (userInfoResponse.ok) {
+        const apiUserInfo = await userInfoResponse.json();
+        console.log("User info data:", apiUserInfo); // Add this line
+        console.log("User info fetched successfully");
+
+        // Override with API response data
+        userInfo = {
+          sub: apiUserInfo.sub || userInfo.sub,
+          name: apiUserInfo.name || userInfo.name,
+          email: apiUserInfo.email || userInfo.email,
+          picture: apiUserInfo.picture || userInfo.picture,
+        };
+      } else {
+        console.log("Using fallback user info from ID token : ", JSON.stringify(userInfo));
+        console.log("Using fallback user info from ID token : ", JSON.stringify(userInfoResponse));
+      }
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      // Continue with ID token info
+    }
+
+    // Store user info in cookie
+    response.cookies.set(
+      "user",
+      JSON.stringify({
+        id: userInfo.sub,
+        name: userInfo.name,
+        email: userInfo.email,
+        image: userInfo.picture,
+        provider: "yahoo",
+      }),
+      {
+        secure: true,
+        maxAge: tokenData.expires_in,
+        path: "/",
+      }
+    );
+
+    // Return response with cookies
+    return response;
   } catch (error) {
     console.error("Yahoo authentication error:", error);
-    return NextResponse.json({ error: "Authentication failed" }, { status: 500 });
-  }
-}
-
-async function exchangeCodeForTokens(code: string): Promise<YahooTokenResponse | null> {
-  try {
-    const requestBody = new URLSearchParams({
-      client_id: YAHOO_CLIENT_ID,
-      client_secret: YAHOO_CLIENT_SECRET,
-      redirect_uri: REDIRECT_URI,
-      code: code,
-      grant_type: "authorization_code"
-    });
-    
-    const response = await fetch("https://api.login.yahoo.com/oauth2/get_token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: requestBody.toString()
-    });
-    
-    if (!response.ok) {
-      console.error("Token exchange failed:", await response.text());
-      return null;
-    }
-    
-    return await response.json() as YahooTokenResponse;
-    
-  } catch (error) {
-    console.error("Error exchanging code for tokens:", error);
-    return null;
-  }
-}
-
-async function fetchUserInfo(accessToken: string): Promise<YahooUserInfo | null> {
-  try {
-    const response = await fetch("https://api.login.yahoo.com/openid/v1/userinfo", {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${accessToken}`
-      }
-    });
-    
-    if (!response.ok) {
-      console.error("User info fetch failed:", await response.text());
-      return null;
-    }
-    
-    return await response.json() as YahooUserInfo;
-    
-  } catch (error) {
-    console.error("Error fetching user info:", error);
-    return null;
+    return NextResponse.redirect(new URL("/login?error=unknown", request.url));
   }
 }
