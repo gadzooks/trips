@@ -1,4 +1,4 @@
-// app/api/services/createTripDbService.ts
+// server/service/createTripDbService.ts
 
 import { docClient } from "@/lib/dynamodb";
 import { MinimumTripRecord, TripDayDTO, TripRecordDTO } from "@/types/trip";
@@ -47,6 +47,7 @@ export class CreateTripDbService {
 
     // console.log('params', JSON.stringify(params, null, 2));
     const response = await docClient.send(new QueryCommand(params))
+    // console.log('response', JSON.stringify(response, null, 2));
     return (response.Items || []).map(this.mapToMinimumTripRecord);
   }
 

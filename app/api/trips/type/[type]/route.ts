@@ -14,7 +14,7 @@ export async function GET(
   
   try {
     const session = await auth()
-    const limit = 2;
+    const limit = 20;
     
     let response: MinimumTripRecord[];
     
