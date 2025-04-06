@@ -1,7 +1,7 @@
 // app/components/trips/trip-form/TripForm.tsx
 import React, { useState } from 'react';
-import { Card } from '../../ui/shadcn/card';
-import { Button } from '../../ui/shadcn/button';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { updateTripAttribute } from '../../ui/utils/updateTrip';
 import TripDayComponent from './TripDayComponent';
 import { TripFormMetaData } from './TripFormMetaData';

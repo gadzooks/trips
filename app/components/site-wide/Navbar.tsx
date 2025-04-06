@@ -10,8 +10,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from 'app/components/ui/shadcn/dropdown-menu'
-import { Button } from '../ui/shadcn/button';
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button';
 
 export function Navbar() {
   const { data: session } = useSession();
