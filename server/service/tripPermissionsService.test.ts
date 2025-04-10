@@ -63,8 +63,8 @@ describe('TripPermissionsService', () => {
     test.each([
       [Role.OWNER, Permission.EDIT, true],
       [Role.OWNER, Permission.DELETE, true],
-      [Role.INVITEE, Permission.EDIT, true], // Fixed: Invitee should have EDIT permission
-      [Role.PUBLIC, Permission.VIEW, true]   // Fixed: Public should have VIEW permission
+      [Role.INVITEE, Permission.EDIT, true],
+      [Role.PUBLIC, Permission.VIEW, true]
     ])('should correctly handle permissions for role %s requesting %s permission', async (role, permission, expectedAllowed) => {
       // Setup mock data based on role
       const mockData = { ...mockTripData };
@@ -127,7 +127,23 @@ describe('TripPermissionsService', () => {
     });
 
     test('should deny edit access for non-owner of comment', async () => {
-      const nonOwnerUserId = 'otherUser';
+      // Mock a scenario where the requesting user is not the comment owner
+      (docClient.send as jest.Mock).mockImplementationOnce((command) => {
+        if (command instanceof GetCommand) {
+          return Promise.resolve({ Item: { ...mockCommentData, createdBy: 'otherUser' } });
+        } else if (command instanceof QueryCommand) {
+          return Promise.resolve({
+            Items: [{
+              tripId: mockTripId,
+              createdBy: mockUserId,
+              isPublic: false,
+              invitees: []
+            }]
+          });
+        }
+      });
+
+      const nonOwnerUserId = 'nonOwner';
       const result = await service.validateCommentAccess(
         Permission.EDIT,
         mockTripId,
@@ -140,20 +156,28 @@ describe('TripPermissionsService', () => {
 
     // public trip should not allow users who are not the owner or invitee to view comments
     test('should deny view access for non-owner or invitee on public trip', async () => {
-      (docClient.send as jest.Mock).mockResolvedValue({
-        Items: [{
-          tripId: mockTripId,
-          createdBy: 'otherUser',
-          isPublic: true,
-          invitees: []
-        }]
+      // Mock a public trip and a non-owner, non-invitee user
+      (docClient.send as jest.Mock).mockImplementationOnce((command) => {
+        if (command instanceof QueryCommand) {
+          return Promise.resolve({
+            Items: [{
+              tripId: mockTripId,
+              createdBy: 'owner',
+              isPublic: true,
+              invitees: []
+            }]
+          });
+        } else if (command instanceof GetCommand) {
+          return Promise.resolve({ Item: mockCommentData });
+        }
       });
 
+      const unauthorizedUser = 'unauthorizedUser';
       const result = await service.validateCommentAccess(
         Permission.VIEW,
         mockTripId,
         mockCommentId,
-        'unauthorizedUser'
+        unauthorizedUser
       );
 
       expect(result.allowed).toBe(false);
@@ -227,3 +251,4 @@ describe('TripPermissionsService', () => {
     });
   });
 });
+

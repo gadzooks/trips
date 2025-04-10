@@ -146,20 +146,20 @@ export class TripPermissionsService {
     commentId: string,
     userId?: string | null
   ): Promise<TripAccessResult> {
-    // First check trip access
-    const tripAccess = await this.validateTripAccess(
+    // First check trip access for VIEW permission
+    const tripViewAccess = await this.validateTripAccess(
       Permission.VIEW,
       tripId,
       userId
     );
 
-    if (!tripAccess.allowed) {
-      return tripAccess;
+    if (!tripViewAccess.allowed && permission !== Permission.VIEW) {
+      return tripViewAccess;
     }
 
-    // For VIEW and REACT permission, trip view access is sufficient
-    if (permission === Permission.VIEW || permission === Permission.REACT) {
-      return tripAccess;
+    // For VIEW permission on a public trip, allow if the initial trip view access allows it
+    if (permission === Permission.VIEW) {
+      return tripViewAccess;
     }
 
     // For EDIT, DELETE, check if user is comment owner or trip owner
@@ -171,17 +171,17 @@ export class TripPermissionsService {
         return {
           allowed: true,
           reason: 'Access granted as comment owner',
-          roles: tripAccess.roles,
+          roles: tripViewAccess.roles,
           permissions: [permission]
         };
       }
 
       // If user is owner of the trip, grant permission
-      if (tripAccess.roles.includes(Role.OWNER)) {
+      if (tripViewAccess.roles.includes(Role.OWNER)) {
         return {
           allowed: true,
           reason: 'Access granted as trip owner',
-          roles: tripAccess.roles,
+          roles: tripViewAccess.roles,
           permissions: [permission]
         };
       }
@@ -190,7 +190,7 @@ export class TripPermissionsService {
       return {
         allowed: false,
         reason: 'Only comment owners or trip owners can modify comments',
-        roles: tripAccess.roles,
+        roles: tripViewAccess.roles,
         permissions: []
       };
     } catch (error) {
