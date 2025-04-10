@@ -7,18 +7,18 @@ export enum InviteStatus {
 }
 
 export interface Invite {
-tripId: string;
-email: string;
-status: InviteStatus;
-name: string;
-invitedAt: string;
-invitedBy: string;
+  tripId: string;
+  email: string;
+  status: InviteStatus;
+  name: string;
+  invitedAt: string;
+  invitedBy: string;
 }
 
 export interface Comment {
-id: number;
-author: string;
-content: string;
-timestamp: string;
-isNew: boolean;
+  id: number;
+  author: string;
+  content: string;
+  timestamp: string;
+  isNew: boolean;
 }

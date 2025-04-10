@@ -8,7 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { MessageSquare, UserPlus, Check, X, ChevronUp, ChevronDown } from 'lucide-react';
 import { EditableText } from '../../ui/input/EditableText';
-import { Comment, Invite, InviteStatus, TripRecordDTO } from '@/types/trip';
+import { TripRecordDTO } from '@/types/trip';
+import { Comment, Invite, InviteStatus } from '@/types/invitation';
 
 interface TripInvitesAndCommentsProps {
   isOwner?: boolean;
@@ -19,9 +20,9 @@ interface TripInvitesAndCommentsProps {
 
 // Mock data for demonstration
 const MOCK_INVITES: Invite[] = [
-  { email: 'alice@example.com', status: 'accepted', name: 'Alice Smith' },
-  { email: 'bob@example.com', status: 'pending', name: 'Bob Jones' },
-  { email: 'carol@example.com', status: 'declined', name: 'Carol Wilson' },
+  { tripId: '123', email: 'alice@example.com', status: InviteStatus.ACCEPTED, invitedBy: 'bob@example.com', invitedAt: '2024-04-03T15:30:00Z', name: 'Alice Smith' },
+  { tripId: '123', email: 'tom@example.com', status: InviteStatus.PENDING, invitedBy: 'bob@example.com', invitedAt: '2024-04-03T15:30:00Z', name: 'Bob Jones' },
+  { tripId: '123', email: 'carol@example.com', status: InviteStatus.DECLINED, invitedBy: 'bob@example.com', invitedAt: '2024-04-03T15:30:00Z', name: 'Carol Wilson' },
 ];
 
 const MOCK_COMMENTS: Comment[] = [
@@ -55,9 +56,9 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
   
   const getStatusColor = (status: InviteStatus): string => {
     switch(status) {
-      case 'accepted': return 'bg-green-500';
-      case 'declined': return 'bg-red-500';
-      case 'pending': return 'bg-yellow-500';
+      case InviteStatus.ACCEPTED: return 'bg-green-500';
+      case InviteStatus.DECLINED: return 'bg-red-500';
+      case InviteStatus.PENDING: return 'bg-yellow-500';
     }
   };
 
@@ -214,7 +215,7 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
                             size="sm" 
                             className="bg-green-50 hover:bg-green-100 dark:bg-green-900/20"
                             aria-label="Accept invitation"
-                            onClick={() => handleStatusChange(invite.email, 'accepted')}
+                            onClick={() => handleStatusChange(invite.email, InviteStatus.ACCEPTED)}
                           >
                             <Check className="w-4 h-4 mr-1" /> Accept
                           </Button>
@@ -223,7 +224,7 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
                             size="sm" 
                             className="bg-red-50 hover:bg-red-100 dark:bg-red-900/20"
                             aria-label="Decline invitation"
-                            onClick={() => handleStatusChange(invite.email, 'declined')}
+                            onClick={() => handleStatusChange(invite.email, InviteStatus.DECLINED)}
                           >
                             <X className="w-4 h-4 mr-1" /> Decline
                           </Button>
@@ -240,7 +241,7 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
                               size="sm" 
                               className="bg-red-50 hover:bg-red-100 dark:bg-red-900/20 ml-2"
                               aria-label="Change to declined"
-                              onClick={() => handleStatusChange(invite.email, 'declined')}
+                              onClick={() => handleStatusChange(invite.email, InviteStatus.DECLINED)}
                             >
                               <X className="w-4 h-4 mr-1" /> Decline Instead
                             </Button>
@@ -250,7 +251,7 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
                               size="sm" 
                               className="bg-green-50 hover:bg-green-100 dark:bg-green-900/20 ml-2"
                               aria-label="Change to accepted"
-                              onClick={() => handleStatusChange(invite.email, 'accepted')}
+                              onClick={() => handleStatusChange(invite.email, InviteStatus.ACCEPTED)}
                             >
                               <Check className="w-4 h-4 mr-1" /> Accept Instead
                             </Button>
