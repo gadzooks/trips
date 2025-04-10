@@ -10,7 +10,7 @@ export class TripPermissionsService {
     requiredPermission: Permission,
     tripId?: string,
     userId?: string | null,
-    entityId?: string
+    commentId?: string
   ): Promise<TripAccessResult> {
     const deniedAccessResult: TripAccessResult = {
       allowed: false,
@@ -80,11 +80,12 @@ export class TripPermissionsService {
       });
 
       // For entity-specific permissions
-      if (entityId &&
+      if (commentId &&
           (requiredPermission === Permission.EDIT ||
+            requiredPermission === Permission.VIEW ||
            requiredPermission === Permission.DELETE)) {
         try {
-          const entityDetails = await this.getEntityDetails(entityId);
+          const entityDetails = await this.getCommentDetails(commentId);
 
           // If user is not owner of the entity and not trip owner
           if (entityDetails &&
@@ -93,6 +94,13 @@ export class TripPermissionsService {
               !roles.includes(Role.OWNER)) {
             permissions.delete(Permission.EDIT);
             permissions.delete(Permission.DELETE);
+          }
+          // if user is not owner or invitee of the trip then remove all permissions
+          if (entityDetails &&
+              isValidUser &&
+              !roles.includes(Role.OWNER) &&
+              !roles.includes(Role.INVITEE)) {
+                permissions.clear();
           }
         } catch (error) {
           console.error('Error fetching entity details:', error);
@@ -121,13 +129,13 @@ export class TripPermissionsService {
     }
   }
 
-  private async getEntityDetails(entityId: string): Promise<any> {
+  private async getCommentDetails(commentId: string): Promise<any> {
     try {
       const result = await docClient.send(
         new GetCommand({
           TableName: process.env.TRIP_PLANNER_TABLE_NAME,
           Key: {
-            PK: `COMMENT#${entityId}`,
+            PK: `COMMENT#${commentId}`,
             SK: 'METADATA'
           }
         })
@@ -150,7 +158,8 @@ export class TripPermissionsService {
     const tripViewAccess = await this.validateTripAccess(
       Permission.VIEW,
       tripId,
-      userId
+      userId,
+      commentId
     );
 
     if (!tripViewAccess.allowed && permission !== Permission.VIEW) {
@@ -164,7 +173,7 @@ export class TripPermissionsService {
 
     // For EDIT, DELETE, check if user is comment owner or trip owner
     try {
-      const entityDetails = await this.getEntityDetails(commentId);
+      const entityDetails = await this.getCommentDetails(commentId);
 
       // If user is owner of the comment, grant permission
       if (entityDetails && userId && entityDetails.createdBy === userId) {

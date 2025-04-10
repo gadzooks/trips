@@ -1,7 +1,7 @@
 // app/components/ui/ClientHome.tsx
 "use client"
+import { TripListType } from '@/types/permissions'
 import TripList from '../trips/TripList'
-import { TripListType } from '@/types/trip'
 import { Session } from 'next-auth'
 
 export default function ClientHome({ session }: { session: Session | null }) {  

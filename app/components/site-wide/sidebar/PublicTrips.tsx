@@ -1,5 +1,5 @@
 // app/components/site-wide/sidebar/PublicTrips.tsx
-import { TripListType } from "@/types/trip";
+import { TripListType } from "@/types/permissions";
 import { TripSection } from "./TripSection";
 
 // app/components/site-wide/sidebar/PublicTrips.tsx
