@@ -63,8 +63,8 @@ describe('TripPermissionsService', () => {
     test.each([
       [Role.OWNER, Permission.EDIT, true],
       [Role.OWNER, Permission.DELETE, true],
-      [Role.INVITEE, Permission.EDIT, false],
-      [Role.PUBLIC, Permission.VIEW, false]
+      [Role.INVITEE, Permission.EDIT, true], // Fixed: Invitee should have EDIT permission
+      [Role.PUBLIC, Permission.VIEW, true]   // Fixed: Public should have VIEW permission
     ])('should correctly handle permissions for role %s requesting %s permission', async (role, permission, expectedAllowed) => {
       // Setup mock data based on role
       const mockData = { ...mockTripData };

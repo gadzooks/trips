@@ -7,14 +7,14 @@ import { Permission, Role, rolePermissions, TripAccessResult } from '@/types/per
 
 export class TripPermissionsService {
   async validateTripAccess(
-    requiredPermission: Permission, 
-    tripId?: string, 
+    requiredPermission: Permission,
+    tripId?: string,
     userId?: string | null,
     entityId?: string
   ): Promise<TripAccessResult> {
-    const deniedAccessResult: TripAccessResult = { 
-      allowed: false, 
-      reason: 'Access denied', 
+    const deniedAccessResult: TripAccessResult = {
+      allowed: false,
+      reason: 'Access denied',
       roles: [],
       permissions: []
     };
@@ -25,16 +25,16 @@ export class TripPermissionsService {
       }
 
       const isValidUser = userId !== undefined && userId !== null;
-      
+
       const tripDetailsRows = await docClient.send(
         new QueryCommand(queryByTripIdForPermissions(tripId))
       );
-      
+
       //export interface TripPermissionsDTO {
-      //     tripId: string
-      //     isPublic: boolean
-      //     createdBy: string
-      //     invitees?: string[]
+      //    tripId: string
+      //    isPublic: boolean
+      //    createdBy: string
+      //    invitees?: string[]
       // }
       const tripPermissionDetails = tripDetailsRows.Items?.[0] as TripPermissionsDTO;
       if (!tripPermissionDetails) {
@@ -42,21 +42,21 @@ export class TripPermissionsService {
       }
 
       const roles: Role[] = [];
-      
+
       // Owner role check
       if (isValidUser && tripPermissionDetails.createdBy === userId) {
         roles.push(Role.OWNER);
       }
-      
+
       // TODO: implement co_owner role check
 
       // Invitee role check - separate from shared
-      if (isValidUser && 
-          tripPermissionDetails.invitees && 
+      if (isValidUser &&
+          tripPermissionDetails.invitees &&
           tripPermissionDetails.invitees.includes(userId)) {
         roles.push(Role.INVITEE);
       }
-      
+
       // Public access check
       if (tripPermissionDetails.isPublic === true) {  // Explicit check for true
         roles.push(Role.PUBLIC);
@@ -66,7 +66,7 @@ export class TripPermissionsService {
       if (roles.length === 0 && isValidUser) {
         return { ...deniedAccessResult, reason: 'No access to this trip' };
       }
-      
+
       if (roles.length === 0 && !isValidUser) {
         return { ...deniedAccessResult, reason: 'User needs to be logged in' };
       }
@@ -80,16 +80,16 @@ export class TripPermissionsService {
       });
 
       // For entity-specific permissions
-      if (entityId && 
-          (requiredPermission === Permission.EDIT || 
+      if (entityId &&
+          (requiredPermission === Permission.EDIT ||
            requiredPermission === Permission.DELETE)) {
         try {
           const entityDetails = await this.getEntityDetails(entityId);
-          
+
           // If user is not owner of the entity and not trip owner
           if (entityDetails &&
               isValidUser &&
-              entityDetails.createdBy !== userId && 
+              entityDetails.createdBy !== userId &&
               !roles.includes(Role.OWNER)) {
             permissions.delete(Permission.EDIT);
             permissions.delete(Permission.DELETE);
@@ -105,18 +105,18 @@ export class TripPermissionsService {
       }
 
       const hasPermission = permissions.has(requiredPermission);
-      
-      return { 
-        allowed: hasPermission, 
-        reason: hasPermission ? 'Access granted' : 'Access denied', 
+
+      return {
+        allowed: hasPermission,
+        reason: hasPermission ? 'Access granted' : 'Access denied',
         roles,
         permissions: Array.from(permissions)
       };
     } catch (error) {
       console.error('Failed to validate trip access:', error);
-      return { 
-        ...deniedAccessResult, 
-        reason: 'Error validating access: ' + error 
+      return {
+        ...deniedAccessResult,
+        reason: 'Error validating access: ' + error
       };
     }
   }
@@ -132,7 +132,7 @@ export class TripPermissionsService {
           }
         })
       );
-      
+
       return result.Item;
     } catch (error) {
       console.error('Failed to get entity details:', error);
@@ -148,24 +148,24 @@ export class TripPermissionsService {
   ): Promise<TripAccessResult> {
     // First check trip access
     const tripAccess = await this.validateTripAccess(
-      Permission.VIEW, 
-      tripId, 
+      Permission.VIEW,
+      tripId,
       userId
     );
-    
+
     if (!tripAccess.allowed) {
       return tripAccess;
     }
-    
-    // For VIEW permission, trip access is sufficient
+
+    // For VIEW and REACT permission, trip view access is sufficient
     if (permission === Permission.VIEW || permission === Permission.REACT) {
-      return await this.validateTripAccess(permission, tripId, userId);
+      return tripAccess;
     }
 
     // For EDIT, DELETE, check if user is comment owner or trip owner
     try {
       const entityDetails = await this.getEntityDetails(commentId);
-      
+
       // If user is owner of the comment, grant permission
       if (entityDetails && userId && entityDetails.createdBy === userId) {
         return {
@@ -175,7 +175,7 @@ export class TripPermissionsService {
           permissions: [permission]
         };
       }
-      
+
       // If user is owner of the trip, grant permission
       if (tripAccess.roles.includes(Role.OWNER)) {
         return {
@@ -185,7 +185,7 @@ export class TripPermissionsService {
           permissions: [permission]
         };
       }
-      
+
       // Otherwise deny permission
       return {
         allowed: false,
@@ -195,8 +195,8 @@ export class TripPermissionsService {
       };
     } catch (error) {
       console.error('Failed to validate comment access:', error);
-      return { 
-        allowed: false, 
+      return {
+        allowed: false,
         reason: 'Error validating comment access: ' + error,
         roles: [],
         permissions: []
