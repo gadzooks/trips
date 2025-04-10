@@ -1,4 +1,4 @@
-// app/api/services/createTrip/createTransactions.ts
+// server/db/queryTripTransactions.ts
 
 import { getOwnerWithDbPK, getTagDbPK, getTripIdPk } from "./dbKeys";
 
@@ -17,7 +17,7 @@ export interface TripPermissionsDTO {
     tripId: string
     isPublic: boolean
     createdBy: string
-    sharedWith?: string[]
+    invitees?: string[]
 }
 
 export function queryByTripIdForPermissions(tripId: string) {
@@ -27,7 +27,7 @@ export function queryByTripIdForPermissions(tripId: string) {
         ExpressionAttributeValues: {
             ':pk': getTripIdPk(tripId)
         },
-        ProjectionExpression: 'tripId, isPublic, createdBy, sharedWith',
+        ProjectionExpression: 'tripId, isPublic, createdBy, invitees',
         Limit: 1
     }
 }

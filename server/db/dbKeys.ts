@@ -1,5 +1,5 @@
-export function getSharedWithDbPK(sharedUserId: string) {
-  return `SHAREDWITH#${sharedUserId}`;
+export function getInviteesDbPK(sharedUserId: string) {
+  return `INVITEES#${sharedUserId}`;
 }
 
 export function getTagDbPK(tag: string, isPublic: boolean) {

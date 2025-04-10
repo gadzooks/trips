@@ -95,7 +95,7 @@ export class CreateTripDbService {
       tags: item.tags,
       days: days,
       isPublic: item.isPublic,
-      sharedWith: item.sharedWith,
+      invitees: item.invitees,
       fakeData: item.fakeData,
       createdAt: item.createdAt,
       createdBy: item.createdBy

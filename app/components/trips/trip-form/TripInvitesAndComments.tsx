@@ -4,28 +4,11 @@ import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { MessageSquare, UserPlus, Check, X, ChevronUp, ChevronDown } from 'lucide-react';
 import { EditableText } from '../../ui/input/EditableText';
-import { TripRecordDTO } from '@/types/trip';
-
-type InviteStatus = 'accepted' | 'pending' | 'declined';
-
-interface Invite {
-  email: string;
-  status: InviteStatus;
-  name: string;
-}
-
-interface Comment {
-  id: number;
-  author: string;
-  content: string;
-  timestamp: string;
-  isNew: boolean;
-}
+import { Comment, Invite, InviteStatus, TripRecordDTO } from '@/types/trip';
 
 interface TripInvitesAndCommentsProps {
   isOwner?: boolean;
@@ -218,9 +201,6 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
                 {invites.map((invite) => (
                   <div key={invite.email} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <div className="flex items-center space-x-3">
-                      <Avatar>
-                        <AvatarFallback>{invite.name[0]}</AvatarFallback>
-                      </Avatar>
                       <div>
                         <p className="font-medium text-gray-900 dark:text-gray-100">{invite.name}</p>
                         <p className="text-sm text-gray-500">{invite.email}</p>
@@ -314,9 +294,6 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
                 <div key={comment.id} className={`p-4 ${comment.author === 'System' ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-gray-50 dark:bg-gray-800'} rounded-lg space-y-2`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <Avatar>
-                        <AvatarFallback>{comment.author[0]}</AvatarFallback>
-                      </Avatar>
                       <span className="font-medium text-gray-900 dark:text-gray-100">
                         {comment.author}
                       </span>

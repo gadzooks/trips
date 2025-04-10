@@ -33,13 +33,13 @@ describe('buildUpdateExpression', () => {
     });
   });
 
-  test('handles array attributes (sharedWith)', () => {
+  test('handles array attributes (invitees)', () => {
     const users = ['user1@example.com', 'user2@example.com'];
-    const result = buildUpdateExpression('sharedWith', users);
+    const result = buildUpdateExpression('invitees', users);
     expect(result).toEqual({
-      updateExpression: 'SET #sharedWith = :sharedWith',
-      expressionAttributeValues: { ':sharedWith': users },
-      expressionAttributeNames: { '#sharedWith': 'sharedWith' }
+      updateExpression: 'SET #invitees = :invitees',
+      expressionAttributeValues: { ':invitees': users },
+      expressionAttributeNames: { '#invitees': 'invitees' }
     });
   });
 
@@ -82,10 +82,10 @@ describe('buildUpdateExpression', () => {
     }).toThrow('tags must be an array');
   });
 
-  test('throws error for non-array sharedWith', () => {
+  test('throws error for non-array invitees', () => {
     expect(() => {
-      buildUpdateExpression('sharedWith', 'not-an-array');
-    }).toThrow('sharedWith must be an array');
+      buildUpdateExpression('invitees', 'not-an-array');
+    }).toThrow('invitees must be an array');
   });
 });
 

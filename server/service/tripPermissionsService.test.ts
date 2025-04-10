@@ -28,7 +28,7 @@ describe('TripPermissionsService', () => {
       tripId: mockTripId,
       createdBy: mockUserId,
       isPublic: false,
-      sharedWith: ['shared123']
+      invitees: ['shared123']
     };
 
     beforeEach(() => {
@@ -64,15 +64,14 @@ describe('TripPermissionsService', () => {
       [Role.OWNER, Permission.EDIT, true],
       [Role.OWNER, Permission.DELETE, true],
       [Role.INVITEE, Permission.EDIT, false],
-      [Role.SHARED, Permission.VIEW, true],
       [Role.PUBLIC, Permission.VIEW, false]
     ])('should correctly handle permissions for role %s requesting %s permission', async (role, permission, expectedAllowed) => {
       // Setup mock data based on role
       const mockData = { ...mockTripData };
       if (role === Role.OWNER) {
         mockData.createdBy = mockUserId;
-      } else if (role === Role.SHARED || role === Role.INVITEE) {
-        mockData.sharedWith = [mockUserId];
+      } else if (role === Role.INVITEE) {
+        mockData.invitees = [mockUserId];
       } else if (role === Role.PUBLIC) {
         mockData.isPublic = true;
       }
@@ -102,7 +101,7 @@ describe('TripPermissionsService', () => {
               tripId: mockTripId,
               createdBy: 'otherUser',
               isPublic: false,
-              sharedWith: [mockUserId]
+              invitees: [mockUserId]
             }]
           });
         } else if (command instanceof GetCommand) {
@@ -138,6 +137,28 @@ describe('TripPermissionsService', () => {
 
       expect(result.allowed).toBe(false);
     });
+
+    // public trip should not allow users who are not the owner or invitee to view comments
+    test('should deny view access for non-owner or invitee on public trip', async () => {
+      (docClient.send as jest.Mock).mockResolvedValue({
+        Items: [{
+          tripId: mockTripId,
+          createdBy: 'otherUser',
+          isPublic: true,
+          invitees: []
+        }]
+      });
+
+      const result = await service.validateCommentAccess(
+        Permission.VIEW,
+        mockTripId,
+        mockCommentId,
+        'unauthorizedUser'
+      );
+
+      expect(result.allowed).toBe(false);
+    }
+    );
   });
 
   describe('validateReactionAccess', () => {
@@ -147,7 +168,7 @@ describe('TripPermissionsService', () => {
           tripId: mockTripId,
           createdBy: 'otherUser',
           isPublic: false,
-          sharedWith: [mockUserId]
+          invitees: [mockUserId]
         }]
       });
     });

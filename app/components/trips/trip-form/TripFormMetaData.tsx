@@ -3,7 +3,6 @@ import React from 'react';
 import { Switch } from '@/components/ui/switch';
 import { EditableText } from '../../ui/input/EditableText';
 import { TripRecordDTO } from '@/types/trip';
-import TripInvitesAndComments from './TripInvitesAndComments';
 
 interface TripFormMetaDataProps {
   isNewRecord: boolean;

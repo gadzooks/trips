@@ -5,7 +5,7 @@ import { TripVisibilityService } from '../../../../server/service/tripVisibility
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
 import { auth } from '@/auth';
 import { TripPermissionsService } from '@/server/service/tripPermissionsService';
-import { AccessType, TripAccessResult } from '@/types/trip';
+import { Permission, TripAccessResult } from '@/types/permissions';
 
 const createTripDbService = new CreateTripDbService()
 const tripVisibilityService = new TripVisibilityService()
@@ -19,14 +19,14 @@ export async function GET(
   const session = await auth()
   const tripId = (await params).tripId
 
-  const tripAccessResult: TripAccessResult = await tripPermissionsService.validateTripAccess(AccessType.ReadOnly, tripId, session?.user?.email)
+  const tripAccessResult: TripAccessResult = await tripPermissionsService.validateTripAccess(Permission.VIEW, tripId, session?.user?.email)
 
   if (!tripAccessResult.allowed) {
     return new NextResponse(null, { status: 403 })
   }
 
   try {
-    //FIXME validateTripAccess should return the trip data too for AccessType.ReadOnly to avoid this extra call
+    //FIXME validateTripAccess should return the trip data too for Permission.VIEW to avoid this extra call
     const result = await createTripDbService.getTripById(tripId)
     if (!result) {
       return new Response('Trip not found', { status: 404 })
@@ -46,7 +46,7 @@ export async function PATCH(
 ) {
   const session = await auth()
   const tripId = (await params).tripId
-  const tripAccessResult: TripAccessResult = await tripPermissionsService.validateTripAccess(AccessType.ReadOnly, tripId, session?.user?.email)
+  const tripAccessResult: TripAccessResult = await tripPermissionsService.validateTripAccess(Permission.VIEW, tripId, session?.user?.email)
 
   if (!tripAccessResult.allowed) {
     return new NextResponse(null, { status: 403 })
@@ -92,7 +92,7 @@ export async function DELETE(
 ) {
   const session = await auth()
   const tripId = (await params).tripId
-  const tripAccessResult: TripAccessResult = await tripPermissionsService.validateTripAccess(AccessType.ReadOnly, tripId, session?.user?.email)
+  const tripAccessResult: TripAccessResult = await tripPermissionsService.validateTripAccess(Permission.VIEW, tripId, session?.user?.email)
 
   if (!tripAccessResult.allowed) {
     return new NextResponse(null, { status: 403 })
