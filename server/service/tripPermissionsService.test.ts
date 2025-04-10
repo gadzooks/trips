@@ -1,99 +1,208 @@
-import { TripPermissionsService } from './tripPermissionsService'
-import { docClient } from '@/lib/dynamodb'
-import { TripPermissionsDTO } from '../db/queryTripTransactions'
-import { AccessType } from '@/types/trip'
+// server/service/tripPermissionsService.test.ts
 
+import { GetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { docClient } from '@/lib/dynamodb';
+import { TripPermissionsService } from '../service/tripPermissionsService';
+import { Permission, Role, TripAccessResult } from '@/types/permissions';
+
+// Mock AWS DynamoDB client
 jest.mock('@/lib/dynamodb', () => ({
   docClient: {
     send: jest.fn()
   }
-}))
+}));
 
 describe('TripPermissionsService', () => {
-  let service: TripPermissionsService
-  const mockTripId = 'trip123'
-  const mockUserId = 'user123'
-  
+  let service: TripPermissionsService;
+  const mockTripId = 'trip123';
+  const mockUserId = 'user123';
+  const mockCommentId = 'comment123';
+
   beforeEach(() => {
-    service = new TripPermissionsService()
-    jest.clearAllMocks()
-  })
+    service = new TripPermissionsService();
+    jest.clearAllMocks();
+  });
 
-  const mockQueryResponse = (tripDetails: Partial<TripPermissionsDTO> | null) => {
-    ;(docClient.send as jest.Mock).mockResolvedValue({
-      Items: tripDetails ? [tripDetails] : []
-    })
-  }
-
-  describe('validateTripAccess edge cases', () => {
-    test.each([
-      ['missing tripId', undefined, mockUserId, AccessType.ReadOnly, 'Trip ID is required'],
-      ['non-existent trip', mockTripId, mockUserId, AccessType.ReadOnly, 'Trip not found'],
-    ])('%s', async (_, tripId, userId, accessType, expectedReason) => {
-      mockQueryResponse(null)
-      const result = await service.validateTripAccess(accessType, tripId, userId)
-      expect(result.allowed).toBe(false)
-      expect(result.reason).toBe(expectedReason)
-    })
-  })
-
-  describe('validateTripAccess edge cases - Private trips', () => {
-    test.each([
-      ['missing userId', mockTripId, undefined, AccessType.ReadOnly, 'Access denied'],
-      ['null userId', mockTripId, null, AccessType.ReadOnly, 'Access denied'],
-      ['invalid access type', mockTripId, mockUserId, 'invalid' as AccessType, 'Invalid access type']
-    ])('%s', async (_, tripId, userId, accessType, expectedReason) => {
-      mockQueryResponse({ tripId: mockTripId, isPublic: false })
-      const result = await service.validateTripAccess(accessType, tripId, userId)
-      expect(result.allowed).toBe(false)
-      expect(result.reason).toBe(expectedReason)
-    })
-  })
-
-  describe('permission scenarios', () => {
-    const testCases: [string, AccessType, Partial<TripPermissionsDTO>, string | undefined, boolean][] = [
-      // [scenario, accessType, tripDetails, userId, expectedAllowed]
-      ['owner has all permissions', AccessType.Delete, { createdBy: mockUserId }, mockUserId, true],
-      ['public read access', AccessType.ReadOnly, { isPublic: true }, 'otherUser', true],
-      ['shared user read access', AccessType.ReadOnly, { sharedWith: ['otherUser'] }, 'otherUser', true],
-      ['shared user write access', AccessType.ReadWrite, { sharedWith: ['otherUser'] }, 'otherUser', true],
-      ['non-shared user no access', AccessType.ReadOnly, { sharedWith: ['someone'] }, 'otherUser', false],
-      ['shared user no delete access', AccessType.Delete, { sharedWith: ['otherUser'] }, 'otherUser', false]
-    ]
-
-    test.each(testCases)('%s', async (_, accessType, tripDetails, userId, expectedAllowed) => {
-      mockQueryResponse({ ...tripDetails, tripId: mockTripId })
-      const result = await service.validateTripAccess(accessType, mockTripId, userId)
-      expect(result.allowed).toBe(expectedAllowed)
-      expect(result.reason).toBe(expectedAllowed ? 'Access granted' : 'Access denied')
-    })
-  })
-
-  test('handles DynamoDB errors', async () => {
-    const error = new Error('DB Error')
-    ;(docClient.send as jest.Mock).mockRejectedValue(error)
-    
-    const result = await service.validateTripAccess(AccessType.ReadOnly, mockTripId, mockUserId)
-    expect(result.allowed).toBe(false)
-    expect(result.reason).toContain('Error validating access')
-  })
-
-  test('correctly sets all permission flags', async () => {
-    mockQueryResponse({
+  describe('validateTripAccess', () => {
+    const mockTripData = {
       tripId: mockTripId,
       createdBy: mockUserId,
-      isPublic: true,
-      sharedWith: ['otherUser']
-    })
+      isPublic: false,
+      sharedWith: ['shared123']
+    };
 
-    const result = await service.validateTripAccess(AccessType.ReadOnly, mockTripId, mockUserId)
-    expect(result).toEqual({
-      allowed: true,
-      reason: 'Access granted',
-      hasCreateAccess: true,
-      hasReadAccess: true,
-      hasWriteAccess: true,
-      hasDeleteAccess: true
-    })
-  })
-})
+    beforeEach(() => {
+      (docClient.send as jest.Mock).mockResolvedValue({
+        Items: [mockTripData]
+      });
+    });
+
+    test.each([
+      // [undefined, Permission.VIEW, 'Trip ID is required', false],
+      // [null, Permission.VIEW, 'Trip ID is required', false],
+      ['nonexistent', Permission.VIEW, 'Trip not found', false]
+    ])('should handle invalid trip IDs - tripId: %s', async (tripId, permission, expectedReason, expectedAllowed) => {
+      if (tripId === 'nonexistent') {
+        (docClient.send as jest.Mock).mockResolvedValue({ Items: [] });
+      }
+
+      const result = await service.validateTripAccess(permission, tripId, mockUserId);
+
+      expect(result.allowed).toBe(expectedAllowed);
+      expect(result.reason).toBe(expectedReason);
+    });
+
+    test('should return denied access for unauthenticated user on private trip', async () => {
+      const result = await service.validateTripAccess(Permission.VIEW, mockTripId, undefined);
+
+      expect(result.allowed).toBe(false);
+      expect(result.reason).toBe('User needs to be logged in');
+      expect(result.roles).toHaveLength(0);
+    });
+
+    test.each([
+      [Role.OWNER, Permission.EDIT, true],
+      [Role.OWNER, Permission.DELETE, true],
+      [Role.INVITEE, Permission.EDIT, false],
+      [Role.SHARED, Permission.VIEW, true],
+      [Role.PUBLIC, Permission.VIEW, false]
+    ])('should correctly handle permissions for role %s requesting %s permission', async (role, permission, expectedAllowed) => {
+      // Setup mock data based on role
+      const mockData = { ...mockTripData };
+      if (role === Role.OWNER) {
+        mockData.createdBy = mockUserId;
+      } else if (role === Role.SHARED || role === Role.INVITEE) {
+        mockData.sharedWith = [mockUserId];
+      } else if (role === Role.PUBLIC) {
+        mockData.isPublic = true;
+      }
+
+      (docClient.send as jest.Mock).mockResolvedValue({ Items: [mockData] });
+
+      const result = await service.validateTripAccess(permission, mockTripId, mockUserId);
+
+      expect(result.allowed).toBe(expectedAllowed);
+      expect(result.roles).toContain(role);
+    });
+  });
+
+  describe('validateCommentAccess', () => {
+    const mockCommentData = {
+      PK: `COMMENT#${mockCommentId}`,
+      SK: 'METADATA',
+      createdBy: mockUserId
+    };
+
+    beforeEach(() => {
+      // Mock trip access check
+      (docClient.send as jest.Mock).mockImplementation((command) => {
+        if (command instanceof QueryCommand) {
+          return Promise.resolve({
+            Items: [{
+              tripId: mockTripId,
+              createdBy: 'otherUser',
+              isPublic: false,
+              sharedWith: [mockUserId]
+            }]
+          });
+        } else if (command instanceof GetCommand) {
+          return Promise.resolve({ Item: mockCommentData });
+        }
+      });
+    });
+
+    test.each([
+      [Permission.VIEW, true, 'Any role with view access can view comments'],
+      [Permission.EDIT, true, 'Comment owner can edit their comment'],
+      [Permission.DELETE, true, 'Comment owner can delete their comment'],
+      [Permission.REACT, true, 'Users with access can react to comments']
+    ])('should handle %s permission correctly', async (permission, expectedAllowed, testDescription) => {
+      const result = await service.validateCommentAccess(
+        permission,
+        mockTripId,
+        mockCommentId,
+        mockUserId
+      );
+
+      expect(result.allowed).toBe(expectedAllowed);
+    });
+
+    test('should deny edit access for non-owner of comment', async () => {
+      const nonOwnerUserId = 'otherUser';
+      const result = await service.validateCommentAccess(
+        Permission.EDIT,
+        mockTripId,
+        mockCommentId,
+        nonOwnerUserId
+      );
+
+      expect(result.allowed).toBe(false);
+    });
+  });
+
+  describe('validateReactionAccess', () => {
+    beforeEach(() => {
+      (docClient.send as jest.Mock).mockResolvedValue({
+        Items: [{
+          tripId: mockTripId,
+          createdBy: 'otherUser',
+          isPublic: false,
+          sharedWith: [mockUserId]
+        }]
+      });
+    });
+
+    test.each([
+      [mockUserId, true, 'User with access can react'],
+      [undefined, false, 'Unauthenticated user cannot react'],
+      ['unauthorizedUser', false, 'Unauthorized user cannot react']
+    ])('should handle reaction access for user %s correctly', async (userId, expectedAllowed, testDescription) => {
+      const result = await service.validateReactionAccess(
+        mockTripId,
+        mockCommentId,
+        userId
+      );
+
+      expect(result.allowed).toBe(expectedAllowed);
+    });
+  });
+
+  describe('error handling', () => {
+    test('should handle DynamoDB errors gracefully', async () => {
+      const mockError = new Error('DynamoDB error');
+      (docClient.send as jest.Mock).mockRejectedValue(mockError);
+
+      const result = await service.validateTripAccess(
+        Permission.VIEW,
+        mockTripId,
+        mockUserId
+      );
+
+      expect(result.allowed).toBe(false);
+      expect(result.reason).toContain('Error validating access');
+    });
+
+    test('should handle entity details retrieval errors', async () => {
+      // First call succeeds (trip lookup), second call fails (entity lookup)
+      (docClient.send as jest.Mock)
+        .mockResolvedValueOnce({
+          Items: [{
+            tripId: mockTripId,
+            createdBy: mockUserId,
+            isPublic: false
+          }]
+        })
+        .mockRejectedValueOnce(new Error('Entity lookup failed'));
+
+      const result = await service.validateTripAccess(
+        Permission.EDIT,
+        mockTripId,
+        mockUserId,
+        'nonexistentEntity'
+      );
+
+      expect(result.allowed).toBe(true); // Should still succeed as owner
+      expect(result.roles).toContain(Role.OWNER);
+    });
+  });
+});

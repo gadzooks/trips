@@ -1,64 +1,180 @@
-// app/api/services/tripDbService.ts
+// server/service/tripPermissionsService.ts
 
-import { QueryCommand } from '@aws-sdk/lib-dynamodb'
+import { GetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb'
 import { docClient } from '@/lib/dynamodb'
 import { queryByTripIdForPermissions, TripPermissionsDTO } from '../db/queryTripTransactions'
-import { AccessType, TripAccessResult } from '@/types/trip'
+import { Permission, Role, rolePermissions, TripAccessResult } from '@/types/permissions';
 
 export class TripPermissionsService {
-  async validateTripAccess(accessType: AccessType, tripId?: string, userId?: string | null): Promise<TripAccessResult> {
-    let deniedAccessResult = { allowed: false, reason: 'Access denied', hasCreateAccess: false, hasReadAccess: false, hasWriteAccess: false, hasDeleteAccess: false }
+  async validateTripAccess(
+    requiredPermission: Permission, 
+    tripId?: string, 
+    userId?: string | null,
+    entityId?: string
+  ): Promise<TripAccessResult> {
+    const deniedAccessResult: TripAccessResult = { 
+      allowed: false, 
+      reason: 'Access denied', 
+      roles: [],
+      permissions: []
+    };
+
     try {
       if (tripId === undefined || tripId === null) {
-        return { ...deniedAccessResult, reason: 'Trip ID is required' }
+        return { ...deniedAccessResult, reason: 'Trip ID is required' };
       }
 
-      const isValidUser = userId !== undefined && userId !== null
-
-      // If user is not logged in, they can only access public trips
-      if (!isValidUser && accessType !== AccessType.ReadOnly) {
-        return { ...deniedAccessResult, reason: 'User needs to be logged' }
-      }
-
-      const tripDetailsRows = await docClient.send(new QueryCommand(queryByTripIdForPermissions(tripId)));
-      const tripPermissionDetails = tripDetailsRows.Items?.[0] as TripPermissionsDTO
+      const isValidUser = userId !== undefined && userId !== null;
+      
+      const tripDetailsRows = await docClient.send(
+        new QueryCommand(queryByTripIdForPermissions(tripId))
+      );
+      
+      const tripPermissionDetails = tripDetailsRows.Items?.[0] as TripPermissionsDTO;
       if (!tripPermissionDetails) {
-        return { ...deniedAccessResult, reason: 'Trip not found' }
+        return { ...deniedAccessResult, reason: 'Trip not found' };
       }
 
-      const isOwner = isValidUser && tripPermissionDetails.createdBy === userId
-      const isSharedWith = isValidUser && tripPermissionDetails.sharedWith && tripPermissionDetails.sharedWith.includes(userId)
-
-      const hasCreateAccess = isValidUser;
-
-      const hasReadAccess = isOwner ||
-        tripPermissionDetails.isPublic ||
-        isSharedWith ||
-        false;
-
-      const hasWriteAccess = isOwner ||
-        isSharedWith ||
-        false;
-
-      const hasDeleteAccess = isOwner;
-
-      switch (accessType) {
-        case AccessType.Create:
-          return { allowed: hasCreateAccess, reason: hasCreateAccess ? 'Access granted' : 'Access denied', hasCreateAccess, hasReadAccess, hasWriteAccess, hasDeleteAccess }
-        case AccessType.ReadOnly:
-          return { allowed: hasReadAccess, reason: hasReadAccess ? 'Access granted' : 'Access denied', hasCreateAccess, hasReadAccess, hasWriteAccess, hasDeleteAccess }
-        case AccessType.ReadWrite:
-          return { allowed: hasWriteAccess, reason: hasWriteAccess ? 'Access granted' : 'Access denied', hasCreateAccess, hasReadAccess, hasWriteAccess, hasDeleteAccess }
-        case AccessType.Delete:
-          return { allowed: hasDeleteAccess, reason: hasDeleteAccess ? 'Access granted' : 'Access denied', hasCreateAccess, hasReadAccess, hasWriteAccess, hasDeleteAccess }
-        default:
-          return { ...deniedAccessResult, reason: 'Invalid access type' }
+      const roles: Role[] = [];
+      
+      // Owner role check
+      if (isValidUser && tripPermissionDetails.createdBy === userId) {
+        roles.push(Role.OWNER);
+      }
+      
+      // Shared role check
+      if (isValidUser && 
+          tripPermissionDetails.sharedWith && 
+          tripPermissionDetails.sharedWith.includes(userId)) {
+        roles.push(Role.SHARED);
+      }
+      
+      // Invitee role check - separate from shared
+      if (isValidUser && 
+          tripPermissionDetails.sharedWith && 
+          tripPermissionDetails.sharedWith.includes(userId)) {
+        roles.push(Role.INVITEE);
+      }
+      
+      // Public access check
+      if (tripPermissionDetails.isPublic === true) {  // Explicit check for true
+        roles.push(Role.PUBLIC);
       }
 
+      // If no roles, deny access
+      if (roles.length === 0 && isValidUser) {
+        return { ...deniedAccessResult, reason: 'No access to this trip' };
+      }
+      
+      if (roles.length === 0 && !isValidUser) {
+        return { ...deniedAccessResult, reason: 'User needs to be logged in' };
+      }
+
+      // Collect all permissions from all roles
+      const permissions = new Set<Permission>();
+      roles.forEach(role => {
+        rolePermissions[role].forEach(permission => {
+          permissions.add(permission);
+        });
+      });
+
+      // For entity-specific permissions
+      if (entityId && 
+          (requiredPermission === Permission.EDIT || 
+           requiredPermission === Permission.DELETE)) {
+        try {
+          const entityDetails = await this.getEntityDetails(entityId);
+          
+          // If user is not owner of the entity and not trip owner
+          if (entityDetails &&
+              entityDetails.createdBy !== userId && 
+              !roles.includes(Role.OWNER)) {
+            permissions.delete(Permission.EDIT);
+            permissions.delete(Permission.DELETE);
+          }
+        } catch (error) {
+          console.error('Error fetching entity details:', error);
+          // On error, remove edit/delete permissions for safety
+          if (!roles.includes(Role.OWNER)) {
+            permissions.delete(Permission.EDIT);
+            permissions.delete(Permission.DELETE);
+          }
+        }
+      }
+
+      const permissionsArray = Array.from(permissions);
+      const hasPermission = permissionsArray.includes(requiredPermission);
+      
+      return { 
+        allowed: hasPermission, 
+        reason: hasPermission ? 'Access granted' : 'Access denied', 
+        roles,
+        permissions: permissionsArray
+      };
     } catch (error) {
-      console.error('Failed to validate trip access:', error)
-      return { ...deniedAccessResult, reason: 'Error validating access : ' + error}
+      console.error('Failed to validate trip access:', error);
+      return { 
+        ...deniedAccessResult, 
+        reason: 'Error validating access: ' + error 
+      };
     }
   }
 
+  private async getEntityDetails(entityId: string): Promise<any> {
+    try {
+      const result = await docClient.send(
+        new GetCommand({
+          TableName: process.env.TRIP_PLANNER_TABLE_NAME,
+          Key: {
+            PK: `COMMENT#${entityId}`,
+            SK: 'METADATA'
+          }
+        })
+      );
+      
+      return result.Item;
+    } catch (error) {
+      console.error('Failed to get entity details:', error);
+      throw error; // Propagate error to handle it in calling function
+    }
+  }
+
+  async validateCommentAccess(
+    permission: Permission,
+    tripId: string,
+    commentId: string,
+    userId?: string | null
+  ): Promise<TripAccessResult> {
+    // First check trip access
+    const tripAccess = await this.validateTripAccess(
+      Permission.VIEW, 
+      tripId, 
+      userId
+    );
+    
+    if (!tripAccess.allowed) {
+      return tripAccess;
+    }
+    
+    // For VIEW permission, trip access is sufficient
+    if (permission === Permission.VIEW) {
+      return tripAccess;
+    }
+
+    // For EDIT, DELETE, check if user is comment owner or trip owner
+    return this.validateTripAccess(
+      permission,
+      tripId,
+      userId,
+      commentId
+    );
+  }
+
+  async validateReactionAccess(
+    tripId: string,
+    commentId: string,
+    userId?: string | null
+  ): Promise<TripAccessResult> {
+    return this.validateTripAccess(Permission.REACT, tripId, userId);
+  }
 }
