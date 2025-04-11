@@ -5,6 +5,8 @@ import { TripRecordDTO } from '@/types/trip';
 import { EditableText } from '../../ui/input/EditableText';
 import { Plane } from 'lucide-react';
 import TripInvitesAndComments from './TripInvitesAndComments';
+import { Invite } from '@/types/invitation';
+import { on } from 'events';
 
 interface CompactTripViewProps {
   isReadOnly: boolean;
@@ -89,6 +91,29 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
         isReadOnly={isReadOnly}
         formData={formData}
         handleAttributeUpdate={handleAttributeUpdate}
+        initialComments={[]}
+        initialInvites={[]}
+        onSendInvites={async (emails) => {
+          // Logic to send invites
+          console.log("Sending invites to:", emails);
+        }}
+        onUpdateInviteStatus={async (inviteId, status) => {
+          // Logic to update invite status
+          console.log(`Updating invite ${inviteId} status to:`, status);
+
+          // Example return value to match the expected type
+          return {
+            tripId: formData.tripId,
+            status,
+            email: "example@example.com", // Replace with actual logic
+          } as Invite;
+        }}
+        onPostComment={async (comment) => {
+          // Logic to post comment
+          console.log("Posting comment:", comment);
+          return null; // Replace with actual logic
+        }
+      }
       />
     </>
   );
