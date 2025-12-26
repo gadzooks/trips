@@ -1,4 +1,4 @@
-// app/components/site-wide/navbar.tsx
+// app/components/site-wide/Navbar.tsx
 "use client";
 import Link from 'next/link';
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -10,7 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from 'app/components/ui/shadcn/dropdown-menu'
+} from '@/components/ui/shadcn/dropdown-menu'
 import { Button } from '../ui/shadcn/button';
 
 export function Navbar() {

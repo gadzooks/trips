@@ -1,7 +1,25 @@
-//auth.config.ts
-// import GitHub from "next-auth/providers/github"
-import Google from "next-auth/providers/google"
-import type { NextAuthConfig } from "next-auth"
- 
-// export default { providers: [GitHub, Google] } satisfies NextAuthConfig
-export default { providers: [Google] } satisfies NextAuthConfig
+// auth.config.ts
+
+import type { NextAuthConfig } from "next-auth";
+
+export const authConfig: NextAuthConfig = {
+  providers: [],
+  pages: {
+    signIn: "/login",
+  },
+  callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+      if (isOnDashboard) {
+        if (isLoggedIn) return true;
+        return false; // Redirect unauthenticated users to login page
+      } else if (isLoggedIn) {
+        return true;
+      }
+      return true;
+    },
+  },
+  trustHost: true,
+  debug: process.env.NODE_ENV === "development",
+};
