@@ -2,12 +2,15 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { updateTripAttribute } from '../../ui/utils/updateTrip';
 import TripDayComponent from './TripDayComponent';
 import { TripFormMetaData } from './TripFormMetaData';
 import { TripRecordDTO, TripRecordDTOWithAccess } from '@/types/trip';
 import { TripFormProps } from '../trip-types';
 import CompactTripView from './CompactTripView';
+import { EditableText } from '../../ui/input/EditableText';
+import TripSocialTab from './TripSocialTab';
 import { Permission } from '@/types/permissions';
 
 export const TripForm: React.FC<TripFormProps> = ({
@@ -113,18 +116,69 @@ export const TripForm: React.FC<TripFormProps> = ({
           <CompactTripView
             isReadOnly={isReadOnly}
             formData={formData}
-            handleAttributeUpdate={handleAttributeUpdate}  
+            handleAttributeUpdate={handleAttributeUpdate}
           /> )}
 
           {!isNewRecord && (
-            <div className="rounded-lg overflow-hidden">
-              <TripDayComponent
-                onChange={(days) => handleAttributeUpdate('days', days)}
-                initialRows={formData.days}
-                isReadOnly={isReadOnly}
-                isNewRecord={isNewRecord}
-              />
-            </div>
+            <Tabs defaultValue="itinerary" className="w-full">
+              <div className="px-4 pt-3 border-b border-gray-200 dark:border-gray-700">
+                <TabsList className="bg-transparent p-0 h-auto gap-0">
+                  {(['itinerary', 'description', 'invites', 'comments'] as const).map((tab) => (
+                    <TabsTrigger
+                      key={tab}
+                      value={tab}
+                      className="rounded-none border-b-2 border-transparent text-gray-500 dark:text-gray-400 data-[state=active]:border-purple-500 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-400 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2 text-sm font-medium capitalize"
+                    >
+                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
+              <TabsContent value="itinerary" className="mt-0">
+                <div className="rounded-lg overflow-hidden">
+                  <TripDayComponent
+                    onChange={(days) => handleAttributeUpdate('days', days)}
+                    initialRows={formData.days}
+                    isReadOnly={isReadOnly}
+                    isNewRecord={isNewRecord}
+                  />
+                </div>
+              </TabsContent>
+              <TabsContent value="description" className="mt-0">
+                <div className="p-6">
+                  <EditableText
+                    id="tripDescription"
+                    tripId={formData.tripId}
+                    SK={formData.SK}
+                    createdAt={formData.createdAt}
+                    createdBy={formData.createdBy}
+                    attributeKey="description"
+                    attributeValue={formData.description || ''}
+                    isReadyOnly={isReadOnly}
+                    onSave={(value) => handleAttributeUpdate('description', value)}
+                    isTextArea={true}
+                    className="block w-full min-h-32 px-4 py-3 text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter trip description"
+                  />
+                </div>
+              </TabsContent>
+              <TabsContent value="invites" className="mt-0">
+                <TripSocialTab
+                  panel="invites"
+                  isReadOnly={isReadOnly}
+                  formData={formData}
+                  handleAttributeUpdate={handleAttributeUpdate}
+                />
+              </TabsContent>
+              <TabsContent value="comments" className="mt-0">
+                <TripSocialTab
+                  panel="comments"
+                  isReadOnly={isReadOnly}
+                  formData={formData}
+                  handleAttributeUpdate={handleAttributeUpdate}
+                />
+              </TabsContent>
+            </Tabs>
           )}
 
           {error && (

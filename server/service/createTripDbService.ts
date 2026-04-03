@@ -121,7 +121,9 @@ export class CreateTripDbService {
       reservations: item.reservations,
       lodging: item.lodging,
       travelTime: item.travelTime,
-      notes: item.notes
+      notes: item.notes,
+      cost: item.cost || '',
+      cancelBy: item.cancelBy || '',
     };
   }
 

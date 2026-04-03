@@ -82,27 +82,6 @@ export const TripFormMetaData: React.FC<TripFormMetaDataProps> = ({
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label htmlFor="tripDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Description*
-          </label>
-          <EditableText
-            id='tripDescription'
-            tripId={formData.tripId}
-            SK={formData.SK}
-            createdAt={formData.createdAt}
-            createdBy={formData.createdBy}
-            attributeKey="description"
-            attributeValue={formData.description || ''}
-            isReadyOnly={isReadOnly}
-            onSave={(value: string) => handleAttributeUpdate('description', value)}
-            isTextArea={true}
-            className="block w-full h-32 px-4 py-3 text-gray-900 dark:text-gray-100 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-            placeholder="Enter trip description"
-            tabIndex={3}
-          />
-        </div>
-
       </div>
     </>
   );

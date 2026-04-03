@@ -45,13 +45,6 @@ export const EditableText = ({
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
     const spanRef = useRef<HTMLSpanElement>(null);
 
-    const inputClassName = `w-full p-2 rounded-lg 
-        focus:ring-2 focus:ring-purple-500 focus:border-transparent
-        bg-transparent
-        hover:bg-gray-100/10 dark:hover:bg-gray-700/50
-        text-gray-900 dark:text-gray-100
-        ${className}`;
-
     useEffect(() => {
         setEditValue(attributeValue);
     }, [attributeValue]);
@@ -110,11 +103,23 @@ export const EditableText = ({
         }
     };
 
+    useEffect(() => {
+        if (isEditing && isTextArea && inputRef.current) {
+            const el = inputRef.current as HTMLTextAreaElement;
+            el.style.height = 'auto';
+            el.style.height = `${el.scrollHeight}px`;
+        }
+    }, [isEditing, isTextArea]);
+
     if (isEditing) {
         const InputComponent = isTextArea ? 'textarea' : 'input';
         const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             setEditValue(e.target.value);
             onChange?.(e);
+            if (isTextArea && e.target instanceof HTMLTextAreaElement) {
+                e.target.style.height = 'auto';
+                e.target.style.height = `${e.target.scrollHeight}px`;
+            }
         };
         return (
             <InputComponent
@@ -128,11 +133,12 @@ export const EditableText = ({
                 onKeyDown={handleKeyDown}
                 tabIndex={tabIndex}
                 rows={isTextArea ? 3 : undefined}
-                className={`w-full p-2 rounded-lg 
+                className={`w-full p-2 rounded-lg
                     focus:ring-2 focus:ring-purple-500 focus:border-transparent
                     bg-transparent text-gray-900 dark:text-gray-100
-                    hover:bg-opacity-10 hover:bg-gray-500 
+                    hover:bg-opacity-10 hover:bg-gray-500
                     dark:hover:bg-opacity-20 dark:hover:bg-gray-200
+                    ${isTextArea ? 'overflow-hidden resize-none' : ''}
                     ${className}`}
             />
         );

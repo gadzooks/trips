@@ -1,8 +1,38 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Clock, CalendarDays, Map, Hotel, BookOpen, MessageSquare, Plus, Trash2, GripVertical, ChevronUp, ChevronDown, Save, RotateCcw } from 'lucide-react';
+import { Clock, CalendarDays, Map, Hotel, BookOpen, MessageSquare, DollarSign, XCircle, Plus, Trash2, GripVertical, ChevronUp, ChevronDown, Save, RotateCcw } from 'lucide-react';
 import { TripDayDTO } from '@/types/trip';
 import MobileInputComponentWithIcon from './MobileInputComponentWithIcon';
 import DatePickerInput from '../../ui/input/DatePickerInput';
+
+// Parse MM/DD/YYYY or YYYY-MM-DD
+function parseStoredDate(dateString: string): Date | null {
+  if (!dateString) return null;
+  const slashParts = dateString.split('/');
+  if (slashParts.length === 3) {
+    const month = parseInt(slashParts[0], 10) - 1;
+    const day = parseInt(slashParts[1], 10);
+    const year = parseInt(slashParts[2], 10);
+    const date = new Date(year, month, day);
+    return isNaN(date.getTime()) ? null : date;
+  }
+  const dashParts = dateString.split('-');
+  if (dashParts.length === 3) {
+    const year = parseInt(dashParts[0], 10);
+    const month = parseInt(dashParts[1], 10) - 1;
+    const day = parseInt(dashParts[2], 10);
+    const date = new Date(year, month, day);
+    return isNaN(date.getTime()) ? null : date;
+  }
+  return null;
+}
+
+// Format as MM/DD/YYYY
+function formatStorageDate(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+}
 
 interface MobileTripDaysProps {
   days: TripDayDTO[];
@@ -34,9 +64,24 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
   // Update a single field in a day
   const updateDay = (index: number, field: keyof TripDayDTO, value: string) => {
     if (isReadOnly) return;
-    
+
     const newDays = [...days];
     newDays[index] = { ...newDays[index], [field]: value };
+
+    // Auto-fill subsequent empty dates when a date is set
+    if (field === 'date' && value) {
+      const baseDate = parseStoredDate(value);
+      if (baseDate) {
+        for (let i = index + 1; i < newDays.length; i++) {
+          if (!newDays[i].date) {
+            const d = new Date(baseDate);
+            d.setDate(baseDate.getDate() + (i - index));
+            newDays[i] = { ...newDays[i], date: formatStorageDate(d) };
+          }
+        }
+      }
+    }
+
     setDays(newDays);
     setHasChanges(true);
   };
@@ -44,14 +89,16 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
   // Add a new day
   const addDay = () => {
     if (isReadOnly) return;
-    
+
     const newDay: TripDayDTO = {
       date: '',
       itinerary: '',
       reservations: '',
       lodging: '',
       travelTime: '',
-      notes: ''
+      notes: '',
+      cost: '',
+      cancelBy: '',
     };
     
     const newDays = [...days, newDay];
@@ -330,6 +377,15 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
                 </div>
 
                 <MobileInputComponentWithIcon
+                  icon={MessageSquare}
+                  label="DETAILS"
+                  value={day.notes}
+                  onChange={(e) => updateDay(index, "notes", e.target.value)}
+                  placeholder="Details, links..."
+                  multiline
+                />
+
+                <MobileInputComponentWithIcon
                   icon={Hotel}
                   label="LODGING"
                   value={day.lodging}
@@ -350,13 +406,21 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
                 />
 
                 <MobileInputComponentWithIcon
-                  icon={MessageSquare}
-                  label="NOTES"
-                  value={day.notes}
-                  onChange={(e) => updateDay(index, "notes", e.target.value)}
-                  placeholder="Additional notes..."
-                  multiline
+                  icon={DollarSign}
+                  label="COST"
+                  value={day.cost}
+                  onChange={(e) => updateDay(index, "cost", e.target.value)}
+                  placeholder="Cost..."
                 />
+
+                <MobileInputComponentWithIcon
+                  icon={XCircle}
+                  label="CANCEL BY"
+                  value={day.cancelBy}
+                  onChange={(e) => updateDay(index, "cancelBy", e.target.value)}
+                  placeholder="Cancellation deadline..."
+                />
+
               </div>
 
               {/* Day controls - only in edit mode */}

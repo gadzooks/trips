@@ -46,7 +46,9 @@ describe('TripDayComponent', () => {
     reservations: 'Museum tickets',
     lodging: 'Hotel ABC',
     travelTime: '2h',
-    notes: 'Bring camera'
+    notes: 'Bring camera',
+    cost: '',
+    cancelBy: '',
   };
 
   beforeEach(() => {
@@ -178,7 +180,9 @@ describe('TripDayComponent', () => {
         reservations: 'Tour booking #123',
         lodging: 'Hotel ABC',
         travelTime: '2h',
-        notes: 'Bring camera'
+        notes: 'Bring camera',
+        cost: '',
+        cancelBy: '',
       }
     ];
 

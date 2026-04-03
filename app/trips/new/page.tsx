@@ -51,7 +51,9 @@ export default function NewTrip() {
              reservations: '',
              lodging: '',
              travelTime: '',
-             notes: ''
+             notes: '',
+             cost: '',
+             cancelBy: '',
            }
          ],
          tripAccessResult: {

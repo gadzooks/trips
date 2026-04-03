@@ -44,7 +44,9 @@ describe('TripMapper', () => {
         reservations: 'Hotel booking',
         lodging: 'Grand Hotel',
         travelTime: '2 hours',
-        notes: 'Remember passport'
+        notes: 'Remember passport',
+        cost: '',
+        cancelBy: '',
       };
 
       expect(mapper.toTripDayDTO(input)).toEqual(expected);
@@ -66,7 +68,9 @@ describe('TripMapper', () => {
             lodging: 'Hotel',
             reservations: 'reservations',
             travelTime: '2.5 hrs',
-            notes: 'some notes'
+            notes: 'some notes',
+            cost: '',
+            cancelBy: '',
           }
         ],
         isPublic: true,
@@ -89,7 +93,9 @@ describe('TripMapper', () => {
             lodging: 'Hotel',
             reservations: 'reservations',
             travelTime: '2.5 hrs',
-            notes: 'some notes'
+            notes: 'some notes',
+            cost: '',
+            cancelBy: '',
           }
         ],
         isPublic: true,

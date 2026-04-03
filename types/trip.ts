@@ -37,6 +37,8 @@ export interface TripDayDTO {
     lodging: string;
     travelTime: string;
     notes: string;
+    cost: string;
+    cancelBy: string;
 }
 
 //FIXME use zod to validate the incoming data

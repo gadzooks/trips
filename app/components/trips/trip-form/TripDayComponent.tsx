@@ -7,6 +7,36 @@ import MobileTripDays from './MobileTripDays';
 import { EditableText } from '../../ui/input/EditableText';
 import DatePickerInput from '../../ui/input/DatePickerInput';
 
+// Parse MM/DD/YYYY or YYYY-MM-DD
+function parseStoredDate(dateString: string): Date | null {
+  if (!dateString) return null;
+  const slashParts = dateString.split('/');
+  if (slashParts.length === 3) {
+    const month = parseInt(slashParts[0], 10) - 1;
+    const day = parseInt(slashParts[1], 10);
+    const year = parseInt(slashParts[2], 10);
+    const date = new Date(year, month, day);
+    return isNaN(date.getTime()) ? null : date;
+  }
+  const dashParts = dateString.split('-');
+  if (dashParts.length === 3) {
+    const year = parseInt(dashParts[0], 10);
+    const month = parseInt(dashParts[1], 10) - 1;
+    const day = parseInt(dashParts[2], 10);
+    const date = new Date(year, month, day);
+    return isNaN(date.getTime()) ? null : date;
+  }
+  return null;
+}
+
+// Format as MM/DD/YYYY
+function formatStorageDate(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+}
+
 const TripDayComponent: React.FC<TripDayProps> = ({
   onChange,
   initialRows = [],
@@ -32,7 +62,9 @@ const TripDayComponent: React.FC<TripDayProps> = ({
       reservations: row.reservations || '',
       lodging: row.lodging || '',
       travelTime: row.travelTime || '',
-      notes: row.notes || ''
+      notes: row.notes || '',
+      cost: row.cost || '',
+      cancelBy: row.cancelBy || '',
     }))
   );
   const [originalDays, setOriginalDays] = useState<TripDayDTO[]>(days);
@@ -60,6 +92,21 @@ const TripDayComponent: React.FC<TripDayProps> = ({
   const updateDay = (index: number, field: keyof TripDayDTO, value: string) => {
     const newDays = [...days];
     newDays[index] = { ...newDays[index], [field]: value };
+
+    // Auto-fill subsequent empty dates when a date is set
+    if (field === 'date' && value) {
+      const baseDate = parseStoredDate(value);
+      if (baseDate) {
+        for (let i = index + 1; i < newDays.length; i++) {
+          if (!newDays[i].date) {
+            const d = new Date(baseDate);
+            d.setDate(baseDate.getDate() + (i - index));
+            newDays[i] = { ...newDays[i], date: formatStorageDate(d) };
+          }
+        }
+      }
+    }
+
     setDays(newDays);
     setHasChanges(true);
   };
@@ -72,7 +119,9 @@ const TripDayComponent: React.FC<TripDayProps> = ({
       reservations: '',
       lodging: '',
       travelTime: '',
-      notes: ''
+      notes: '',
+      cost: '',
+      cancelBy: '',
     };
     setDays([...days, newDay]);
     setHasChanges(true);
@@ -130,11 +179,14 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   <MoveVertical className="w-4 h-4" />{" "}
                 </th>
               )}
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-28">
                 DATE
               </th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
                 ITINERARY
+              </th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
+                DETAILS
               </th>
               <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
                 RESERVATIONS
@@ -147,8 +199,13 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                 <br />
                 TIME
               </th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
-                NOTES
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">
+                COST
+              </th>
+              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-24">
+                CANCEL
+                <br />
+                BY
               </th>
               {!isReadOnly && (
                 <th className="w-8 p-4">
@@ -172,7 +229,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     <GripVertical className="w-4 h-4 mx-auto opacity-0 group-hover:opacity-100" />
                   </td>
                 )}
-                <td className="p-1 align-middle w-40">
+                <td className="p-1 align-middle w-28">
                   <DatePickerInput
                     value={day.date}
                     index={index}
@@ -189,8 +246,20 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     onSave={(e) => updateDay(index, "itinerary", e)}
                     onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                    // rows={2}
                     placeholder="Add itinerary..."
+                    isReadyOnly={isReadOnly}
+                    isTextArea={true}
+                  />
+                </td>
+                <td className="p-1">
+                  <EditableText
+                    id="notes"
+                    attributeKey="notes"
+                    attributeValue={day.notes}
+                    onSave={(e) => updateDay(index, "notes", e)}
+                    onChange={(e) => setHasChanges(true)}
+                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
+                    placeholder="Details, links..."
                     isReadyOnly={isReadOnly}
                     isTextArea={true}
                   />
@@ -203,7 +272,6 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     onSave={(e) => updateDay(index, "reservations", e)}
                     onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
-                    // rows={2}
                     placeholder="Add booking details..."
                     isReadyOnly={isReadOnly}
                     isTextArea={true}
@@ -240,15 +308,28 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                 </td>
                 <td className="p-1">
                   <EditableText
-                    id="notes"
-                    attributeKey="notes"
-                    attributeValue={day.notes}
-                    onSave={(e) => updateDay(index, "notes", e)}
+                    id="cost"
+                    attributeKey="cost"
+                    attributeValue={day.cost}
+                    onSave={(e) => updateDay(index, "cost", e)}
                     onChange={(e) => setHasChanges(true)}
                     className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
-                    placeholder="Additional notes, including links etc"
+                    placeholder="Cost..."
                     isReadyOnly={isReadOnly}
-                    isTextArea={true}
+                    isTextArea={false}
+                  />
+                </td>
+                <td className="p-1">
+                  <EditableText
+                    id="cancelBy"
+                    attributeKey="cancelBy"
+                    attributeValue={day.cancelBy}
+                    onSave={(e) => updateDay(index, "cancelBy", e)}
+                    onChange={(e) => setHasChanges(true)}
+                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
+                    placeholder="Cancel by..."
+                    isReadyOnly={isReadOnly}
+                    isTextArea={false}
                   />
                 </td>
                 {!isReadOnly && (
@@ -307,4 +388,4 @@ const TripDayComponent: React.FC<TripDayProps> = ({
   );
 };
 
-export default TripDayComponent;    
+export default TripDayComponent;
