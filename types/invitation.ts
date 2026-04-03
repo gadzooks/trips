@@ -6,6 +6,11 @@ export enum InviteStatus {
   DECLINED = 'declined'
 }
 
+export enum InviteAccessLevel {
+  READ_ONLY = 'readonly',
+  READ_WRITE = 'readwrite'
+}
+
 export interface Invite {
   tripId: string;
   email: string;
@@ -13,6 +18,7 @@ export interface Invite {
   name?: string;
   invitedAt: string;
   invitedBy: string;
+  accessLevel?: InviteAccessLevel;
 }
 
 export interface Comment {

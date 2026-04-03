@@ -63,7 +63,7 @@ describe('TripPermissionsService', () => {
     test.each([
       [Role.OWNER, Permission.EDIT, true],
       [Role.OWNER, Permission.DELETE, true],
-      [Role.INVITEE, Permission.EDIT, true],
+      [Role.INVITEE, Permission.VIEW, true],
       [Role.PUBLIC, Permission.VIEW, true]
     ])('should correctly handle permissions for role %s requesting %s permission', async (role, permission, expectedAllowed) => {
       // Setup mock data based on role
@@ -71,8 +71,10 @@ describe('TripPermissionsService', () => {
       if (role === Role.OWNER) {
         mockData.createdBy = mockUserId;
       } else if (role === Role.INVITEE) {
+        mockData.createdBy = 'otherUser'; // ensure test user is not owner
         mockData.invitees = [mockUserId];
       } else if (role === Role.PUBLIC) {
+        mockData.createdBy = 'otherUser';
         mockData.isPublic = true;
       }
 
@@ -157,20 +159,19 @@ describe('TripPermissionsService', () => {
     // public trip should not allow users who are not the owner or invitee to view comments
     test('should deny view access for non-owner or invitee on public trip', async () => {
       // Mock a public trip and a non-owner, non-invitee user
-      (docClient.send as jest.Mock).mockImplementationOnce((command) => {
-        if (command instanceof QueryCommand) {
-          return Promise.resolve({
-            Items: [{
-              tripId: mockTripId,
-              createdBy: 'owner',
-              isPublic: true,
-              invitees: []
-            }]
-          });
-        } else if (command instanceof GetCommand) {
-          return Promise.resolve({ Item: mockCommentData });
-        }
-      });
+      // Call sequence: 1) QueryCommand (trip lookup), 2) GetCommand (invite record - not found),
+      //                3) GetCommand (comment entity check)
+      (docClient.send as jest.Mock)
+        .mockResolvedValueOnce({
+          Items: [{
+            tripId: mockTripId,
+            createdBy: 'owner',
+            isPublic: true,
+            invitees: []
+          }]
+        })
+        .mockResolvedValueOnce({ Item: undefined }) // invite record: not found
+        .mockResolvedValueOnce({ Item: mockCommentData }); // comment entity
 
       const unauthorizedUser = 'unauthorizedUser';
       const result = await service.validateCommentAccess(

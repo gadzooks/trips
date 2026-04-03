@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UserPlus } from 'lucide-react';
-import { Invite, InviteStatus } from '@/types/invitation';
+import { Invite, InviteStatus, InviteAccessLevel } from '@/types/invitation';
 import InviteListItem from './InviteListItem';
 
 interface TripInvitesTabProps {
@@ -13,6 +13,7 @@ interface TripInvitesTabProps {
     invites: Invite[];
     onSendInvites: (emails: string[]) => Promise<void>;
     onUpdateInviteStatus: (email: string, newStatus: InviteStatus) => Promise<Invite | null>;
+    onAccessLevelChange?: (email: string, newAccessLevel: InviteAccessLevel) => Promise<void>;
 }
 
 const TripInvitesTab: React.FC<TripInvitesTabProps> = ({
@@ -21,6 +22,7 @@ const TripInvitesTab: React.FC<TripInvitesTabProps> = ({
     invites,
     onSendInvites,
     onUpdateInviteStatus,
+    onAccessLevelChange,
 }) => {
     const [inviteEmails, setInviteEmails] = useState('');
 
@@ -68,7 +70,9 @@ const TripInvitesTab: React.FC<TripInvitesTabProps> = ({
                         <InviteListItem
                             key={invite.email}
                             invite={invite}
+                            isOwner={isOwner}
                             onStatusChange={onUpdateInviteStatus}
+                            onAccessLevelChange={onAccessLevelChange}
                         />
                     ))}
                 </div>

@@ -29,8 +29,9 @@ export async function GET(
         tripService.getByUser(session.user.email, { limit }),
         tripService.getByInvitee(session.user.email, { limit }),
       ]);
+      const taggedInvited = invitedTrips.map(t => ({ ...t, isInvited: true }));
       const seen = new Set<string>();
-      response = [...createdTrips, ...invitedTrips].filter(t => {
+      response = [...createdTrips, ...taggedInvited].filter(t => {
         if (seen.has(t.tripId)) return false;
         seen.add(t.tripId);
         return true;

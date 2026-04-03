@@ -4,6 +4,7 @@ import { GetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb'
 import { docClient } from '@/lib/dynamodb'
 import { queryByTripIdForPermissions, TripPermissionsDTO } from '../db/queryTripTransactions'
 import { Permission, Role, rolePermissions, TripAccessResult } from '@/types/permissions';
+import { InviteStatus, InviteAccessLevel } from '@/types/invitation';
 
 export class TripPermissionsService {
   async validateTripAccess(
@@ -50,11 +51,22 @@ export class TripPermissionsService {
 
       // TODO: implement co_owner role check
 
-      // Invitee role check - separate from shared
-      if (isValidUser &&
-          tripPermissionDetails.invitees &&
-          tripPermissionDetails.invitees.includes(userId)) {
-        roles.push(Role.INVITEE);
+      // Invitee role check — skip for owners; check METADATA invitees[] (backward compat) OR invite record
+      let inviteRecord: Record<string, any> | undefined;
+      if (isValidUser && !roles.includes(Role.OWNER)) {
+        if (tripPermissionDetails.invitees?.includes(userId)) {
+          roles.push(Role.INVITEE);
+        } else {
+          // Check the invite record directly (post-creation invites)
+          const inviteResult = await docClient.send(new GetCommand({
+            TableName: process.env.TRIP_PLANNER_TABLE_NAME,
+            Key: { PK: `TRIP#${tripId}#INVITES`, SK: `#${userId}` }
+          }));
+          inviteRecord = inviteResult.Item;
+          if (inviteRecord && inviteRecord.status !== InviteStatus.DECLINED) {
+            roles.push(Role.INVITEE);
+          }
+        }
       }
 
       // Public access check
@@ -78,6 +90,20 @@ export class TripPermissionsService {
           permissions.add(permission);
         });
       });
+
+      // Grant EDIT to invitees with readwrite access level
+      if (roles.includes(Role.INVITEE) && !roles.includes(Role.OWNER)) {
+        if (!inviteRecord) {
+          const inviteResult = await docClient.send(new GetCommand({
+            TableName: process.env.TRIP_PLANNER_TABLE_NAME,
+            Key: { PK: `TRIP#${tripId}#INVITES`, SK: `#${userId}` }
+          }));
+          inviteRecord = inviteResult.Item;
+        }
+        if (inviteRecord?.accessLevel === InviteAccessLevel.READ_WRITE) {
+          permissions.add(Permission.EDIT);
+        }
+      }
 
       // For entity-specific permissions
       if (commentId &&

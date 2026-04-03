@@ -1,11 +1,11 @@
 // app/components/trips/trip-form/CompactTripView.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { TripRecordDTO } from '@/types/trip';
 import { EditableText } from '../../ui/input/EditableText';
 import { Plane } from 'lucide-react';
 import TripInvitesAndComments from './TripInvitesAndComments';
-import { Invite } from '@/types/invitation';
+import { Invite, InviteAccessLevel } from '@/types/invitation';
 import { useSession } from "next-auth/react"
 
 
@@ -25,6 +25,17 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
     : (formData.tags || "").split(" ").filter(Boolean);
 
   const { data: session } = useSession();
+  const [invites, setInvites] = useState<Invite[]>([]);
+
+  useEffect(() => {
+    if (!formData.tripId) return;
+    fetch(`/api/trips/${formData.tripId}/invites`)
+      .then(r => r.ok ? r.json() : [])
+      .then(setInvites)
+      .catch(() => {});
+  }, [formData.tripId]);
+
+  const isOwner = formData.createdBy === session?.user?.email;
 
   return (
     <>
@@ -91,59 +102,67 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
       </div>
 
       <TripInvitesAndComments
-        isOwner={formData.createdBy === session?.user?.email}
+        isOwner={isOwner}
         isReadOnly={isReadOnly}
         formData={formData}
         handleAttributeUpdate={handleAttributeUpdate}
         initialComments={[]}
-        initialInvites={[]}
+        initialInvites={invites}
         onSendInvites={async (emails: string[]) => {
           try {
             const response = await fetch(
               `/api/trips/${formData.tripId}/invites`,
               {
                 method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ emails }),
               }
             );
-
-            if (!response.ok) {
-              throw new Error("Failed to send invites");
-            }
-
-            const newInvites = await response.json();
-            console.log("Successfully sent invites to:", emails);
-            return newInvites;
+            if (!response.ok) throw new Error("Failed to send invites");
+            const newInvites: Invite[] = await response.json();
+            setInvites(prev => {
+              const existingEmails = new Set(prev.map(i => i.email));
+              return [...prev, ...newInvites.filter(i => !existingEmails.has(i.email))];
+            });
           } catch (error) {
             console.error("Error sending invites:", error);
             throw error;
           }
         }}
-        onUpdateInviteStatus={async (inviteId: string, status: string) => {
+        onUpdateInviteStatus={async (email: string, status: string) => {
           try {
             const response = await fetch(
-              `/api/trips/${formData.tripId}/invites/${inviteId}`,
+              `/api/trips/${formData.tripId}/invites/${encodeURIComponent(email)}`,
               {
                 method: "PATCH",
-                headers: {
-                  "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status }),
               }
             );
-
-            if (!response.ok) {
-              throw new Error("Failed to update invite status");
-            }
-
-            const updatedInvite = await response.json();
-            console.log(`Updated invite ${inviteId} status to:`, status);
-            return updatedInvite as Invite;
+            if (!response.ok) throw new Error("Failed to update invite status");
+            const updatedInvite: Invite = await response.json();
+            setInvites(prev => prev.map(i => i.email === email ? updatedInvite : i));
+            return updatedInvite;
           } catch (error) {
             console.error("Error updating invite status:", error);
+            throw error;
+          }
+        }}
+        onAccessLevelChange={async (email: string, accessLevel: InviteAccessLevel) => {
+          try {
+            const response = await fetch(
+              `/api/trips/${formData.tripId}/invites/${encodeURIComponent(email)}`,
+              {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ accessLevel }),
+              }
+            );
+            if (!response.ok) throw new Error("Failed to update access level");
+            const updatedInvite: Invite = await response.json();
+            setInvites(prev => prev.map(i => i.email === email ? updatedInvite : i));
+          } catch (error) {
+            console.error("Error updating access level:", error);
             throw error;
           }
         }}
@@ -153,20 +172,12 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
               `/api/trips/${formData.tripId}/comments`,
               {
                 method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ content: comment }),
               }
             );
-
-            if (!response.ok) {
-              throw new Error("Failed to post comment");
-            }
-
-            const newComment = await response.json();
-            console.log("Successfully posted comment:", comment);
-            return newComment;
+            if (!response.ok) throw new Error("Failed to post comment");
+            return await response.json();
           } catch (error) {
             console.error("Error posting comment:", error);
             throw error;

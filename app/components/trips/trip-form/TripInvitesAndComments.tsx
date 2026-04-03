@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChevronUp, ChevronDown, Badge } from 'lucide-react';
 import { TripRecordDTO } from '@/types/trip';
-import { Invite, InviteStatus } from '@/types/invitation';
+import { Invite, InviteStatus, InviteAccessLevel } from '@/types/invitation';
 import { Comment } from '@/types/invitation';
 import TripCommentsTab from './social/TripCommentsTab';
 import TripDescriptionTab from './social/TripDescriptionTab';
@@ -18,8 +18,9 @@ interface TripInvitesAndCommentsProps {
     onSendInvites: (emails: string[]) => Promise<void>;
     onPostComment: (content: string) => Promise<Comment | null>;
     onUpdateInviteStatus: (email: string, status: InviteStatus) => Promise<Invite | null>;
-    initialInvites: Invite[]; // Pass real data
-    initialComments: Comment[]; // Pass real data
+    onAccessLevelChange?: (email: string, accessLevel: InviteAccessLevel) => Promise<void>;
+    initialInvites: Invite[];
+    initialComments: Comment[];
 }
 
 const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
@@ -30,6 +31,7 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
     onSendInvites,
     onPostComment,
     onUpdateInviteStatus,
+    onAccessLevelChange,
     initialInvites,
     initialComments,
 }) => {
@@ -121,6 +123,7 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
                         invites={invites}
                         onSendInvites={onSendInvites}
                         onUpdateInviteStatus={handleLocalStatusChange}
+                        onAccessLevelChange={onAccessLevelChange}
                     />
                 )}
             </TabsContent>

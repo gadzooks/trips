@@ -10,7 +10,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 import { TripServiceError, TripErrorCodes } from '@/types/errors';
-import { InviteStatus, Invite } from '@/types/invitation';
+import { InviteStatus, InviteAccessLevel, Invite } from '@/types/invitation';
 
 
 export class InviteService {
@@ -186,13 +186,15 @@ export class InviteService {
   async updateTripInvite(
     tripId: string,
     email: string,
-    status: InviteStatus,
+    updates: { status?: InviteStatus; accessLevel?: InviteAccessLevel },
     updatedBy: string
   ): Promise<Invite> {
     try {
       // Validate inputs
       this.validateEmail(email);
-      this.validateStatus(status);
+      if (updates.status !== undefined) {
+        this.validateStatus(updates.status);
+      }
 
       // Check if invite exists
       await this.getInvite(tripId, email);
@@ -201,24 +203,41 @@ export class InviteService {
       const keys = this.getInviteKeys(tripId, email);
       const gsiKeys = this.getGSIKeys(tripId, email);
 
+      const exprParts: string[] = [
+        "#respondedAt = :respondedAt",
+        "#gsi1pk = :gsi1pk",
+        "#gsi1sk = :gsi1sk"
+      ];
+      const exprNames: Record<string, string> = {
+        "#respondedAt": "respondedAt",
+        "#gsi1pk": "GSI1PK",
+        "#gsi1sk": "GSI1SK"
+      };
+      const exprValues: Record<string, any> = {
+        ":respondedAt": now,
+        ":gsi1pk": gsiKeys.GSI1PK,
+        ":gsi1sk": gsiKeys.GSI1SK
+      };
+
+      if (updates.status !== undefined) {
+        exprParts.push("#status = :status");
+        exprNames["#status"] = "status";
+        exprValues[":status"] = updates.status;
+      }
+      if (updates.accessLevel !== undefined) {
+        exprParts.push("#accessLevel = :accessLevel");
+        exprNames["#accessLevel"] = "accessLevel";
+        exprValues[":accessLevel"] = updates.accessLevel;
+      }
+
       const command = new UpdateCommand({
         TableName: process.env.TRIP_PLANNER_TABLE_NAME,
         Key: keys,
-        UpdateExpression: "SET #status = :status, #respondedAt = :respondedAt, #gsi1pk = :gsi1pk, #gsi1sk = :gsi1sk",
-        ExpressionAttributeNames: {
-          "#status": "status",
-          "#respondedAt": "respondedAt",
-          "#gsi1pk": "GSI1PK",
-          "#gsi1sk": "GSI1SK"
-        },
-        ExpressionAttributeValues: {
-          ":status": status,
-          ":respondedAt": now,
-          ":gsi1pk": gsiKeys.GSI1PK,
-          ":gsi1sk": gsiKeys.GSI1SK
-        },
+        UpdateExpression: `SET ${exprParts.join(", ")}`,
+        ExpressionAttributeNames: exprNames,
+        ExpressionAttributeValues: exprValues,
         ReturnValues: "ALL_NEW",
-        ConditionExpression: "attribute_exists(PK)" // Ensure item exists
+        ConditionExpression: "attribute_exists(PK)"
       });
 
       const response = await docClient.send(command);

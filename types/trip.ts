@@ -8,6 +8,7 @@ export interface MinimumTripRecord {
     tripId: string
     name: string
     createdAt: string
+    isInvited?: boolean
 }
 
 //FIXME use zod to validate the incoming data

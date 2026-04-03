@@ -5,7 +5,7 @@ import { TripPermissionsService } from '@/server/service/tripPermissionsService'
 import { InviteService } from '@/server/service/inviteService';
 import { Permission } from '@/types/permissions';
 import { TripServiceError } from '@/types/errors';
-import { InviteStatus } from '@/types/invitation';
+import { InviteStatus, InviteAccessLevel } from '@/types/invitation';
 
 const tripPermissionsService = new TripPermissionsService()
 const inviteService = new InviteService()
@@ -38,12 +38,15 @@ export async function PATCH(
       return new NextResponse(null, { status: 403 })
     }
 
-    const { status } = await request.json()
+    const { status, accessLevel } = await request.json()
 
     const updatedInvite = await inviteService.updateTripInvite(
       tripId,
       email,
-      status as InviteStatus,
+      {
+        status: status as InviteStatus | undefined,
+        accessLevel: accessLevel as InviteAccessLevel | undefined
+      },
       session.user.email
     )
 
