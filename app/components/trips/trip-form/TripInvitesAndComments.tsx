@@ -12,6 +12,7 @@ import TripInvitesTab from './social/TripInvitesTab';
 interface TripInvitesAndCommentsProps {
     isOwner?: boolean;
     isReadOnly?: boolean;
+    invitedBy?: string;
     formData: Partial<TripRecordDTO>;
     handleAttributeUpdate: (key: keyof TripRecordDTO, value: TripRecordDTO[keyof TripRecordDTO]) => Promise<boolean>;
     // In a real app, you'd likely have handlers for sending invites and posting comments here
@@ -26,6 +27,7 @@ interface TripInvitesAndCommentsProps {
 const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
     isOwner = true,
     isReadOnly = false,
+    invitedBy,
     formData,
     handleAttributeUpdate,
     onSendInvites,
@@ -95,8 +97,9 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
                     onClick={() => handleTabClick('invites')}
                     className={`relative ${activeTab === 'invites' ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400' : ''}`}
                 >
-                    Invites
-                    {isOwner && <Badge className="ml-2 bg-blue-500">{invites.filter(i => i.status === 'pending').length}</Badge>}
+                    {isOwner
+                        ? `Invites (${invites.filter(i => i.status === 'accepted').length}/${invites.length})`
+                        : 'Invitation'}
                     {activeTab === 'invites' ? <ChevronUp className="ml-1 w-4 h-4" /> : <ChevronDown className="ml-1 w-4 h-4" />}
                 </TabsTrigger>
                 <TabsTrigger
@@ -125,6 +128,7 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
                     <TripInvitesTab
                         isOwner={isOwner}
                         isReadOnly={isReadOnly}
+                        invitedBy={invitedBy}
                         invites={invites}
                         onSendInvites={onSendInvites}
                         onUpdateInviteStatus={handleLocalStatusChange}

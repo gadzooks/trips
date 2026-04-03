@@ -5,7 +5,7 @@ import { TripVisibilityService } from '../../../../server/service/tripVisibility
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
 import { auth } from '@/auth';
 import { TripPermissionsService } from '@/server/service/tripPermissionsService';
-import { Permission, TripAccessResult } from '@/types/permissions';
+import { Permission, Role, TripAccessResult } from '@/types/permissions';
 
 const createTripDbService = new CreateTripDbService()
 const tripVisibilityService = new TripVisibilityService()
@@ -62,6 +62,10 @@ export async function PATCH(
         { error: "Missing attributeKey or attributeValue" },
         { status: 400 }
       );
+    }
+
+    if (body.attributeKey === 'isPublic' && !tripAccessResult.roles.includes(Role.OWNER)) {
+      return new NextResponse(null, { status: 403 });
     }
 
     await tripVisibilityService.updateTripAtributes(body)

@@ -36,6 +36,9 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
   }, [formData.tripId]);
 
   const isOwner = formData.createdBy === session?.user?.email;
+  const invitedBy = !isOwner
+    ? invites.find(i => i.email === session?.user?.email)?.invitedBy
+    : undefined;
 
   return (
     <>
@@ -90,7 +93,7 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
               />
             </div>
 
-            {!isReadOnly && (
+            {isOwner && (
               <div className="flex items-center space-x-2">
                 <Switch
                   checked={formData.isPublic}
@@ -111,6 +114,7 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
       <TripInvitesAndComments
         isOwner={isOwner}
         isReadOnly={isReadOnly}
+        invitedBy={invitedBy}
         formData={formData}
         handleAttributeUpdate={handleAttributeUpdate}
         initialComments={[]}

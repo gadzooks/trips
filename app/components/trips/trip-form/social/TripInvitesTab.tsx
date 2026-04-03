@@ -10,6 +10,7 @@ import InviteListItem from './InviteListItem';
 interface TripInvitesTabProps {
     isOwner?: boolean;
     isReadOnly?: boolean;
+    invitedBy?: string;
     invites: Invite[];
     onSendInvites: (emails: string[]) => Promise<void>;
     onUpdateInviteStatus: (email: string, newStatus: InviteStatus) => Promise<Invite | null>;
@@ -19,6 +20,7 @@ interface TripInvitesTabProps {
 const TripInvitesTab: React.FC<TripInvitesTabProps> = ({
     isOwner = true,
     isReadOnly = false,
+    invitedBy,
     invites,
     onSendInvites,
     onUpdateInviteStatus,
@@ -61,22 +63,28 @@ const TripInvitesTab: React.FC<TripInvitesTabProps> = ({
                 </div>
             )}
 
-            <div className="space-y-4">
-                <h3 className="font-medium text-gray-900 dark:text-gray-100">
-                    Invited People ({invites.length})
-                </h3>
-                <div className="space-y-2">
-                    {invites.map((invite) => (
-                        <InviteListItem
-                            key={invite.email}
-                            invite={invite}
-                            isOwner={isOwner}
-                            onStatusChange={onUpdateInviteStatus}
-                            onAccessLevelChange={onAccessLevelChange}
-                        />
-                    ))}
+            {isOwner ? (
+                <div className="space-y-4">
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">
+                        Invited People ({invites.length})
+                    </h3>
+                    <div className="space-y-2">
+                        {invites.map((invite) => (
+                            <InviteListItem
+                                key={invite.email}
+                                invite={invite}
+                                isOwner={isOwner}
+                                onStatusChange={onUpdateInviteStatus}
+                                onAccessLevelChange={onAccessLevelChange}
+                            />
+                        ))}
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                    You were invited by <span className="font-medium text-gray-900 dark:text-gray-100">{invitedBy}</span>
+                </p>
+            )}
         </div>
     );
 };
