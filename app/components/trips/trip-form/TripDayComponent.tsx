@@ -154,7 +154,12 @@ const TripDayComponent: React.FC<TripDayProps> = ({
   const handleDragEnd = (e: React.DragEvent<HTMLTableRowElement>) => {
     e.currentTarget.style.opacity = '';
     setDragIndex(null);
-    setHasChanges(true);
+    if (!isNewRecord) {
+      onChange(days);
+      setOriginalDays(days);
+    } else {
+      setHasChanges(true);
+    }
   };
 
   const handleSave = () => {

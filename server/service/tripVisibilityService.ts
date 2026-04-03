@@ -6,12 +6,14 @@ import { TransactWriteCommand } from '@aws-sdk/lib-dynamodb';
 import { createVisibilityTransactions } from '../db/tripVisibilityTransactions';
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
 import { UpdateTripDbService } from '../db/updateTripTransactions';
-import { getTripIdPk } from '../db/dbKeys';
+import { getTripIdPk, getOwnerWithDbPK } from '../db/dbKeys';
+import { extractTripDates } from '../db/createTripTransactions';
+import { TripDayDTO } from '@/types/trip';
 
 const updateTripDbService = new UpdateTripDbService()
 
 export class TripVisibilityService {
-  async updateTripAtributes(body: UpdateTripAttributeRequest): Promise<void> {
+  async updateTripAtributes(body: UpdateTripAttributeRequest, userId: string): Promise<void> {
 
     if (body.attributeKey !== 'isPublic') {
 
@@ -35,8 +37,31 @@ export class TripVisibilityService {
       // console.log('Update command:', updateCommand);
 
       await docClient.send(new UpdateCommand(updateCommand));
+
+      // Update the CREATEDBY index record so the list view reflects the latest updatedAt / dates
+      const now = new Date().toISOString();
+      let createdByUpdateExpr = 'SET updatedAt = :now';
+      const createdByExprValues: Record<string, any> = { ':now': now };
+
+      if (body.attributeKey === 'days') {
+        const { startDate, endDate } = extractTripDates(body.attributeValue as TripDayDTO[]);
+        createdByUpdateExpr += ', startDate = :startDate, endDate = :endDate';
+        createdByExprValues[':startDate'] = startDate;
+        createdByExprValues[':endDate'] = endDate;
+      }
+
+      await docClient.send(new UpdateCommand({
+        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
+        Key: {
+          PK: getOwnerWithDbPK(userId),
+          SK: body.tripId
+        },
+        UpdateExpression: createdByUpdateExpr,
+        ExpressionAttributeValues: createdByExprValues,
+      }));
+
     } else {
-      await this.updateTripVisibility(body); 
+      await this.updateTripVisibility(body);
     }
   }
 

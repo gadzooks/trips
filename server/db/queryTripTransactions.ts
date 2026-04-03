@@ -55,7 +55,7 @@ export function queryByCreatedBy(createdBy: string, limit: number = 10) {
         ExpressionAttributeValues: {
             ':pk': getOwnerWithDbPK(createdBy)
         },
-        ProjectionExpression: 'tripId, #name, isPublic, createdAt, createdBy',
+        ProjectionExpression: 'tripId, #name, isPublic, createdAt, updatedAt, startDate, endDate, createdBy',
         ExpressionAttributeNames: {
             '#name': 'name'  // 'name' is a reserved word in DynamoDB
         },
@@ -71,7 +71,7 @@ export function queryByInvitee(email: string, limit: number = 10) {
         ExpressionAttributeValues: {
             ':pk': getInviteesDbPK(email)
         },
-        ProjectionExpression: 'tripId, #name, isPublic, createdAt, createdBy',
+        ProjectionExpression: 'tripId, #name, isPublic, createdAt, updatedAt, startDate, endDate, createdBy',
         ExpressionAttributeNames: {
             '#name': 'name'
         },

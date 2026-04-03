@@ -22,9 +22,12 @@ export default function TripList({ type }: TripListProps) {
         setLoading(true);
         const response = await fetch(`/api/trips/type/${type}`);
         if (!response.ok) throw new Error('Failed to fetch trips');
-        const data = await response.json();
+        const data: MinimumTripRecord[] = await response.json();
         // console.log('data -------------->>>>>>>', JSON.stringify(data, null, 2));
-        setTrips(data);
+        const sorted = [...data].sort((a, b) =>
+          new Date(b.updatedAt || b.createdAt).getTime() - new Date(a.updatedAt || a.createdAt).getTime()
+        );
+        setTrips(sorted);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load trips');
       } finally {

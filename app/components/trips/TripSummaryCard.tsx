@@ -1,9 +1,31 @@
 // app/components/trips/TripSummaryCard.tsx
 import Link from 'next/link'
-import { Clock, UserCheck, Users } from 'lucide-react';
+import { Clock, UserCheck, CalendarRange } from 'lucide-react';
 import { MinimumTripRecord } from '@/types/trip';
 
+function formatCardDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+}
+
+function formatTripDate(dateStr: string): string {
+  // Handles MM/DD/YYYY or ISO formats
+  const parts = dateStr.split('/');
+  if (parts.length === 3) {
+    const d = new Date(parseInt(parts[2]), parseInt(parts[0]) - 1, parseInt(parts[1]));
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  return new Date(dateStr).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 export function TripSummaryCard(trip: MinimumTripRecord): React.JSX.Element {
+  const displayDate = trip.updatedAt || trip.createdAt;
+  const hasTripDates = trip.startDate && trip.endDate;
+  const sameDay = trip.startDate === trip.endDate;
+
   return (
     <Link href={`/trips/${trip.tripId}`} className="group cursor-pointer">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
@@ -21,25 +43,23 @@ export function TripSummaryCard(trip: MinimumTripRecord): React.JSX.Element {
             )}
           </div>
           <div className="space-y-1.5 text-sm">
-            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-              <Clock className="h-4 w-4" />
-              <span>
-                {new Date(trip.createdAt).toLocaleDateString(undefined, {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </span>
+            {hasTripDates && (
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+                <CalendarRange className="h-4 w-4 shrink-0" />
+                <span>
+                  {sameDay
+                    ? formatTripDate(trip.startDate!)
+                    : `${formatTripDate(trip.startDate!)} – ${formatTripDate(trip.endDate!)}`}
+                </span>
+              </div>
+            )}
+            <div className="flex items-center gap-2 text-gray-400 dark:text-gray-500">
+              <Clock className="h-3.5 w-3.5 shrink-0" />
+              <span className="text-xs">Updated {formatCardDate(displayDate)}</span>
             </div>
             {trip.isInvited && trip.createdBy && (
               <div className="text-xs text-gray-400 dark:text-gray-500">
                 Shared by {trip.createdBy}
-              </div>
-            )}
-            {trip.inviteSummary && (
-              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                <Users className="h-4 w-4" />
-                <span>Invites: {trip.inviteSummary.accepted}/{trip.inviteSummary.total}</span>
               </div>
             )}
           </div>

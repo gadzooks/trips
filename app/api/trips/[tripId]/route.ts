@@ -68,7 +68,7 @@ export async function PATCH(
       return new NextResponse(null, { status: 403 });
     }
 
-    await tripVisibilityService.updateTripAtributes(body)
+    await tripVisibilityService.updateTripAtributes(body, session?.user?.id ?? '')
     return NextResponse.json({
       success: true,
       updatedTrip: body.attributeValue

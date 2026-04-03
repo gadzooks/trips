@@ -8,6 +8,9 @@ export interface MinimumTripRecord {
     tripId: string
     name: string
     createdAt: string
+    updatedAt?: string
+    startDate?: string
+    endDate?: string
     isInvited?: boolean
     inviteSummary?: { total: number; accepted: number }
 }

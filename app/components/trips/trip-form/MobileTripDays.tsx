@@ -132,43 +132,53 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
   // Move a day up in the list
   const moveUp = (index: number) => {
     if (index === 0 || isReadOnly) return;
-    
+
     const newDays = [...days];
     const temp = newDays[index];
     newDays[index] = newDays[index - 1];
     newDays[index - 1] = temp;
-    
+
     setDays(newDays);
-    
+
     // Update expanded day if needed
     if (expandedDay === index) {
       setExpandedDay(index - 1);
     } else if (expandedDay === index - 1) {
       setExpandedDay(index);
     }
-    
-    setHasChanges(true);
+
+    if (!isNewRecord && onChange) {
+      onChange(newDays);
+      setOriginalDays(newDays);
+    } else {
+      setHasChanges(true);
+    }
   };
 
   // Move a day down in the list
   const moveDown = (index: number) => {
     if (index === days.length - 1 || isReadOnly) return;
-    
+
     const newDays = [...days];
     const temp = newDays[index];
     newDays[index] = newDays[index + 1];
     newDays[index + 1] = temp;
-    
+
     setDays(newDays);
-    
+
     // Update expanded day if needed
     if (expandedDay === index) {
       setExpandedDay(index + 1);
     } else if (expandedDay === index + 1) {
       setExpandedDay(index);
     }
-    
-    setHasChanges(true);
+
+    if (!isNewRecord && onChange) {
+      onChange(newDays);
+      setOriginalDays(newDays);
+    } else {
+      setHasChanges(true);
+    }
   };
 
   // Toggle expanded state of a day

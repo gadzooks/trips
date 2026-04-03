@@ -1,4 +1,4 @@
-import { MinimumTripRecord, TripRecordDTO } from "@/types/trip";
+import { MinimumTripRecord, TripDayDTO, TripRecordDTO } from "@/types/trip";
 import { timestampIsoFormat } from "@/lib/time";
 import { ulid } from 'ulid'
 import { getOwnerWithDbPK, getInviteesDbPK, getTagDbPK, getTripIdPk } from "./dbKeys";
@@ -9,6 +9,19 @@ export interface CreateTripTransactionsResult {
   userId: string;
   timestamp: string;
   transactItems: any[]; //FIXME add type
+}
+
+export function extractTripDates(days?: TripDayDTO[]): { startDate: string; endDate: string } {
+  if (!days || days.length === 0) return { startDate: '', endDate: '' };
+  const validDates = days.map(d => d.date).filter(Boolean);
+  if (validDates.length === 0) return { startDate: '', endDate: '' };
+  const parseDate = (s: string): number => {
+    const parts = s.split('/');
+    if (parts.length === 3) return new Date(parseInt(parts[2]), parseInt(parts[0]) - 1, parseInt(parts[1])).getTime();
+    return new Date(s).getTime();
+  };
+  const sorted = [...validDates].sort((a, b) => parseDate(a) - parseDate(b));
+  return { startDate: sorted[0], endDate: sorted[sorted.length - 1] };
 }
 
 export function createTripTransactions(tripData: TripRecordDTO, userId: string): CreateTripTransactionsResult {
@@ -44,11 +57,15 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string):
         }
     );
  
+    const { startDate, endDate } = extractTripDates(tripData.days);
     const partialTripDetails: MinimumTripRecord = {
         tripId,
         name: tripData.name,
         // description: tripData.description, // will be too huge to store in shared records
         createdAt: timestamp,
+        updatedAt: timestamp,
+        startDate,
+        endDate,
         createdBy: userId,
     };
  
