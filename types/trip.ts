@@ -9,6 +9,7 @@ export interface MinimumTripRecord {
     name: string
     createdAt: string
     isInvited?: boolean
+    inviteSummary?: { total: number; accepted: number }
 }
 
 //FIXME use zod to validate the incoming data

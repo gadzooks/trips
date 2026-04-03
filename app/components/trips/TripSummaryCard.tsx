@@ -1,6 +1,6 @@
 // app/components/trips/TripSummaryCard.tsx
 import Link from 'next/link'
-import { Clock, UserCheck } from 'lucide-react';
+import { Clock, UserCheck, Users } from 'lucide-react';
 import { MinimumTripRecord } from '@/types/trip';
 
 export function TripSummaryCard(trip: MinimumTripRecord): React.JSX.Element {
@@ -34,6 +34,12 @@ export function TripSummaryCard(trip: MinimumTripRecord): React.JSX.Element {
             {trip.isInvited && trip.createdBy && (
               <div className="text-xs text-gray-400 dark:text-gray-500">
                 Shared by {trip.createdBy}
+              </div>
+            )}
+            {trip.inviteSummary && (
+              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                <Users className="h-4 w-4" />
+                <span>Invites: {trip.inviteSummary.accepted}/{trip.inviteSummary.total}</span>
               </div>
             )}
           </div>

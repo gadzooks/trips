@@ -22,7 +22,7 @@ export interface Invite {
 }
 
 export interface Comment {
-  id: number;
+  id: string;
   author: string;
   content: string;
   timestamp: string;

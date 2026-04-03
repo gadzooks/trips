@@ -5,9 +5,16 @@ import { TripRecordDTO } from '@/types/trip';
 import { EditableText } from '../../ui/input/EditableText';
 import { Plane } from 'lucide-react';
 import TripInvitesAndComments from './TripInvitesAndComments';
-import { Invite, InviteAccessLevel } from '@/types/invitation';
+import { Comment, Invite, InviteAccessLevel } from '@/types/invitation';
 import { useSession } from "next-auth/react"
 
+const toComment = (raw: Record<string, unknown>, isNew = false): Comment => ({
+  id: (raw.commentId as string) ?? String(Date.now()),
+  author: (raw.userName as string) ?? 'Anonymous',
+  content: raw.content as string,
+  timestamp: raw.timestamp as string,
+  isNew,
+});
 
 interface CompactTripViewProps {
   isReadOnly: boolean;
@@ -26,6 +33,7 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
 
   const { data: session } = useSession();
   const [invites, setInvites] = useState<Invite[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
     if (!formData.tripId) return;
@@ -33,6 +41,18 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
       .then(r => r.ok ? r.json() : [])
       .then(setInvites)
       .catch(() => {});
+  }, [formData.tripId]);
+
+  useEffect(() => {
+    if (!formData.tripId) return;
+    const fetchComments = () =>
+      fetch(`/api/trips/${formData.tripId}/comments`)
+        .then(r => r.ok ? r.json() : [])
+        .then((items: Record<string, unknown>[]) => setComments(items.map(c => toComment(c))))
+        .catch(() => {});
+    fetchComments();
+    const id = setInterval(fetchComments, 30_000);
+    return () => clearInterval(id);
   }, [formData.tripId]);
 
   const isOwner = formData.createdBy === session?.user?.email;
@@ -117,7 +137,7 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
         invitedBy={invitedBy}
         formData={formData}
         handleAttributeUpdate={handleAttributeUpdate}
-        initialComments={[]}
+        initialComments={comments}
         initialInvites={invites}
         onSendInvites={async (emails: string[]) => {
           try {
@@ -188,7 +208,7 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
               }
             );
             if (!response.ok) throw new Error("Failed to post comment");
-            return await response.json();
+            return toComment(await response.json(), true);
           } catch (error) {
             console.error("Error posting comment:", error);
             throw error;

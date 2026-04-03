@@ -46,6 +46,15 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
         setInvites(initialInvites);
     }, [initialInvites]);
 
+    // Merge polled comments into local state, preserving locally-added ones
+    useEffect(() => {
+        setComments(prev => {
+            const existingIds = new Set(prev.map(c => c.id));
+            const newOnes = initialComments.filter(c => !existingIds.has(c.id));
+            return newOnes.length ? [...newOnes, ...prev] : prev;
+        });
+    }, [initialComments]);
+
     const handleTabClick = (value: string) => {
         setActiveTab(activeTab === value ? null : value);
     };
@@ -61,7 +70,7 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
             // In a real app, you might fetch updated comments or add a local comment
             const inviteName = updatedInvite.name || email;
             const newStatusComment: Comment = {
-                id: Date.now(),
+                id: String(Date.now()),
                 author: 'System',
                 content: `${inviteName} has ${newStatus} the trip invitation.`,
                 timestamp: new Date().toISOString(),
