@@ -49,7 +49,7 @@ return (
                 <a
                     key={key}
                     href={decoratedHref}
-                    className="text-blue-500 dark:text-blue-400 underline"
+                    className="text-blue-500 dark:text-blue-400 underline break-all"
                     onClick={(event) => handleLinkClick(event, decoratedHref)}
                     onTouchStart={(event) => handleLinkClick(event, decoratedHref)}
                 >

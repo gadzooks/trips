@@ -1,5 +1,6 @@
 // app/components/ui/input/EditableText.tsx
 import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
+import { Pencil } from 'lucide-react';
 import { updateTripAttribute } from '../utils/updateTrip';
 import MyTextComponent from './MyTextComponent';
 
@@ -44,6 +45,7 @@ export const EditableText = ({
     const [editValue, setEditValue] = useState(attributeValue);
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
     const spanRef = useRef<HTMLSpanElement>(null);
+    const touchStartY = useRef<number>(0);
 
     useEffect(() => {
         setEditValue(attributeValue);
@@ -146,6 +148,7 @@ export const EditableText = ({
 
     return (
         <div
+            className={isTextArea && !isReadyOnly ? 'relative' : undefined}
             onFocus={(e) => {
                 if (e.target instanceof HTMLAnchorElement) return; // Ignore clicks on links
                 handleFocus();
@@ -155,10 +158,25 @@ export const EditableText = ({
                 handleFocus();
             }}
             onTouchStart={(e) => {
-                if (e.target instanceof HTMLAnchorElement) return; // Ignore taps on links
-                handleFocus();
+                if (e.target instanceof HTMLAnchorElement) return;
+                touchStartY.current = e.touches[0].clientY;
+            }}
+            onTouchEnd={(e) => {
+                if (e.target instanceof HTMLAnchorElement) return;
+                const delta = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
+                if (delta < 8) handleFocus();
             }}
         >
+            {isTextArea && !isReadyOnly && (
+                <button
+                    type="button"
+                    aria-label="Edit description"
+                    onClick={handleFocus}
+                    className="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 rounded sm:hidden"
+                >
+                    <Pencil className="w-4 h-4" />
+                </button>
+            )}
             <MyTextComponent
                 id={id}
                 editValue={editValue}

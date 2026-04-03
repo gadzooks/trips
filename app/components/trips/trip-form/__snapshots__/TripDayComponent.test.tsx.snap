@@ -48,44 +48,44 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                    
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-28"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
                 >
                   DATE
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   ITINERARY
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   DETAILS
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   RESERVATIONS
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   LODGING
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
                 >
                   TRAVEL
                   <br />
                   TIME
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
                 >
                   COST
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-24"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-24"
                 >
                   CANCEL
                   <br />
@@ -186,16 +186,40 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                   </svg>
                 </td>
                 <td
-                  class="p-1 align-middle w-28"
+                  class="p-1 align-middle w-20"
                 >
                   <div
                     class="relative"
                   >
                     <div
-                      class="absolute left-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                      class="px-2 py-1 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-center leading-tight cursor-pointer hover:border-purple-400 dark:hover:border-purple-500"
+                    >
+                      <div
+                        class="text-base font-medium text-gray-900 dark:text-gray-100"
+                      >
+                        Thu,
+                      </div>
+                      <div
+                        class="text-base text-gray-700 dark:text-gray-300"
+                      >
+                        Feb 1
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td
+                  class="p-1"
+                >
+                  <div
+                    class="relative"
+                  >
+                    <button
+                      aria-label="Edit description"
+                      class="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 rounded sm:hidden"
+                      type="button"
                     >
                       <svg
-                        class="lucide lucide-calendar-days w-4 h-4 text-purple-500 dark:text-purple-400"
+                        class="lucide lucide-pencil w-4 h-4"
                         fill="none"
                         height="24"
                         stroke="currentColor"
@@ -207,58 +231,18 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M8 2v4"
+                          d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
                         />
                         <path
-                          d="M16 2v4"
-                        />
-                        <rect
-                          height="18"
-                          rx="2"
-                          width="18"
-                          x="3"
-                          y="4"
-                        />
-                        <path
-                          d="M3 10h18"
-                        />
-                        <path
-                          d="M8 14h.01"
-                        />
-                        <path
-                          d="M12 14h.01"
-                        />
-                        <path
-                          d="M16 14h.01"
-                        />
-                        <path
-                          d="M8 18h.01"
-                        />
-                        <path
-                          d="M12 18h.01"
-                        />
-                        <path
-                          d="M16 18h.01"
+                          d="m15 5 4 4"
                         />
                       </svg>
-                    </div>
-                    <input
-                      class="pl-9 pr-3 py-2 w-full text-sm rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none "
-                      placeholder="Mon Jan 1"
-                      type="text"
-                      value="Thu, Feb 1"
-                    />
-                  </div>
-                </td>
-                <td
-                  class="p-1"
-                >
-                  <div>
+                    </button>
                     <span
                       class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-itinerary"
                       role="textbox"
@@ -270,12 +254,39 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                 <td
                   class="p-1"
                 >
-                  <div>
+                  <div
+                    class="relative"
+                  >
+                    <button
+                      aria-label="Edit description"
+                      class="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 rounded sm:hidden"
+                      type="button"
+                    >
+                      <svg
+                        class="lucide lucide-pencil w-4 h-4"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+                        />
+                        <path
+                          d="m15 5 4 4"
+                        />
+                      </svg>
+                    </button>
                     <span
                       class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-notes"
                       role="textbox"
@@ -287,12 +298,39 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                 <td
                   class="p-1"
                 >
-                  <div>
+                  <div
+                    class="relative"
+                  >
+                    <button
+                      aria-label="Edit description"
+                      class="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 rounded sm:hidden"
+                      type="button"
+                    >
+                      <svg
+                        class="lucide lucide-pencil w-4 h-4"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+                        />
+                        <path
+                          d="m15 5 4 4"
+                        />
+                      </svg>
+                    </button>
                     <span
                       class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-reservations"
                       role="textbox"
@@ -304,12 +342,39 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                 <td
                   class="p-1"
                 >
-                  <div>
+                  <div
+                    class="relative"
+                  >
+                    <button
+                      aria-label="Edit description"
+                      class="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 rounded sm:hidden"
+                      type="button"
+                    >
+                      <svg
+                        class="lucide lucide-pencil w-4 h-4"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+                        />
+                        <path
+                          d="m15 5 4 4"
+                        />
+                      </svg>
+                    </button>
                     <span
                       class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-lodging"
                       role="textbox"
@@ -350,7 +415,7 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                         class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                         data-testid="readonly-span-travelTime"
                         role="textbox"
@@ -368,7 +433,7 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                       class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-cost"
                       role="textbox"
@@ -385,7 +450,7 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                       class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-cancelBy"
                       role="textbox"
@@ -520,44 +585,44 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                  
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-28"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
               >
                 DATE
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 ITINERARY
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 DETAILS
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 RESERVATIONS
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 LODGING
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
               >
                 TRAVEL
                 <br />
                 TIME
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
               >
                 COST
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-24"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-24"
               >
                 CANCEL
                 <br />
@@ -658,16 +723,40 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                 </svg>
               </td>
               <td
-                class="p-1 align-middle w-28"
+                class="p-1 align-middle w-20"
               >
                 <div
                   class="relative"
                 >
                   <div
-                    class="absolute left-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                    class="px-2 py-1 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-center leading-tight cursor-pointer hover:border-purple-400 dark:hover:border-purple-500"
+                  >
+                    <div
+                      class="text-base font-medium text-gray-900 dark:text-gray-100"
+                    >
+                      Thu,
+                    </div>
+                    <div
+                      class="text-base text-gray-700 dark:text-gray-300"
+                    >
+                      Feb 1
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td
+                class="p-1"
+              >
+                <div
+                  class="relative"
+                >
+                  <button
+                    aria-label="Edit description"
+                    class="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 rounded sm:hidden"
+                    type="button"
                   >
                     <svg
-                      class="lucide lucide-calendar-days w-4 h-4 text-purple-500 dark:text-purple-400"
+                      class="lucide lucide-pencil w-4 h-4"
                       fill="none"
                       height="24"
                       stroke="currentColor"
@@ -679,58 +768,18 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        d="M8 2v4"
+                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
                       />
                       <path
-                        d="M16 2v4"
-                      />
-                      <rect
-                        height="18"
-                        rx="2"
-                        width="18"
-                        x="3"
-                        y="4"
-                      />
-                      <path
-                        d="M3 10h18"
-                      />
-                      <path
-                        d="M8 14h.01"
-                      />
-                      <path
-                        d="M12 14h.01"
-                      />
-                      <path
-                        d="M16 14h.01"
-                      />
-                      <path
-                        d="M8 18h.01"
-                      />
-                      <path
-                        d="M12 18h.01"
-                      />
-                      <path
-                        d="M16 18h.01"
+                        d="m15 5 4 4"
                       />
                     </svg>
-                  </div>
-                  <input
-                    class="pl-9 pr-3 py-2 w-full text-sm rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none "
-                    placeholder="Mon Jan 1"
-                    type="text"
-                    value="Thu, Feb 1"
-                  />
-                </div>
-              </td>
-              <td
-                class="p-1"
-              >
-                <div>
+                  </button>
                   <span
                     class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-itinerary"
                     role="textbox"
@@ -742,12 +791,39 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
               <td
                 class="p-1"
               >
-                <div>
+                <div
+                  class="relative"
+                >
+                  <button
+                    aria-label="Edit description"
+                    class="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 rounded sm:hidden"
+                    type="button"
+                  >
+                    <svg
+                      class="lucide lucide-pencil w-4 h-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+                      />
+                      <path
+                        d="m15 5 4 4"
+                      />
+                    </svg>
+                  </button>
                   <span
                     class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-notes"
                     role="textbox"
@@ -759,12 +835,39 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
               <td
                 class="p-1"
               >
-                <div>
+                <div
+                  class="relative"
+                >
+                  <button
+                    aria-label="Edit description"
+                    class="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 rounded sm:hidden"
+                    type="button"
+                  >
+                    <svg
+                      class="lucide lucide-pencil w-4 h-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+                      />
+                      <path
+                        d="m15 5 4 4"
+                      />
+                    </svg>
+                  </button>
                   <span
                     class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-reservations"
                     role="textbox"
@@ -776,12 +879,39 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
               <td
                 class="p-1"
               >
-                <div>
+                <div
+                  class="relative"
+                >
+                  <button
+                    aria-label="Edit description"
+                    class="absolute top-2 right-2 p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 rounded sm:hidden"
+                    type="button"
+                  >
+                    <svg
+                      class="lucide lucide-pencil w-4 h-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+                      />
+                      <path
+                        d="m15 5 4 4"
+                      />
+                    </svg>
+                  </button>
                   <span
                     class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-lodging"
                     role="textbox"
@@ -822,7 +952,7 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                       class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-travelTime"
                       role="textbox"
@@ -840,7 +970,7 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                     class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-cost"
                     role="textbox"
@@ -857,7 +987,7 @@ exports[`TripDayComponent Snapshots matches editable snapshot 1`] = `
                     class="
             cursor-text hover:bg-gray-50 dark:hover:bg-gray-800
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-cancelBy"
                     role="textbox"
@@ -1049,44 +1179,44 @@ exports[`TripDayComponent Snapshots matches empty state snapshot 1`] = `
                    
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-28"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
                 >
                   DATE
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   ITINERARY
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   DETAILS
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   RESERVATIONS
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   LODGING
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
                 >
                   TRAVEL
                   <br />
                   TIME
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
                 >
                   COST
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-24"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-24"
                 >
                   CANCEL
                   <br />
@@ -1216,44 +1346,44 @@ exports[`TripDayComponent Snapshots matches empty state snapshot 1`] = `
                  
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-28"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
               >
                 DATE
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 ITINERARY
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 DETAILS
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 RESERVATIONS
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 LODGING
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
               >
                 TRAVEL
                 <br />
                 TIME
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
               >
                 COST
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-24"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-24"
               >
                 CANCEL
                 <br />
@@ -1413,44 +1543,44 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                 class="divide-x divide-gray-200 dark:divide-gray-600"
               >
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-28"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
                 >
                   DATE
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   ITINERARY
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   DETAILS
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   RESERVATIONS
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
                 >
                   LODGING
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
                 >
                   TRAVEL
                   <br />
                   TIME
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
                 >
                   COST
                 </th>
                 <th
-                  class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-24"
+                  class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-24"
                 >
                   CANCEL
                   <br />
@@ -1466,69 +1596,25 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                 draggable="false"
               >
                 <td
-                  class="p-1 align-middle w-28"
+                  class="p-1 align-middle w-20"
                 >
                   <div
                     class="relative"
                   >
                     <div
-                      class="absolute left-3 top-1/2 transform -translate-y-1/2 opacity-70"
+                      class="px-2 py-1 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-center leading-tight opacity-70"
                     >
-                      <svg
-                        class="lucide lucide-calendar-days w-4 h-4 text-purple-500 dark:text-purple-400"
-                        fill="none"
-                        height="24"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                        width="24"
-                        xmlns="http://www.w3.org/2000/svg"
+                      <div
+                        class="text-base font-medium text-gray-900 dark:text-gray-100"
                       >
-                        <path
-                          d="M8 2v4"
-                        />
-                        <path
-                          d="M16 2v4"
-                        />
-                        <rect
-                          height="18"
-                          rx="2"
-                          width="18"
-                          x="3"
-                          y="4"
-                        />
-                        <path
-                          d="M3 10h18"
-                        />
-                        <path
-                          d="M8 14h.01"
-                        />
-                        <path
-                          d="M12 14h.01"
-                        />
-                        <path
-                          d="M16 14h.01"
-                        />
-                        <path
-                          d="M8 18h.01"
-                        />
-                        <path
-                          d="M12 18h.01"
-                        />
-                        <path
-                          d="M16 18h.01"
-                        />
-                      </svg>
+                        Thu,
+                      </div>
+                      <div
+                        class="text-base text-gray-700 dark:text-gray-300"
+                      >
+                        Feb 1
+                      </div>
                     </div>
-                    <input
-                      class="pl-9 pr-3 py-2 w-full text-sm rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none opacity-70 cursor-not-allowed"
-                      disabled=""
-                      placeholder="Mon Jan 1"
-                      type="text"
-                      value="Thu, Feb 1"
-                    />
                   </div>
                 </td>
                 <td
@@ -1539,7 +1625,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                       class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-itinerary"
                       role="readonly"
@@ -1556,7 +1642,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                       class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-notes"
                       role="readonly"
@@ -1573,7 +1659,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                       class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-reservations"
                       role="readonly"
@@ -1590,7 +1676,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                       class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-lodging"
                       role="readonly"
@@ -1631,7 +1717,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                         class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                         data-testid="readonly-span-travelTime"
                         role="readonly"
@@ -1649,7 +1735,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                       class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-cost"
                       role="readonly"
@@ -1666,7 +1752,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                       class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-cancelBy"
                       role="readonly"
@@ -1699,44 +1785,44 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
               class="divide-x divide-gray-200 dark:divide-gray-600"
             >
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-28"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
               >
                 DATE
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 ITINERARY
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 DETAILS
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 RESERVATIONS
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100"
               >
                 LODGING
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
               >
                 TRAVEL
                 <br />
                 TIME
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20"
               >
                 COST
               </th>
               <th
-                class="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-24"
+                class="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-24"
               >
                 CANCEL
                 <br />
@@ -1752,69 +1838,25 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
               draggable="false"
             >
               <td
-                class="p-1 align-middle w-28"
+                class="p-1 align-middle w-20"
               >
                 <div
                   class="relative"
                 >
                   <div
-                    class="absolute left-3 top-1/2 transform -translate-y-1/2 opacity-70"
+                    class="px-2 py-1 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-center leading-tight opacity-70"
                   >
-                    <svg
-                      class="lucide lucide-calendar-days w-4 h-4 text-purple-500 dark:text-purple-400"
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
+                    <div
+                      class="text-base font-medium text-gray-900 dark:text-gray-100"
                     >
-                      <path
-                        d="M8 2v4"
-                      />
-                      <path
-                        d="M16 2v4"
-                      />
-                      <rect
-                        height="18"
-                        rx="2"
-                        width="18"
-                        x="3"
-                        y="4"
-                      />
-                      <path
-                        d="M3 10h18"
-                      />
-                      <path
-                        d="M8 14h.01"
-                      />
-                      <path
-                        d="M12 14h.01"
-                      />
-                      <path
-                        d="M16 14h.01"
-                      />
-                      <path
-                        d="M8 18h.01"
-                      />
-                      <path
-                        d="M12 18h.01"
-                      />
-                      <path
-                        d="M16 18h.01"
-                      />
-                    </svg>
+                      Thu,
+                    </div>
+                    <div
+                      class="text-base text-gray-700 dark:text-gray-300"
+                    >
+                      Feb 1
+                    </div>
                   </div>
-                  <input
-                    class="pl-9 pr-3 py-2 w-full text-sm rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none opacity-70 cursor-not-allowed"
-                    disabled=""
-                    placeholder="Mon Jan 1"
-                    type="text"
-                    value="Thu, Feb 1"
-                  />
                 </div>
               </td>
               <td
@@ -1825,7 +1867,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                     class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-itinerary"
                     role="readonly"
@@ -1842,7 +1884,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                     class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-notes"
                     role="readonly"
@@ -1859,7 +1901,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                     class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-reservations"
                     role="readonly"
@@ -1876,7 +1918,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                     class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-lodging"
                     role="readonly"
@@ -1917,7 +1959,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                       class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                       data-testid="readonly-span-travelTime"
                       role="readonly"
@@ -1935,7 +1977,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                     class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-cost"
                     role="readonly"
@@ -1952,7 +1994,7 @@ exports[`TripDayComponent Snapshots matches read-only snapshot 1`] = `
                     class="
             
             inline-block w-full whitespace-pre-wrap rounded-lg p-2
-            w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
+            w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 focus:ring-2 focus:ring-purple-500 focus:outline-none
         "
                     data-testid="readonly-span-cancelBy"
                     role="readonly"

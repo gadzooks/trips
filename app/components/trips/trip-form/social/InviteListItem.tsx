@@ -27,14 +27,14 @@ const InviteListItem: React.FC<InviteListItemProps> = ({
     };
 
     return (
-        <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <div className="flex items-center space-x-3">
                 <div>
                     <p className="font-medium text-gray-900 dark:text-gray-100">{invite.name || invite.email}</p>
                     {invite.name && <p className="text-sm text-gray-500">{invite.email}</p>}
                 </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center flex-wrap gap-2">
                 {isOwner && onAccessLevelChange && (
                     <select
                         value={invite.accessLevel ?? InviteAccessLevel.READ_ONLY}
@@ -68,7 +68,7 @@ const InviteListItem: React.FC<InviteListItemProps> = ({
                         </Button>
                     </>
                 ) : (
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center flex-wrap gap-2">
                         <Badge className={getStatusColor(invite.status)}>
                             {invite.status.charAt(0).toUpperCase() + invite.status.slice(1)}
                         </Badge>
