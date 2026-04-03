@@ -10,7 +10,7 @@ export interface Invite {
   tripId: string;
   email: string;
   status: InviteStatus;
-  name: string;
+  name?: string;
   invitedAt: string;
   invitedBy: string;
 }

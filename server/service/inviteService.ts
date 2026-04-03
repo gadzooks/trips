@@ -39,6 +39,7 @@ export class InviteService {
   private validateEmail(email: string): void {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log('Invalid email format:', email);
       throw new TripServiceError(
         'Invalid email format',
         TripErrorCodes.VALIDATION_ERROR,
@@ -60,20 +61,20 @@ export class InviteService {
   async createTripInvite(
     tripId: string,
     email: string,
-    name: string,
-    invitedBy: string
+    invitedBy: string,
+    tripMetadata: { name: string; createdAt: string; createdBy: string }
   ): Promise<Invite> {
     try {
       // Validate inputs
-      this.validateEmail(email);
+      // this.validateEmail(email);
       
-      if (!name?.trim()) {
-        throw new TripServiceError(
-          'Name is required',
-          TripErrorCodes.VALIDATION_ERROR,
-          400
-        );
-      }
+      // if (!name?.trim()) {
+      //   throw new TripServiceError(
+      //     'Name is required',
+      //     TripErrorCodes.VALIDATION_ERROR,
+      //     400
+      //   );
+      // }
 
       const now = new Date().toISOString();
       const keys = this.getInviteKeys(tripId, email);
@@ -100,11 +101,13 @@ export class InviteService {
         ...gsiKeys,
         tripId,
         email,
-        name,
+        // name,
         status: InviteStatus.PENDING,
         invitedAt: now,
         invitedBy
       };
+
+      console.log('Creating new invite:', newInvite);
 
       const command = new PutCommand({
         TableName: process.env.TRIP_PLANNER_TABLE_NAME,
@@ -113,6 +116,20 @@ export class InviteService {
       });
 
       await docClient.send(command);
+
+      // Write INVITEES#{email} item so invited trips appear in the user's MY_TRIPS view
+      await docClient.send(new PutCommand({
+        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
+        Item: {
+          PK: `INVITEES#${email}`,
+          SK: tripId,
+          tripId,
+          name: tripMetadata.name,
+          createdAt: tripMetadata.createdAt,
+          createdBy: tripMetadata.createdBy,
+        }
+      }));
+
       return newInvite;
     } catch (error) {
       if (error instanceof TripServiceError) {

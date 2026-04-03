@@ -6,7 +6,8 @@ import { EditableText } from '../../ui/input/EditableText';
 import { Plane } from 'lucide-react';
 import TripInvitesAndComments from './TripInvitesAndComments';
 import { Invite } from '@/types/invitation';
-import { on } from 'events';
+import { useSession } from "next-auth/react"
+
 
 interface CompactTripViewProps {
   isReadOnly: boolean;
@@ -17,9 +18,13 @@ interface CompactTripViewProps {
 const CompactTripView: React.FC<CompactTripViewProps> = ({
   isReadOnly,
   formData,
-  handleAttributeUpdate
+  handleAttributeUpdate,
 }) => {
-  const tags = Array.isArray(formData.tags) ? formData.tags : (formData.tags || '').split(' ').filter(Boolean);
+  const tags = Array.isArray(formData.tags)
+    ? formData.tags
+    : (formData.tags || "").split(" ").filter(Boolean);
+
+  const { data: session } = useSession();
 
   return (
     <>
@@ -86,34 +91,87 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
       </div>
 
       <TripInvitesAndComments
-        // isOwner={formData.createdBy === currentUserId}
-        isOwner={true} // TODO: Replace with actual logic
+        isOwner={formData.createdBy === session?.user?.email}
         isReadOnly={isReadOnly}
         formData={formData}
         handleAttributeUpdate={handleAttributeUpdate}
         initialComments={[]}
         initialInvites={[]}
-        onSendInvites={async (emails) => {
-          // Logic to send invites
-          console.log("Sending invites to:", emails);
-        }}
-        onUpdateInviteStatus={async (inviteId, status) => {
-          // Logic to update invite status
-          console.log(`Updating invite ${inviteId} status to:`, status);
+        onSendInvites={async (emails: string[]) => {
+          try {
+            const response = await fetch(
+              `/api/trips/${formData.tripId}/invites`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ emails }),
+              }
+            );
 
-          // Example return value to match the expected type
-          return {
-            tripId: formData.tripId,
-            status,
-            email: "example@example.com", // Replace with actual logic
-          } as Invite;
+            if (!response.ok) {
+              throw new Error("Failed to send invites");
+            }
+
+            const newInvites = await response.json();
+            console.log("Successfully sent invites to:", emails);
+            return newInvites;
+          } catch (error) {
+            console.error("Error sending invites:", error);
+            throw error;
+          }
         }}
-        onPostComment={async (comment) => {
-          // Logic to post comment
-          console.log("Posting comment:", comment);
-          return null; // Replace with actual logic
-        }
-      }
+        onUpdateInviteStatus={async (inviteId: string, status: string) => {
+          try {
+            const response = await fetch(
+              `/api/trips/${formData.tripId}/invites/${inviteId}`,
+              {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ status }),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error("Failed to update invite status");
+            }
+
+            const updatedInvite = await response.json();
+            console.log(`Updated invite ${inviteId} status to:`, status);
+            return updatedInvite as Invite;
+          } catch (error) {
+            console.error("Error updating invite status:", error);
+            throw error;
+          }
+        }}
+        onPostComment={async (comment: string) => {
+          try {
+            const response = await fetch(
+              `/api/trips/${formData.tripId}/comments`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ content: comment }),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error("Failed to post comment");
+            }
+
+            const newComment = await response.json();
+            console.log("Successfully posted comment:", comment);
+            return newComment;
+          } catch (error) {
+            console.error("Error posting comment:", error);
+            throw error;
+          }
+        }}
       />
     </>
   );

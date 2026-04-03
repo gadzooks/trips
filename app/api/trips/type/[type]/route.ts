@@ -25,7 +25,16 @@ export async function GET(
       if (!session?.user?.email) {
         return new Response('Unauthorized', { status: 401 });
       }
-      response = await tripService.getByUser(session.user.email, { limit });
+      const [createdTrips, invitedTrips] = await Promise.all([
+        tripService.getByUser(session.user.email, { limit }),
+        tripService.getByInvitee(session.user.email, { limit }),
+      ]);
+      const seen = new Set<string>();
+      response = [...createdTrips, ...invitedTrips].filter(t => {
+        if (seen.has(t.tripId)) return false;
+        seen.add(t.tripId);
+        return true;
+      });
     } else {
       throw new Error('Invalid trip type : ' + type);
     }
