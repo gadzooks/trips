@@ -1,5 +1,4 @@
 {
-    "nodeVersion": "24.x",
     "git": {
       "deploymentEnabled": {
         "main": true,
