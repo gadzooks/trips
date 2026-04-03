@@ -121,15 +121,15 @@ export const TripForm: React.FC<TripFormProps> = ({
 
           {!isNewRecord && (
             <Tabs defaultValue="itinerary" className="w-full">
-              <div className="px-4 pt-3 border-b border-gray-200 dark:border-gray-700">
-                <TabsList className="bg-transparent p-0 h-auto gap-0">
-                  {(['itinerary', 'description', 'invites', 'comments'] as const).map((tab) => (
+              <div className="px-4 pt-4 pb-2">
+                <TabsList className="bg-gray-100 dark:bg-gray-800 p-1 h-auto gap-1 rounded-xl">
+                  {(['itinerary', 'description', 'comments', 'invites'] as const).map((tab) => (
                     <TabsTrigger
                       key={tab}
                       value={tab}
-                      className="rounded-none border-b-2 border-transparent text-gray-500 dark:text-gray-400 data-[state=active]:border-purple-500 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-400 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2 text-sm font-medium capitalize"
+                      className="rounded-lg px-4 py-1.5 font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 transition-all duration-200 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-400 data-[state=active]:shadow-sm data-[state=active]:shadow-gray-200 dark:data-[state=active]:shadow-gray-900 hover:text-gray-700 dark:hover:text-gray-200"
                     >
-                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                      {tab}
                     </TabsTrigger>
                   ))}
                 </TabsList>

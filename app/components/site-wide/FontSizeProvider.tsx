@@ -23,14 +23,13 @@ const SIZE_LABELS: Record<FontSize, string> = {
 }
 
 export function FontSizeProvider({ children }: { children: React.ReactNode }) {
-  const [fontSize, setFontSize] = useState<FontSize>('normal')
+  const [fontSize, setFontSize] = useState<FontSize>('large')
 
   useEffect(() => {
     const stored = localStorage.getItem('fontSize') as FontSize | null
-    if (stored && SIZE_ORDER.includes(stored)) {
-      applySize(stored)
-      setFontSize(stored)
-    }
+    const initial = (stored && SIZE_ORDER.includes(stored)) ? stored : 'large'
+    applySize(initial)
+    setFontSize(initial)
   }, [])
 
   function applySize(size: FontSize) {
