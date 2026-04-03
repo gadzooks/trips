@@ -70,7 +70,7 @@ describe('TripMapper', () => {
           }
         ],
         isPublic: true,
-        sharedWith: ['user1', 'user2'],
+        invitees: ['user1', 'user2'],
         fakeData: false,
         createdAt: '2024-01-19T00:00:00Z',
         createdBy: 'user123'
@@ -93,7 +93,7 @@ describe('TripMapper', () => {
           }
         ],
         isPublic: true,
-        sharedWith: ['user1', 'user2'],
+        invitees: ['user1', 'user2'],
         fakeData: false,
         createdAt: '2024-01-19T00:00:00Z',
         createdBy: 'user123'
@@ -130,7 +130,7 @@ describe('TripMapper', () => {
         tags: undefined,
         days: [],
         isPublic: undefined,
-        sharedWith: undefined,
+        invitees: undefined,
         fakeData: undefined,
         createdAt: undefined,
         createdBy: undefined

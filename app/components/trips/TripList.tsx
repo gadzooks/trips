@@ -2,8 +2,9 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { MinimumTripRecord, TripListType, TripRecordDTO } from '@/types/trip';
+import { MinimumTripRecord } from '@/types/trip';
 import { TripSummaryCard } from './TripSummaryCard';
+import { TripListType } from '@/types/permissions';
 
 interface TripListProps {
   type: TripListType;

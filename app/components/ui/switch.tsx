@@ -1,4 +1,3 @@
-// app/components/ui/shadcn/switch.tsx
 "use client"
 
 import * as React from "react"

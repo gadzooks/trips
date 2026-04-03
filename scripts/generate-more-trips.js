@@ -1,5 +1,7 @@
 // scripts/generate-more-trips.js
 
+// to run this script : node scripts/generate-more-trips.js
+
 const users = [
     // 'john.doe@example.com',
     // 'jane.smith@example.com',
@@ -58,7 +60,7 @@ const users = [
     {
       name: "Japanese Cultural Immersion",
       description: "Experience the contrast of modern Tokyo and traditional Kyoto.",
-      isPublic: false,
+      isPublic: true,
       tags: ["culture", "history", "city", "asia", "japan", "food"],
       days: Array.from({length: 8}, (_, i) => {
          const date = new Date('2024-03-15');
@@ -491,7 +493,7 @@ const users = [
         userId: user,
         fakeData: true,
         name: tripTemplate.name,
-        // sharedWith: [users.find(u => u === 'karwande@gmail.com')].filter(Boolean),
+        // invitees: [users.find(u => u === 'karwande@gmail.com')].filter(Boolean),
         isPublic: true
       }));
   

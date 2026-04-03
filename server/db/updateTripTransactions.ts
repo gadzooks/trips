@@ -11,7 +11,7 @@ export class UpdateTripDbService {
     } {
         // Validate that attributeKey is a valid property of TripRecord
         const validTopLevelKeys = [
-            'name', 'description', 'isPublic', 'sharedWith',
+            'name', 'description', 'isPublic', 'invitees',
             'tags', 'days'
         ];
 
@@ -27,7 +27,7 @@ export class UpdateTripDbService {
             }
         }
 
-        if (attributeKey === 'sharedWith' || attributeKey === 'tags') {
+        if (attributeKey === 'invitees' || attributeKey === 'tags') {
             // Validate array input
             if (!Array.isArray(attributeValue)) {
                 throw new Error(`${attributeKey} must be an array`);

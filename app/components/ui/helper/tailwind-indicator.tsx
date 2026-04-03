@@ -1,4 +1,5 @@
-// app/components/ui/shadcn/tailwind-indicator.tsx
+// app/components/ui/helper/tailwind-indicator.tsx
+
 export function TailwindIndicator() {
   if (process.env.NODE_ENV === 'production') return null
 

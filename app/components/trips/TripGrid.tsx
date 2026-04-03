@@ -1,6 +1,6 @@
 // app/components/trips/TripGrid.tsx
 import React from 'react';
-import { Card, CardHeader, CardContent } from '../ui/shadcn/card';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Calendar, Navigation, Share2, Pencil, Trash2 } from "lucide-react";
 // import { TripListType } from '@/types/trip';
 import {
@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/shadcn/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 
 // Predefined gradient classes for variety
 const gradients = [

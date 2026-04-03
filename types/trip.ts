@@ -1,9 +1,6 @@
 // types/trip.ts
-export enum TripListType {
-    PUBLIC = 'public',
-    MY_TRIPS = 'myTrips',
-    BOTH = 'both'
-}
+
+import { TripAccessResult } from "./permissions"
 
 // ============== TYPES defining a trip ==============
 export interface MinimumTripRecord {
@@ -11,6 +8,8 @@ export interface MinimumTripRecord {
     tripId: string
     name: string
     createdAt: string
+    isInvited?: boolean
+    inviteSummary?: { total: number; accepted: number }
 }
 
 //FIXME use zod to validate the incoming data
@@ -23,7 +22,7 @@ export interface TripRecordDTO {
     name: string
     description: string
     isPublic: boolean
-    sharedWith?: string[]
+    invitees?: string[]
     tags?: string | string[]
     days?: TripDayDTO[]
     createdAt?: string
@@ -46,21 +45,12 @@ export interface TripRecord extends TripRecordDTO{
     SK: string
 }
 
-export interface TripAccessResult {
-  allowed: boolean
-  reason: string
-  hasCreateAccess: boolean
-  hasReadAccess: boolean
-  hasWriteAccess: boolean
-  hasDeleteAccess: boolean
-}
-
-export enum AccessType {
-  Create = 'create',
-  ReadOnly = 'read-only',
-  ReadWrite = 'read-write',
-  Delete = 'delete'
-}
+// export enum AccessType {
+//   Create = 'create',
+//   ReadOnly = 'read-only',
+//   ReadWrite = 'read-write',
+//   Delete = 'delete'
+// }
 
 export interface TripRecordDTOWithAccess extends TripRecordDTO {
     tripAccessResult: TripAccessResult

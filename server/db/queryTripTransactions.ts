@@ -1,6 +1,6 @@
-// app/api/services/createTrip/createTransactions.ts
+// server/db/queryTripTransactions.ts
 
-import { getOwnerWithDbPK, getTagDbPK, getTripIdPk } from "./dbKeys";
+import { getOwnerWithDbPK, getTagDbPK, getTripIdPk, getInviteesDbPK } from "./dbKeys";
 
 export function queryByTripId(tripId: string) {
     return {
@@ -17,7 +17,7 @@ export interface TripPermissionsDTO {
     tripId: string
     isPublic: boolean
     createdBy: string
-    sharedWith?: string[]
+    invitees?: string[]
 }
 
 export function queryByTripIdForPermissions(tripId: string) {
@@ -27,7 +27,7 @@ export function queryByTripIdForPermissions(tripId: string) {
         ExpressionAttributeValues: {
             ':pk': getTripIdPk(tripId)
         },
-        ProjectionExpression: 'tripId, isPublic, createdBy, sharedWith',
+        ProjectionExpression: 'tripId, isPublic, createdBy, invitees',
         Limit: 1
     }
 }
@@ -61,6 +61,22 @@ export function queryByCreatedBy(createdBy: string, limit: number = 10) {
         },
         Limit: limit,
         ScanIndexForward: false  // Set to false for descending order
+    }
+}
+
+export function queryByInvitee(email: string, limit: number = 10) {
+    return {
+        TableName: process.env.TRIP_PLANNER_TABLE_NAME,
+        KeyConditionExpression: 'PK = :pk',
+        ExpressionAttributeValues: {
+            ':pk': getInviteesDbPK(email)
+        },
+        ProjectionExpression: 'tripId, #name, isPublic, createdAt, createdBy',
+        ExpressionAttributeNames: {
+            '#name': 'name'
+        },
+        Limit: limit,
+        ScanIndexForward: false
     }
 }
 

@@ -2,7 +2,7 @@
 "use client";
 import { useTrips } from '@/hooks/useTrips';
 import { TripCard } from '../TripCard';
-import { TripListType } from '@/types/trip';
+import { TripListType } from "@/types/permissions";
 
 interface TripSectionProps {
   title: string;

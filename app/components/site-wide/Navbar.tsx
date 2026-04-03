@@ -10,8 +10,19 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from 'app/components/ui/shadcn/dropdown-menu'
-import { Button } from '../ui/shadcn/button';
+} from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button';
 
 export function Navbar() {
   const { data: session } = useSession();
@@ -71,19 +82,46 @@ export function Navbar() {
                       <Link href="/trips/new" className="flex py-3">Create Trip</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
-                    <DropdownMenuItem 
-                      onSelect={() => signOut()}
-                      className="py-3 focus:bg-gray-100 dark:focus:bg-gray-700 text-red-600 dark:text-red-400"
+                    <DropdownMenuItem
+                      disabled
+                      className="py-2 text-xs text-gray-500 dark:text-gray-400 cursor-default focus:bg-transparent"
                     >
-                      Sign Out
+                      {session.user?.email}
                     </DropdownMenuItem>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <DropdownMenuItem
+                          onSelect={(e) => e.preventDefault()}
+                          className="py-3 focus:bg-gray-100 dark:focus:bg-gray-700 text-red-600 dark:text-red-400"
+                        >
+                          Sign Out
+                        </DropdownMenuItem>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Sign out?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            You are signed in as {session.user?.email}.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => signOut()}
+                            className="bg-red-600 hover:bg-red-700"
+                          >
+                            Sign Out
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </>
                 ) : (
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     onSelect={() => signIn('google')}
                     className="py-3 focus:bg-gray-100 dark:focus:bg-gray-700 text-blue-600 dark:text-blue-400"
                   >
-                    Sign in with Google
+                    Sign In
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
@@ -91,19 +129,39 @@ export function Navbar() {
 
             {/* Desktop Auth Buttons */}
             {session ? (
-              <Button
-                onClick={() => signOut()}
-                variant="ghost"
-                className="hidden md:flex hover:text-red-600 dark:hover:text-red-400"
-              >
-                Sign Out
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="hidden md:flex hover:text-red-600 dark:hover:text-red-400"
+                  >
+                    {session.user?.email}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Sign out?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      You are signed in as {session.user?.email}.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => signOut()}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      Sign Out
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             ) : (
               <Button
                 onClick={() => signIn('google')}
                 className="hidden md:flex bg-blue-600 hover:bg-blue-700 text-white"
               >
-                Sign in with Google
+                Sign In
               </Button>
             )}
           </div>

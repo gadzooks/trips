@@ -16,7 +16,7 @@ describe('TripService', () => {
             description: 'Trip to Paris',
             isPublic: true,
             tags: 'europe france england',
-            sharedWith: ['bob123', 'alice456']
+            invitees: ['bob123', 'alice456']
           },
           userId: 'user123'
         },
@@ -32,7 +32,7 @@ describe('TripService', () => {
             description: 'Secret Trip',
             isPublic: false,
             tags: 'secret',
-            sharedWith: []
+            invitees: []
           },
           userId: 'user123'
         },
@@ -48,7 +48,7 @@ describe('TripService', () => {
             description: 'No Tags Trip',
             isPublic: true,
             tags: '',
-            sharedWith: []
+            invitees: []
           },
           userId: 'user123'
         },
@@ -63,7 +63,7 @@ describe('TripService', () => {
             name: 'No Tags Trip',
             description: 'No Tags Trip',
             isPublic: true,
-            sharedWith: [],
+            invitees: [],
             tags: undefined
           },
           userId: 'user123'
@@ -106,7 +106,7 @@ describe('TripService', () => {
           expect(sk).toEqual(tripId)
           expect(itemData).toHaveProperty('name', testCase.input.tripData.name)
           expect(itemData).toHaveProperty('createdAt', timestamp)
-        } else if (pk.startsWith('SHAREDWITH#')) {
+        } else if (pk.startsWith('INVITEES#')) {
           expect(sk).toEqual(tripId)
           expect(itemData).toHaveProperty('name', testCase.input.tripData.name)
           expect(itemData).toHaveProperty('createdAt', timestamp)

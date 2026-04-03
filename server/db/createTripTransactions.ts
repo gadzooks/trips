@@ -1,7 +1,7 @@
 import { MinimumTripRecord, TripRecordDTO } from "@/types/trip";
 import { timestampIsoFormat } from "@/lib/time";
 import { ulid } from 'ulid'
-import { getOwnerWithDbPK, getSharedWithDbPK, getTagDbPK, getTripIdPk } from "./dbKeys";
+import { getOwnerWithDbPK, getInviteesDbPK, getTagDbPK, getTripIdPk } from "./dbKeys";
 import { extractTagsFromTripData } from "@/lib/tags";
 
 export interface CreateTripTransactionsResult {
@@ -24,7 +24,7 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string):
     // 1. The main record : PK = TRIP#{tripId} - store all attributes here
     // 2. Trip for owner : PK = CREATEDBY#{userId} SK = TRIP#{tripId} -- store PK, SK, name, maybe desc
     // 3. For each tag : PK = TAG#{tag} SK = TRIP#{tripId} -- store PK, SK, name, maybe desc
-    // 4. For each shared user : PK = SHAREDWITH#{userId} SK = TRIP#{tripId} -- store PK, SK, name, maybe desc
+    // 4. For each shared user : PK = INVITEES#{userId} SK = TRIP#{tripId} -- store PK, SK, name, maybe desc
     // 5. For public trips : PK = PUBLIC#TRIP#{tripId} -- store PK, SK, name, maybe desc
 
     // When showing trips for each user or each tag or public trips or shared with a user,
@@ -60,12 +60,12 @@ export function createTripTransactions(tripData: TripRecordDTO, userId: string):
     });
  
     // Shared records
-    // Search for shared users using eq('SHAREDWITH#{userId}') 
+    // Search for shared users using eq('INVITEES#{userId}') 
     // to delete shared users, search for PK eq('USER#{userId}') and SK eq(tripId)
-    (tripData.sharedWith || []).forEach(sharedUserId => {
+    (tripData.invitees || []).forEach(sharedUserId => {
         records.push({
             // Add these for each shared user
-            PK: getSharedWithDbPK(sharedUserId),
+            PK: getInviteesDbPK(sharedUserId),
             SK: tripId,
             ...partialTripDetails
         });

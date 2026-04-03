@@ -1,17 +1,22 @@
-// app/components/ui/shadcn/carousel.tsx
 "use client"
+
 import * as React from "react"
-import useEmblaCarousel from "embla-carousel-react"
+import useEmblaCarousel, {
+  type UseEmblaCarouselType,
+} from "embla-carousel-react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/app/components/ui/shadcn/button"
+import { Button } from "@/components/ui/button"
 
-type CarouselApi = any
+type CarouselApi = UseEmblaCarouselType[1]
+type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
+type CarouselOptions = UseCarouselParameters[0]
+type CarouselPlugin = UseCarouselParameters[1]
 
 type CarouselProps = {
-  opts?: any
-  plugins?: any
+  opts?: CarouselOptions
+  plugins?: CarouselPlugin
   orientation?: "horizontal" | "vertical"
   setApi?: (api: CarouselApi) => void
 }
@@ -29,9 +34,11 @@ const CarouselContext = React.createContext<CarouselContextProps | null>(null)
 
 function useCarousel() {
   const context = React.useContext(CarouselContext)
+
   if (!context) {
     throw new Error("useCarousel must be used within a <Carousel />")
   }
+
   return context
 }
 
@@ -105,12 +112,11 @@ const Carousel = React.forwardRef<
       }
 
       onSelect(api)
-      api.on("select", onSelect)
       api.on("reInit", onSelect)
+      api.on("select", onSelect)
 
       return () => {
         api?.off("select", onSelect)
-        api?.off("reInit", onSelect)
       }
     }, [api, onSelect])
 
@@ -200,7 +206,7 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-8 w-8 rounded-full",
+        "absolute  h-8 w-8 rounded-full",
         orientation === "horizontal"
           ? "-left-12 top-1/2 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",

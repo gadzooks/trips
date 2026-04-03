@@ -84,8 +84,8 @@ AWS_REGION=us-west-2
 | tags | TAG#PUBLIC#travel | UUID7 tripId | Owner, isPublic, title |
 | Tags 2 | TAG#PUBLIC#utah | UUID7 tripId | Owner, isPublic, title |
 | Public tags | TAG#PUBLIC | UUID tripId | Title, IsPublic |
-| Shared user | SHAREDWITH#userB | UUID tripId1 | Title, isPublic |
-| Shared user | SHAREDWITH#userB | UUID tripId2 | Title, isPulic |
+| Shared user | INVITEES#userB | UUID tripId1 | Title, isPublic |
+| Shared user | INVITEES#userB | UUID tripId2 | Title, isPulic |
 | Trip By Id | TRIPID#UUID | METADATA | All attributes live here |
 | Tags - private | TAG#PRIVATE#travel | UUID7 | Title, isPublic |
 | Tags - private | TAG#PRIVATE#usa | UUID7 | Title, isPublic |

@@ -65,7 +65,7 @@ describe('Middleware', () => {
       ['POST', '/api/auth/signout'],
     ])('should handle public %s request to %s correctly', (requetType: string, path: string) => {
       const req = createMockRequest(requetType, path);
-      const response = middleware(req, { params: {} });
+      const response = middleware(req, { params: Promise.resolve({}) });
 
       expect(NextResponse.next).not.toHaveBeenCalled();
     });
@@ -80,7 +80,7 @@ describe('Middleware', () => {
       ['/dashboard', false],
     ])('should handle public GET request to %s correctly', (path, shouldAllow) => {
       const req = createMockRequest('GET', path);
-      const response = middleware(req, { params: {} });
+      const response = middleware(req, { params: Promise.resolve({}) });
 
       if (shouldAllow) {
         expect(NextResponse.next).toHaveBeenCalled();
@@ -102,7 +102,7 @@ describe('Middleware', () => {
     ])('should handle %s request to %s with auth=%s -> status %d', 
       (method, path, authenticated, expectedStatus) => {
         const req = createMockRequest(method, path, authenticated);
-        const response = middleware(req, { params: {} });
+        const response = middleware(req, { params: Promise.resolve({}) });
 
         if (authenticated) {
           expect(NextResponse.next).toHaveBeenCalled();
@@ -132,7 +132,7 @@ describe('Middleware', () => {
     ])('should handle request to %s with auth=%s -> redirect=%s', 
       (path, authenticated, shouldRedirect) => {
         const req = createMockRequest('GET', path, authenticated);
-        const response = middleware(req, { params: {} });
+        const response = middleware(req, { params: Promise.resolve({}) });
 
         if (shouldRedirect) {
           console.log('response:', response);
@@ -166,7 +166,7 @@ describe('Middleware', () => {
       req.headers.set('authorization', 'Bearer token');
       const consoleSpy = jest.spyOn(console, 'log');
       
-      middleware(req, { params: {} });
+      middleware(req, { params: Promise.resolve({}) });
     });
   });
 });

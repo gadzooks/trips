@@ -4,8 +4,7 @@ import { Inter, Roboto_Flex } from 'next/font/google'
 import { ThemeProvider } from './components/site-wide/ThemeProvider'
 import { Navbar } from './components/site-wide/Navbar'
 import { SessionProvider } from "next-auth/react"
-import { SidebarWrapper } from './components/site-wide/SideBarWrapper'
-import { TailwindIndicator } from './components/ui/shadcn/tailwind-indicator'
+import { TailwindIndicator } from './components/ui/helper/tailwind-indicator'
 
 const inter = Inter({
   subsets: ['latin'],

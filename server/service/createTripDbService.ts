@@ -3,7 +3,7 @@
 import { docClient } from "@/lib/dynamodb";
 import { MinimumTripRecord, TripDayDTO, TripRecordDTO } from "@/types/trip";
 import { QueryCommand, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
-import { queryByTag, queryByTripId, queryByTagPaginated, queryByCreatedBy } from "../db/queryTripTransactions";
+import { queryByTag, queryByTripId, queryByTagPaginated, queryByCreatedBy, queryByInvitee } from "../db/queryTripTransactions";
 import { PaginationParams } from "@/types/pagination";
 import { createTripTransactions } from "../db/createTripTransactions";
 import { getTripIdPrefix } from "../db/dbKeys";
@@ -67,6 +67,13 @@ export class CreateTripDbService {
 //     };
 // }
 
+  async getByInvitee(email: string, { limit }: PaginationParams): Promise<MinimumTripRecord[]> {
+    if (!email) return [];
+    const params = queryByInvitee(email, limit);
+    const response = await docClient.send(new QueryCommand(params));
+    return (response.Items || []).map(this.mapToMinimumTripRecord);
+  }
+
   //FIXME add return type
   async getTripById(tripId: string) {
     const params = queryByTripId(tripId)
@@ -95,7 +102,7 @@ export class CreateTripDbService {
       tags: item.tags,
       days: days,
       isPublic: item.isPublic,
-      sharedWith: item.sharedWith,
+      invitees: item.invitees,
       fakeData: item.fakeData,
       createdAt: item.createdAt,
       createdBy: item.createdBy

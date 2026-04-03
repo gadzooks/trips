@@ -1,8 +1,9 @@
 // lib/hooks/useTrips.ts
 "use client";
 import { useEffect, useState } from 'react';
-import { MinimumTripRecord, TripListType } from '@/types/trip';
+import { MinimumTripRecord } from '@/types/trip';
 import { PaginatedResponse, PaginationParams } from '@/types/pagination';
+import { TripListType } from '@/types/permissions';
 
 interface UseTripProps extends PaginationParams {
   type: TripListType;

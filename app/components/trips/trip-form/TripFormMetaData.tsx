@@ -1,6 +1,6 @@
 // app/components/trips/trip-form/TripFormMetaData.tsx
 import React from 'react';
-import { Switch } from '../../ui/shadcn/switch';
+import { Switch } from '@/components/ui/switch';
 import { EditableText } from '../../ui/input/EditableText';
 import { TripRecordDTO } from '@/types/trip';
 
@@ -102,6 +102,7 @@ export const TripFormMetaData: React.FC<TripFormMetaDataProps> = ({
             tabIndex={3}
           />
         </div>
+
       </div>
     </>
   );

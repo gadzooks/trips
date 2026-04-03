@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -11,10 +15,9 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
-
     // // Additional recommended compiler options
     // Enabling some of these to match Vercel.com requirements
     "noImplicitAny": true,
@@ -30,13 +33,10 @@
     // "noFallthroughCasesInSwitch": true,
     // "allowUnreachableCode": false,
     "useUnknownInCatchVariables": true,
-    
     // // For better import handling
     // "allowSyntheticDefaultImports": true,
-    
     // // For better type checking
     // "exactOptionalPropertyTypes": true,
-
     "plugins": [
       {
         "name": "next"
@@ -44,13 +44,39 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*", "./src/*"],
-      "@/actions/*": ["./src/actions/*", "./app/actions/*"],
-      "@/hooks/*": ["./lib/hooks/*"],
-      "@/components/*": ["./app/components/*"],
-      "@/lib/*": ["./lib/*"]
+      "@/*": [
+        "./*",
+        "./src/*"
+      ],
+      "@/actions/*": [
+        "./src/actions/*",
+        "./app/actions/*"
+      ],
+      "@/hooks/*": [
+        "./lib/hooks/*"
+      ],
+      "@/components/*": [
+        "./app/components/*"
+      ],
+      "@/lib/*": [
+        "./lib/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/trips/[tripId]/route.js", "app/route.js", "app/trips/route.js", "app/api/trips/public/route.ts", "app/api/auth/[...nextauth]/route.js", "middleware.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/api/trips/[tripId]/route.js",
+    "app/route.js",
+    "app/trips/route.js",
+    "app/api/trips/public/route.ts",
+    "app/api/auth/[...nextauth]/route.js",
+    "middleware.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

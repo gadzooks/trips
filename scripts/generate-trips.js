@@ -1,3 +1,5 @@
+// scripts/generate-trips.js
+
 const users = [
   'john.doe@example.com',
   'jane.smith@example.com',
@@ -59,7 +61,7 @@ async function createTrips() {
       userId: user,
       fakeData: true,
       name: `${tripTemplate.name} - ${Math.random().toString(36).substring(7)}`,
-      sharedWith: users.filter(u => u !== user).slice(0, 2)
+      invitees: users.filter(u => u !== user).slice(0, 2)
     }));
 
     for (const trip of userTrips) {

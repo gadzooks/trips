@@ -14,3 +14,19 @@ export interface TripDayProps {
   isReadOnly: boolean;
   isNewRecord: boolean;
 }
+
+export interface TripComment {
+  PK: string;
+  SK: string;
+  commentId: string;
+  tripId: string;
+  userId: string;
+  userName: string;
+  content: string;
+  timestamp: string;
+  updatedAt?: string;
+  isSystem: boolean;
+  parentCommentId?: string;
+  GSI1PK?: string;
+  GSI1SK?: string;
+}

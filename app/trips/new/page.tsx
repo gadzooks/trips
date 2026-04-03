@@ -32,6 +32,13 @@ export default function NewTrip() {
    }
  };
 
+//  export interface TripAccessResult {
+//   allowed: boolean;
+//   reason: string;
+//   roles: Role[];
+//   permissions: Permission[];
+// }
+
  return (
    <TripForm
      initialData={
@@ -50,10 +57,8 @@ export default function NewTrip() {
          tripAccessResult: {
            allowed: true,
            reason: 'new trip',
-           hasCreateAccess: true,
-           hasReadAccess: true,
-           hasWriteAccess: true,
-           hasDeleteAccess: true
+           roles: [],
+           permissions: []
          }
        }}
 
