@@ -1,5 +1,5 @@
 // app/components/trips/trip-form/TripInvitesAndComments.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChevronUp, ChevronDown, Badge } from 'lucide-react';
 import { TripRecordDTO } from '@/types/trip';
@@ -38,6 +38,11 @@ const TripInvitesAndComments: React.FC<TripInvitesAndCommentsProps> = ({
     const [activeTab, setActiveTab] = useState<string | null>('description');
     const [invites, setInvites] = useState<Invite[]>(initialInvites);
     const [comments, setComments] = useState<Comment[]>(initialComments);
+
+    // Sync when parent async-fetches invites after mount
+    useEffect(() => {
+        setInvites(initialInvites);
+    }, [initialInvites]);
 
     const handleTabClick = (value: string) => {
         setActiveTab(activeTab === value ? null : value);

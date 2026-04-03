@@ -43,9 +43,16 @@ const CompactTripView: React.FC<CompactTripViewProps> = ({
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <Plane className="w-8 h-8 text-blue-600" />
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              {formData.name}
-            </h1>
+            <div>
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                {formData.name}
+              </h1>
+              {!isOwner && formData.createdBy && (
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Shared by {formData.createdBy}
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="flex justify-evenly space-x-4">

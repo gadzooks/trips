@@ -29,7 +29,7 @@ export async function GET(
   }
 
   const invites = await inviteService.getTripInvites(tripId)
-  return NextResponse.json(invites)
+  return NextResponse.json(invites.filter(i => !!i.email))
 }
 
 // Create new invite(s)
