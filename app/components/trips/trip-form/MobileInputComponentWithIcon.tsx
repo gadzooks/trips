@@ -73,7 +73,7 @@ const InputWithIcon = ({
           onBlur={handleBlur}
           autoFocus
           rows={rows}
-          className="min-h-[4rem] resize-none p-2 pt-8 w-full bg-gray-50 dark:bg-gray-700/50 rounded text-xs text-gray-900 dark:text-gray-100 focus:outline-none"
+          className="min-h-[4rem] resize-none p-2 pt-8 w-full bg-gray-50 dark:bg-gray-700/50 rounded text-sm text-gray-900 dark:text-gray-100 focus:outline-none"
         />
       ) : (
         <input
@@ -83,7 +83,7 @@ const InputWithIcon = ({
           placeholder={placeholder}
           onBlur={handleBlur}
           autoFocus
-          className="px-2 py-1 pl-20 w-full bg-gray-50 dark:bg-gray-700/50 rounded text-xs text-gray-900 dark:text-gray-100 focus:outline-none"
+          className="px-2 py-1 pl-20 w-full bg-gray-50 dark:bg-gray-700/50 rounded text-sm text-gray-900 dark:text-gray-100 focus:outline-none"
         />
       );
     }
@@ -98,7 +98,7 @@ const InputWithIcon = ({
         <span
           onClick={handleClick}
           className={`block w-full ${multiline ? 'p-2 pt-8' : 'px-2 py-1 pl-20'}
-            bg-gray-50 dark:bg-gray-700/50 rounded text-xs text-gray-900 dark:text-gray-100
+            bg-gray-50 dark:bg-gray-700/50 rounded text-sm text-gray-900 dark:text-gray-100
             ${!isReadOnly && 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700'}`}
           style={minHeightStyle}
         >
@@ -112,7 +112,7 @@ const InputWithIcon = ({
     <div className="relative">
       <div className="absolute left-2 top-2 flex items-center gap-1 text-gray-400 dark:text-gray-500">
         <Icon className="w-4 h-4" />
-        <span className="text-xs font-medium">{label}</span>
+        <span className="text-sm font-medium">{label}</span>
       </div>
       {renderContent()}
     </div>

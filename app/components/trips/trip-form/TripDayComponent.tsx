@@ -179,30 +179,30 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                   <MoveVertical className="w-4 h-4" />{" "}
                 </th>
               )}
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-28">
+              <th className="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20">
                 DATE
               </th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
+              <th className="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100">
                 ITINERARY
               </th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
+              <th className="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100">
                 DETAILS
               </th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
+              <th className="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100">
                 RESERVATIONS
               </th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100">
+              <th className="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100">
                 LODGING
               </th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">
+              <th className="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20">
                 TRAVEL
                 <br />
                 TIME
               </th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-20">
+              <th className="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-20">
                 COST
               </th>
-              <th className="p-2 text-center text-sm font-medium text-gray-900 dark:text-gray-100 w-24">
+              <th className="p-2 text-center text-base font-medium text-gray-900 dark:text-gray-100 w-24">
                 CANCEL
                 <br />
                 BY
@@ -229,7 +229,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     <GripVertical className="w-4 h-4 mx-auto opacity-0 group-hover:opacity-100" />
                   </td>
                 )}
-                <td className="p-1 align-middle w-28">
+                <td className="p-1 align-middle w-20">
                   <DatePickerInput
                     value={day.date}
                     index={index}
@@ -245,7 +245,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     attributeValue={day.itinerary}
                     onSave={(e) => updateDay(index, "itinerary", e)}
                     onChange={(e) => setHasChanges(true)}
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
+                    className="w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
                     placeholder="Add itinerary..."
                     isReadyOnly={isReadOnly}
                     isTextArea={true}
@@ -258,7 +258,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     attributeValue={day.notes}
                     onSave={(e) => updateDay(index, "notes", e)}
                     onChange={(e) => setHasChanges(true)}
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
+                    className="w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
                     placeholder="Details, links..."
                     isReadyOnly={isReadOnly}
                     isTextArea={true}
@@ -271,7 +271,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     attributeValue={day.reservations}
                     onSave={(e) => updateDay(index, "reservations", e)}
                     onChange={(e) => setHasChanges(true)}
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
+                    className="w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1 resize-none"
                     placeholder="Add booking details..."
                     isReadyOnly={isReadOnly}
                     isTextArea={true}
@@ -284,7 +284,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     attributeValue={day.lodging}
                     onSave={(e) => updateDay(index, "lodging", e)}
                     onChange={(e) => setHasChanges(true)}
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
+                    className="w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
                     placeholder="Lodging location"
                     isReadyOnly={isReadOnly}
                     isTextArea={true}
@@ -299,7 +299,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                       attributeValue={day.travelTime}
                       onSave={(e) => updateDay(index, "travelTime", e)}
                       onChange={(e) => setHasChanges(true)}
-                      className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1"
+                      className="w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-1 py-1"
                       placeholder="Time"
                       isReadyOnly={isReadOnly}
                       isTextArea={false}
@@ -313,7 +313,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     attributeValue={day.cost}
                     onSave={(e) => updateDay(index, "cost", e)}
                     onChange={(e) => setHasChanges(true)}
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
+                    className="w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
                     placeholder="Cost..."
                     isReadyOnly={isReadOnly}
                     isTextArea={false}
@@ -326,7 +326,7 @@ const TripDayComponent: React.FC<TripDayProps> = ({
                     attributeValue={day.cancelBy}
                     onSave={(e) => updateDay(index, "cancelBy", e)}
                     onChange={(e) => setHasChanges(true)}
-                    className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
+                    className="w-full bg-transparent text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded px-2 py-1"
                     placeholder="Cancel by..."
                     isReadyOnly={isReadOnly}
                     isTextArea={false}

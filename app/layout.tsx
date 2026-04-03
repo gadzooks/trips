@@ -2,6 +2,7 @@
 import './globals.css'
 import { Inter, Roboto_Flex } from 'next/font/google'
 import { ThemeProvider } from './components/site-wide/ThemeProvider'
+import { FontSizeProvider } from './components/site-wide/FontSizeProvider'
 import { Navbar } from './components/site-wide/Navbar'
 import { SessionProvider } from "next-auth/react"
 import { TailwindIndicator } from './components/ui/helper/tailwind-indicator'
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <SessionProvider>
           <ThemeProvider>
+            <FontSizeProvider>
             <div className="min-h-screen bg-gray-100 dark:bg-gray-900 max-w-[100vw] overflow-x-hidden">
               <Navbar />
               <div className="flex">
@@ -42,6 +44,7 @@ export default function RootLayout({
                 </main>
               </div>
             </div>
+            </FontSizeProvider>
           </ThemeProvider>
         </SessionProvider>
         <TailwindIndicator />

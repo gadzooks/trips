@@ -140,10 +140,9 @@ describe('TripDayComponent', () => {
       expect(screen.getByTestId(`readonly-span-${id}`)).toBeInTheDocument();
     });
     
-    const inputs = screen.getAllByRole('textbox');
-    expect(inputs).toHaveLength(1);
-    expect(inputs[0]).toBeDisabled();
-    
+    // Date is displayed as a 2-line div when set, not an input
+    expect(screen.queryAllByRole('textbox')).toHaveLength(0);
+
     expect(screen.queryByRole('button', { name: /add day/i })).not.toBeInTheDocument();
   });
 

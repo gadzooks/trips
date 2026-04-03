@@ -51,9 +51,13 @@ function formatStorageDate(date: Date): string {
   return `${month}/${day}/${year}`;
 }
 
-// Display as "Sat Apr 4"
-function formatDisplayDate(date: Date): string {
-  return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+// Display as two lines: { line1: "Sat", line2: "Apr 4" }
+function formatDisplayDate(date: Date): { line1: string; line2: string } {
+  const full = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const spaceIdx = full.indexOf(' ');
+  return spaceIdx === -1
+    ? { line1: full, line2: '' }
+    : { line1: full.slice(0, spaceIdx), line2: full.slice(spaceIdx + 1) };
 }
 
 const DatePickerInput: FC<DatePickerInputProps> = ({
@@ -64,11 +68,13 @@ const DatePickerInput: FC<DatePickerInputProps> = ({
   onChange
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [displayValue, setDisplayValue] = useState<string>(() => {
+  // rawInput is only used when the user is typing (no parsed date yet)
+  const [rawInput, setRawInput] = useState<string>(() => {
     const parsed = parseDate(value);
-    return parsed ? formatDisplayDate(parsed) : (value || '');
+    return parsed ? '' : (value || '');
   });
-  const [currentDate, setCurrentDate] = useState<Date | null>(parseDate(value) || new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(parseDate(value));
+  const [calendarMonth, setCalendarMonth] = useState<Date>(parseDate(value) || new Date());
   const [popupPosition, setPopupPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
   const calendarRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -77,15 +83,20 @@ const DatePickerInput: FC<DatePickerInputProps> = ({
   // Sync display when value prop changes externally (e.g. auto-fill)
   useEffect(() => {
     const parsed = parseDate(value);
-    setDisplayValue(parsed ? formatDisplayDate(parsed) : (value || ''));
-    if (parsed) setCurrentDate(parsed);
+    setSelectedDate(parsed);
+    if (parsed) {
+      setCalendarMonth(parsed);
+      setRawInput('');
+    } else {
+      setRawInput(value || '');
+    }
   }, [value]);
 
   // Close calendar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent): void => {
       if (calendarRef.current && !calendarRef.current.contains(event.target as Node) &&
-          inputRef.current && !inputRef.current.contains(event.target as Node)) {
+          containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -97,13 +108,15 @@ const DatePickerInput: FC<DatePickerInputProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (isReadOnly) return;
     const newValue = e.target.value;
-    setDisplayValue(newValue);
+    setRawInput(newValue);
     // If it parses as MM/DD/YYYY, store and update calendar
     const parsed = parseDate(newValue);
     if (parsed) {
-      setCurrentDate(parsed);
+      setSelectedDate(parsed);
+      setCalendarMonth(parsed);
       updateDay(index, 'date', formatStorageDate(parsed));
     } else {
+      setSelectedDate(null);
       updateDay(index, 'date', newValue);
     }
     if (onChange) onChange(e);
@@ -111,13 +124,14 @@ const DatePickerInput: FC<DatePickerInputProps> = ({
 
   const handleDateSelect = (date: Date): void => {
     if (isReadOnly) return;
-    setDisplayValue(formatDisplayDate(date));
-    setCurrentDate(date);
+    setSelectedDate(date);
+    setCalendarMonth(date);
+    setRawInput('');
     updateDay(index, 'date', formatStorageDate(date));
     setIsOpen(false);
   };
 
-  const calculatePopupPosition = (event: React.MouseEvent<HTMLDivElement>): void => {
+  const calculatePopupPosition = (event: React.MouseEvent<HTMLElement>): void => {
     if (isReadOnly) return;
 
     const mouseX = event.clientX;
@@ -150,27 +164,47 @@ const DatePickerInput: FC<DatePickerInputProps> = ({
     setIsOpen(!isOpen);
   };
 
+  const dateDisplay = selectedDate ? formatDisplayDate(selectedDate) : null;
+
   return (
     <div className="relative" ref={containerRef}>
-      <div
-        onClick={calculatePopupPosition}
-        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-          isReadOnly ? "opacity-70" : "cursor-pointer"
-        }`}
-      >
-        <CalendarDays className="w-4 h-4 text-purple-500 dark:text-purple-400" />
-      </div>
-      <input
-        ref={inputRef}
-        type="text"
-        value={displayValue}
-        onChange={handleInputChange}
-        placeholder="Mon Jan 1"
-        disabled={isReadOnly}
-        className={`pl-9 pr-3 py-2 w-full text-sm rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none ${
-          isReadOnly ? "opacity-70 cursor-not-allowed" : ""
-        }`}
-      />
+      {dateDisplay ? (
+        // Date is set: show compact 2-line display, no icon
+        <div
+          onClick={isReadOnly ? undefined : calculatePopupPosition}
+          className={`px-2 py-1 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-center leading-tight ${
+            isReadOnly ? 'opacity-70' : 'cursor-pointer hover:border-purple-400 dark:hover:border-purple-500'
+          }`}
+        >
+          <div className="text-base font-medium text-gray-900 dark:text-gray-100">{dateDisplay.line1}</div>
+          {dateDisplay.line2 && (
+            <div className="text-base text-gray-700 dark:text-gray-300">{dateDisplay.line2}</div>
+          )}
+        </div>
+      ) : (
+        // No date: show icon + text input
+        <>
+          <div
+            onClick={calculatePopupPosition}
+            className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
+              isReadOnly ? 'opacity-70' : 'cursor-pointer'
+            }`}
+          >
+            <CalendarDays className="w-4 h-4 text-purple-500 dark:text-purple-400" />
+          </div>
+          <input
+            ref={inputRef}
+            type="text"
+            value={rawInput}
+            onChange={handleInputChange}
+            placeholder="Mon Jan 1"
+            disabled={isReadOnly}
+            className={`pl-9 pr-3 py-2 w-full text-base rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none ${
+              isReadOnly ? 'opacity-70 cursor-not-allowed' : ''
+            }`}
+          />
+        </>
+      )}
 
       {isOpen && (
         <div
@@ -184,7 +218,8 @@ const DatePickerInput: FC<DatePickerInputProps> = ({
         >
           <SimpleDatePicker
             onSelect={handleDateSelect}
-            selectedDate={currentDate}
+            selectedDate={selectedDate}
+            initialMonth={calendarMonth}
           />
         </div>
       )}
@@ -193,8 +228,8 @@ const DatePickerInput: FC<DatePickerInputProps> = ({
 };
 
 // A simple date picker component
-const SimpleDatePicker: FC<SimpleDatePickerProps> = ({ onSelect, selectedDate }) => {
-  const [currentMonth, setCurrentMonth] = useState<Date>(selectedDate || new Date());
+const SimpleDatePicker: FC<SimpleDatePickerProps & { initialMonth: Date }> = ({ onSelect, selectedDate, initialMonth }) => {
+  const [currentMonth, setCurrentMonth] = useState<Date>(initialMonth);
 
   const getDaysInMonth = (date: Date): (Date | null)[] => {
     const year = date.getFullYear();

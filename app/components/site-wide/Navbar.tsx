@@ -2,8 +2,9 @@
 "use client";
 import Link from 'next/link';
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Menu, Moon, Sun } from 'lucide-react';
+import { ALargeSmall, Menu, Moon, Sun } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
+import { useFontSize, SIZE_LABELS } from './FontSizeProvider';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -27,6 +28,7 @@ import { Button } from '@/components/ui/button';
 export function Navbar() {
   const { data: session } = useSession();
   const { isDark, toggle } = useTheme();
+  const { fontSize, cycleSize } = useFontSize();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
@@ -54,6 +56,14 @@ export function Navbar() {
 
           <div className="flex items-center space-x-4">
             <button
+              onClick={cycleSize}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+              aria-label={`Text size: ${SIZE_LABELS[fontSize]}`}
+              title={`Text size: ${SIZE_LABELS[fontSize]}`}
+            >
+              <ALargeSmall className="h-5 w-5" />
+            </button>
+            <button
               onClick={toggle}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
               aria-label="Toggle theme"
@@ -69,6 +79,14 @@ export function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+                <DropdownMenuItem
+                  onSelect={(e) => { e.preventDefault(); cycleSize(); }}
+                  className="py-3 focus:bg-gray-100 dark:focus:bg-gray-700 flex items-center space-x-2"
+                >
+                  <ALargeSmall className="h-4 w-4" />
+                  <span>Text Size: {SIZE_LABELS[fontSize]}</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
                 <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-700">
                   <Link href="/explore" className="flex py-3">Explore Trips</Link>
                 </DropdownMenuItem>

@@ -274,7 +274,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
 
               {/* Date display */}
               <div className="flex items-center">
-                <span className="text-sm font-medium text-gray-900 dark:text-gray-100 mr-1">
+                <span className="text-base font-medium text-gray-900 dark:text-gray-100 mr-1">
                   {formatDate(day.date) || "Set date"}
                 </span>
               </div>
@@ -313,7 +313,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
 
           {/* Preview of day info when collapsed */}
           {expandedDay !== index && (
-            <div className="text-sm text-gray-600 dark:text-gray-300 pl-1 mt-2 line-clamp-2">
+            <div className="text-base text-gray-600 dark:text-gray-300 pl-1 mt-2 line-clamp-2">
               {getSummary(day)}
             </div>
           )}
@@ -326,7 +326,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
                 <div className="grid grid-cols-2 gap-3 mb-4 mt-2">
                   <div className="relative">
                     <div className="relative">
-                      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                      <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
                         DATE
                       </label>
                       <DatePickerInput
@@ -341,7 +341,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
                   </div>
 
                   <div className="relative">
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
                       TRAVEL TIME
                     </label>
                     <div className="relative">
@@ -353,7 +353,7 @@ const MobileTripDays: React.FC<MobileTripDaysProps> = ({
                           updateDay(index, "travelTime", e.target.value)
                         }
                         placeholder="Add time"
-                        className="pl-9 pr-3 py-2 w-full text-sm rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none"
+                        className="pl-9 pr-3 py-2 w-full text-base rounded-lg border border-gray-200 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 transition-colors focus:outline-none"
                       />
                     </div>
                   </div>
