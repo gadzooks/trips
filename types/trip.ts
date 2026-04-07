@@ -9,8 +9,7 @@ export interface MinimumTripRecord {
     name: string
     createdAt: string
     updatedAt?: string
-    startDate?: string
-    endDate?: string
+    days?: Array<{ date: string }>
     isInvited?: boolean
     inviteSummary?: { total: number; accepted: number }
 }

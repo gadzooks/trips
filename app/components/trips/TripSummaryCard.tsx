@@ -23,8 +23,10 @@ function formatTripDate(dateStr: string): string {
 
 export function TripSummaryCard(trip: MinimumTripRecord): React.JSX.Element {
   const displayDate = trip.updatedAt || trip.createdAt;
-  const hasTripDates = trip.startDate && trip.endDate;
-  const sameDay = trip.startDate === trip.endDate;
+  const startDate = trip.days?.[0]?.date;
+  const endDate = trip.days?.[trip.days.length - 1]?.date;
+  const hasTripDates = !!(startDate && endDate);
+  const sameDay = startDate === endDate;
 
   return (
     <Link href={`/trips/${trip.tripId}`} className="group cursor-pointer">
@@ -48,8 +50,8 @@ export function TripSummaryCard(trip: MinimumTripRecord): React.JSX.Element {
                 <CalendarRange className="h-4 w-4 shrink-0" />
                 <span>
                   {sameDay
-                    ? formatTripDate(trip.startDate!)
-                    : `${formatTripDate(trip.startDate!)} – ${formatTripDate(trip.endDate!)}`}
+                    ? formatTripDate(startDate!)
+                    : `${formatTripDate(startDate!)} – ${formatTripDate(endDate!)}`}
                 </span>
               </div>
             )}

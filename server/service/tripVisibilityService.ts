@@ -7,7 +7,6 @@ import { createVisibilityTransactions } from '../db/tripVisibilityTransactions';
 import { UpdateTripAttributeRequest } from '@/app/components/ui/utils/updateTrip';
 import { UpdateTripDbService } from '../db/updateTripTransactions';
 import { getTripIdPk, getOwnerWithDbPK } from '../db/dbKeys';
-import { extractTripDates } from '../db/createTripTransactions';
 import { TripDayDTO } from '@/types/trip';
 
 const updateTripDbService = new UpdateTripDbService()
@@ -44,10 +43,9 @@ export class TripVisibilityService {
       const createdByExprValues: Record<string, any> = { ':now': now };
 
       if (body.attributeKey === 'days') {
-        const { startDate, endDate } = extractTripDates(body.attributeValue as TripDayDTO[]);
-        createdByUpdateExpr += ', startDate = :startDate, endDate = :endDate';
-        createdByExprValues[':startDate'] = startDate;
-        createdByExprValues[':endDate'] = endDate;
+        const dateDays = (body.attributeValue as TripDayDTO[]).map(d => ({ date: d.date }));
+        createdByUpdateExpr += ', days = :days';
+        createdByExprValues[':days'] = dateDays;
       }
 
       await docClient.send(new UpdateCommand({

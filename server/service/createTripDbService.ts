@@ -133,8 +133,7 @@ export class CreateTripDbService {
       tripId: item.tripId,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
-      startDate: item.startDate,
-      endDate: item.endDate,
+      days: item.days,
       createdBy: item.createdBy
     };
    };
